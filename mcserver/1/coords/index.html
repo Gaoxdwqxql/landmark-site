@@ -1,11 +1,24 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN" data-theme="dark" data-skin="github">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
 <meta name="theme-color" content="#0d1117">
 <title>66QN 服务器地标坐标总览</title>
 <style>
+  /* ===== Minecraft 像素字体（实验性皮肤用） ===== */
+  @font-face {
+    font-family: 'Monocraft';
+    src: url('https://cdn.jsdelivr.net/gh/IdreesInc/Monocraft@v4.2.0/dist/Monocraft.otf') format('opentype');
+    font-display: swap;
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Zpix';
+    src: url('https://cdn.jsdelivr.net/gh/SolidZORO/zpix-pixel-font@latest/dist/zpix.woff2') format('woff2');
+    font-display: swap;
+  }
+
   :root[data-theme="dark"]{
     --bg:#0d1117; --panel:#161b22; --panel-2:#21262d;
     --border:#30363d; --border-hover:#484f58;
@@ -36,6 +49,39 @@
     --modal-backdrop:rgba(31,35,40,.5);
     --hl-bg:#fff3a3; --hl-text:#1f2328;
   }
+
+  /* ===== Minecraft 皮肤的主题变量 ===== */
+  :root[data-skin="minecraft"][data-theme="dark"]{
+    --bg:#1a1a1a; --panel:#2d2d2d; --panel-2:#3a3a3a;
+    --border:#555555; --border-hover:#888888;
+    --text:#ffffff; --text-2:#dddddd; --muted:#aaaaaa; --faint:#777777;
+    --accent:#3C8527; --accent-2:#55FF55;
+    --over:#55FF55; --nether:#FF5555; --end:#AA00AA;
+    --code-bg:#1a1a1a; --code-text:#55FF55; --tag-bg:#3a3a3a;
+    --warn:#FFAA00; --danger:#FF5555;
+    --hero:#ffffff;
+    --tag-tech:#55FFFF; --tag-trade:#FFAA00; --tag-farm:#55FF55;
+    --tag-legacy:#AAAAAA; --tag-cheap:#FF8800; --tag-dead:#FF5555;
+    --shadow:0 4px 0 #0a0a0a;
+    --modal-backdrop:rgba(0,0,0,.75);
+    --hl-bg:#FFAA00; --hl-text:#1a1a1a;
+  }
+  :root[data-skin="minecraft"][data-theme="light"]{
+    --bg:#c6c6c6; --panel:#c6c6c6; --panel-2:#b8b8b8;
+    --border:#555555; --border-hover:#333333;
+    --text:#1a1a1a; --text-2:#333333; --muted:#555555; --faint:#777777;
+    --accent:#3C8527; --accent-2:#2d6b1e;
+    --over:#00AA00; --nether:#AA0000; --end:#AA00AA;
+    --code-bg:#a8a8a8; --code-text:#1a4d23; --tag-bg:#b0b0b0;
+    --warn:#AA6600; --danger:#AA0000;
+    --hero:#1a1a1a;
+    --tag-tech:#0055AA; --tag-trade:#8a5500; --tag-farm:#007700;
+    --tag-legacy:#555555; --tag-cheap:#BB4400; --tag-dead:#AA0000;
+    --shadow:0 4px 0 #7a7a7a;
+    --modal-backdrop:rgba(0,0,0,.45);
+    --hl-bg:#FFAA00; --hl-text:#1a1a1a;
+  }
+
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
   body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background-color .25s ease,color .25s ease;overflow-x:hidden}
@@ -99,8 +145,6 @@
     .dd-item{padding:13px;border-radius:8px;gap:12px}
     .dd-item .ico{font-size:20px}
   }
-
-  /* 工具栏 - 桌面双行 */
   .toolbar{position:sticky;top:0;z-index:20;margin:24px 0 6px;padding:12px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;gap:10px}
   .toolbar-row-1{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .toolbar-row-2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border)}
@@ -121,7 +165,6 @@
     .toolbar-row-2{flex-direction:column;align-items:stretch}
     .toolbar-actions{margin-left:0;width:100%;justify-content:flex-start}
   }
-
   .sec-title{display:flex;align-items:center;gap:10px;margin:32px 0 14px;font-size:17px;font-weight:600;letter-spacing:.2px}
   .sec-title .st-ico{font-size:18px;color:var(--accent);display:inline-flex;padding:6px;border-radius:6px;background:var(--panel);border:1px solid var(--border)}
   .sec-title .count{font-size:12px;font-weight:500;color:var(--muted);background:var(--panel);border:1px solid var(--border);padding:1px 8px;border-radius:999px}
@@ -177,7 +220,6 @@
   .child-label .ico{font-size:12px;color:var(--accent)}
   .child-row .coords{flex-shrink:0}
   .child-row .btn-copy{margin-left:auto}
-
   .machines{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
   .machine{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
   .machine h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -189,12 +231,10 @@
   .kv .v code{font-family:ui-monospace,monospace;font-size:12px;color:var(--code-text);background:var(--bg);border:1px solid var(--border);padding:1px 6px;border-radius:4px;display:inline-block;margin:2px 4px 2px 0}
   .products{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
   .products span{font-size:11.5px;color:var(--muted);background:var(--tag-bg);border:1px solid var(--border);padding:1px 7px;border-radius:4px}
-
   .future{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
   .fut{display:flex;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:13.5px;color:var(--text-2);flex-wrap:wrap}
   .fut .ico{font-size:14px;color:var(--accent)}
   .fut .fut-note{font-size:11.5px;color:var(--muted);margin-left:auto;white-space:nowrap}
-
   .friend-links{margin-top:40px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
   .friend-links h3{margin:0 0 12px;font-size:12.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
   .friend-links h3 .ico{font-size:15px;color:var(--accent)}
@@ -206,18 +246,13 @@
   .flink-body{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0}
   .flink-title{font-weight:600;font-size:13px;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .flink-sub{font-size:11px;color:var(--muted);font-family:ui-monospace,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
   #toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,16px);display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:8px;font-size:13.5px;opacity:0;pointer-events:none;transition:.2s ease;z-index:99;box-shadow:var(--shadow);max-width:calc(100vw - 32px)}
   #toast.show{opacity:1;transform:translate(-50%,0)}
   #toast .ico{font-size:15px;color:var(--accent)}
-
   .empty{text-align:center;color:var(--muted);font-size:14px;padding:44px 0;display:none}
   .empty .ico{font-size:30px;color:var(--faint);display:block;margin:0 auto 10px}
   footer{margin-top:32px;text-align:center;color:var(--faint);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px}
-
   mark.hl{background:var(--hl-bg);color:var(--hl-text);padding:0 2px;border-radius:2px;font-weight:600}
-
-  /* 批量操作栏 */
   .batch-bar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(140%);z-index:150;display:flex;align-items:center;gap:9px;padding:11px 14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);transition:transform .28s cubic-bezier(.2,.9,.3,1.05),opacity .2s ease;opacity:0;pointer-events:none;max-width:calc(100vw - 32px);flex-wrap:wrap;justify-content:center}
   .batch-bar.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
   .batch-count{font-size:13px;color:var(--text-2);display:inline-flex;align-items:center;gap:5px;font-weight:500}
@@ -228,8 +263,6 @@
   .batch-progress.show{display:inline-flex}
   .batch-progress-bar{width:80px;height:6px;background:var(--bg);border:1px solid var(--border);border-radius:3px;overflow:hidden}
   .batch-progress-fill{height:100%;width:0;background:var(--accent);transition:width .15s ease}
-
-  /* 弹窗通用 */
   .add-modal,.import-modal,.batch-modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .18s ease}
   .batch-modal{z-index:320}
   .add-modal.open,.import-modal.open,.batch-modal.open{opacity:1;pointer-events:auto}
@@ -285,15 +318,11 @@
   .builder-preset:active{transform:scale(.96)}
   .builder-preset.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
   .builder-preset .ico{font-size:12px}
-
-  /* 批量编辑 */
   .batch-modal-body{display:flex;flex-direction:column;gap:14px}
   .batch-field-group{display:flex;flex-direction:column;gap:5px}
   .batch-field-label{font-size:12.5px;font-weight:600;color:var(--text-2);display:flex;align-items:center;gap:5px}
   .batch-field-hint{font-size:11px;color:var(--faint);margin-left:auto;font-weight:400}
   .batch-tag-grid{display:flex;flex-wrap:wrap;gap:6px}
-
-  /* 导入 */
   .import-tabs{display:inline-flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--panel);margin-bottom:12px}
   .import-tab{font-size:12.5px;padding:7px 18px;background:transparent;border:none;color:var(--muted);transition:.12s;cursor:pointer;font-family:inherit;font-weight:600;letter-spacing:.3px}
   .import-tab.active{background:var(--accent);color:#fff}
@@ -318,8 +347,6 @@
   .import-merge-badge,.import-ignore-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
   .import-merge-badge{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent)}
   .import-ignore-badge{color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent)}
-
-  /* 导航 */
   .side-nav-backdrop{display:none;position:fixed;inset:0;background:var(--modal-backdrop);z-index:45;opacity:0;pointer-events:none;transition:opacity .2s ease}
   .side-nav-backdrop.show{opacity:1;pointer-events:auto}
   .side-nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
@@ -373,8 +400,6 @@
     .side-nav-link-icon{width:22px;height:22px}
     .side-nav-link-icon .ico{font-size:17px}
   }
-
-  /* 移动端 */
   @media (max-width:660px){
     .wrap{padding:18px 14px 120px}
     .btn .lbl{display:none}
@@ -410,6 +435,192 @@
     .add-modal.open .add-modal-box,.import-modal.open .import-modal-box,.batch-modal.open .batch-modal-box{transform:translateY(0)}
     .add-modal,.import-modal,.batch-modal{align-items:flex-end;padding:0}
   }
+
+  /* ============================================================
+     ===== Minecraft 皮肤（实验性）=====
+     ============================================================ */
+  html[data-skin="minecraft"] body{
+    font-family:'Monocraft','Zpix','Courier New',Consolas,monospace;
+    font-size:13px;
+    image-rendering:pixelated;
+    -webkit-font-smoothing:none;
+  }
+  html[data-skin="minecraft"] button,
+  html[data-skin="minecraft"] input,
+  html[data-skin="minecraft"] select,
+  html[data-skin="minecraft"] textarea{
+    font-family:'Monocraft','Zpix','Courier New',Consolas,monospace;
+    letter-spacing:.3px;
+  }
+  /* 全局直角 */
+  html[data-skin="minecraft"] *{border-radius:0 !important}
+  /* 标题像素阴影 */
+  html[data-skin="minecraft"] h1{
+    text-shadow:2px 2px 0 var(--accent);
+    letter-spacing:1px;
+  }
+  html[data-skin="minecraft"] .sec-title{
+    text-shadow:1px 1px 0 rgba(0,0,0,.35);
+  }
+  /* 按钮 3D 效果 */
+  html[data-skin="minecraft"] .btn{
+    border:2px solid var(--border);
+    background:#6B6B6B;
+    color:#fff;
+    text-shadow:1px 1px 0 rgba(0,0,0,.6);
+    box-shadow:inset 2px 2px 0 rgba(255,255,255,.35), inset -2px -2px 0 rgba(0,0,0,.35), 0 3px 0 rgba(0,0,0,.4);
+    padding:8px 14px;
+  }
+  html[data-skin="minecraft"] .btn:hover{background:#7C7C7C;border-color:var(--border);filter:none}
+  html[data-skin="minecraft"] .btn:active{transform:translateY(2px);box-shadow:inset 2px 2px 0 rgba(0,0,0,.35), inset -2px -2px 0 rgba(255,255,255,.25), 0 1px 0 rgba(0,0,0,.4)}
+  html[data-skin="minecraft"] .btn.primary{background:#3C8527;border-color:#1a4d23;box-shadow:inset 2px 2px 0 #55AA35, inset -2px -2px 0 rgba(0,0,0,.35), 0 3px 0 #1a4d23}
+  html[data-skin="minecraft"] .btn.primary:hover{background:#4a9e35}
+  html[data-skin="minecraft"] .btn.danger{background:#AA0000;border-color:#550000;color:#fff;box-shadow:inset 2px 2px 0 #DD3333, inset -2px -2px 0 rgba(0,0,0,.35), 0 3px 0 #550000}
+  html[data-skin="minecraft"] .btn.danger:hover{background:#CC0000}
+  html[data-skin="minecraft"] .btn-icon,
+  html[data-skin="minecraft"] .location-row .btn-remove-location,
+  html[data-skin="minecraft"] .side-nav-collapse{
+    background:#6B6B6B;
+    border:2px solid #373737;
+    color:#fff;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.35), inset -1px -1px 0 rgba(0,0,0,.35);
+  }
+  html[data-skin="minecraft"] .btn-icon:hover,
+  html[data-skin="minecraft"] .location-row .btn-remove-location:hover{background:#7C7C7C;color:#fff;border-color:#373737}
+  html[data-skin="minecraft"] .btn-icon:active,
+  html[data-skin="minecraft"] .location-row .btn-remove-location:active{transform:translateY(2px);box-shadow:none}
+  html[data-skin="minecraft"] .btn-icon.edit:hover{color:#55FF55;border-color:#373737}
+  html[data-skin="minecraft"] .btn-icon.delete:hover{color:#FF5555}
+  html[data-skin="minecraft"] .chip,
+  html[data-skin="minecraft"] .tag-chip,
+  html[data-skin="minecraft"] .builder-preset,
+  html[data-skin="minecraft"] .mode-btn,
+  html[data-skin="minecraft"] .import-tab{
+    background:#6B6B6B;color:#fff;border:2px solid #373737;
+    text-shadow:1px 1px 0 rgba(0,0,0,.6);
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.35), inset -1px -1px 0 rgba(0,0,0,.35);
+  }
+  html[data-skin="minecraft"] .chip:hover,
+  html[data-skin="minecraft"] .tag-chip:hover,
+  html[data-skin="minecraft"] .builder-preset:hover{background:#7C7C7C;color:#fff}
+  html[data-skin="minecraft"] .chip:active,
+  html[data-skin="minecraft"] .tag-chip:active,
+  html[data-skin="minecraft"] .builder-preset:active{transform:translateY(1px);box-shadow:none}
+  html[data-skin="minecraft"] .chip.active,
+  html[data-skin="minecraft"] .tag-chip.active,
+  html[data-skin="minecraft"] .builder-preset.active{background:#3C8527;border-color:#1a4d23;color:#fff;box-shadow:inset 1px 1px 0 #55AA35, inset -1px -1px 0 rgba(0,0,0,.35)}
+  html[data-skin="minecraft"] .mode-btn.active,
+  html[data-skin="minecraft"] .import-tab.active{background:#3C8527;color:#fff}
+  html[data-skin="minecraft"] .btn-copy{
+    background:#3a3a3a;border:2px solid var(--border);color:#55FF55;
+    text-shadow:1px 1px 0 rgba(0,0,0,.5);
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.15), inset -1px -1px 0 rgba(0,0,0,.35);
+  }
+  html[data-skin="minecraft"] .btn-copy:hover{background:#4a4a4a;color:#55FF55}
+  html[data-skin="minecraft"] .btn-copy:active{transform:translateY(1px);box-shadow:none}
+  html[data-skin="minecraft"] .btn-copy.done{background:#3C8527;color:#fff;border-color:#1a4d23}
+  /* 面板和卡片 3D 边 */
+  html[data-skin="minecraft"] .lm,
+  html[data-skin="minecraft"] .machine,
+  html[data-skin="minecraft"] .fut,
+  html[data-skin="minecraft"] .flink,
+  html[data-skin="minecraft"] .toolbar,
+  html[data-skin="minecraft"] .panel,
+  html[data-skin="minecraft"] .side-nav-panel,
+  html[data-skin="minecraft"] .add-modal-box,
+  html[data-skin="minecraft"] .import-modal-box,
+  html[data-skin="minecraft"] .batch-modal-box,
+  html[data-skin="minecraft"] .download-dropdown,
+  html[data-skin="minecraft"] .friend-links,
+  html[data-skin="minecraft"] .batch-bar{
+    border:2px solid var(--border);
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.08), inset -1px -1px 0 rgba(0,0,0,.35), var(--shadow);
+  }
+  html[data-skin="minecraft"] .lm:hover{background:var(--panel-2)}
+  /* 输入框内阴影 */
+  html[data-skin="minecraft"] #search,
+  html[data-skin="minecraft"] .form-input,
+  html[data-skin="minecraft"] .form-select,
+  html[data-skin="minecraft"] .form-textarea,
+  html[data-skin="minecraft"] .import-textarea{
+    border:2px solid var(--border);
+    background:#0a0a0a;
+    color:#fff;
+    box-shadow:inset 2px 2px 0 rgba(0,0,0,.6);
+  }
+  html[data-skin="minecraft"][data-theme="light"] #search,
+  html[data-skin="minecraft"][data-theme="light"] .form-input,
+  html[data-skin="minecraft"][data-theme="light"] .form-select,
+  html[data-skin="minecraft"][data-theme="light"] .form-textarea,
+  html[data-skin="minecraft"][data-theme="light"] .import-textarea{
+    background:#a0a0a0;color:#1a1a1a;
+  }
+  html[data-skin="minecraft"] #search:focus,
+  html[data-skin="minecraft"] .form-input:focus,
+  html[data-skin="minecraft"] .form-select:focus,
+  html[data-skin="minecraft"] .form-textarea:focus,
+  html[data-skin="minecraft"] .import-textarea:focus{
+    border-color:#55FF55;
+    box-shadow:inset 2px 2px 0 rgba(0,0,0,.6), 0 0 0 2px rgba(85,255,85,.35);
+  }
+  /* 坐标和代码字 */
+  html[data-skin="minecraft"] .coords,
+  html[data-skin="minecraft"] .import-textarea{
+    text-shadow:1px 1px 0 rgba(0,0,0,.5);
+  }
+  /* 侧边导航 */
+  html[data-skin="minecraft"] .side-nav-fab{
+    width:52px;height:52px;
+    background:#3C8527;
+    border:2px solid #1a4d23;
+    box-shadow:inset 2px 2px 0 #55AA35, inset -2px -2px 0 rgba(0,0,0,.35), 0 3px 0 #1a4d23;
+    color:#fff;
+  }
+  html[data-skin="minecraft"] .side-nav-link.active{
+    background:#3C8527;color:#fff;
+    box-shadow:inset 1px 1px 0 #55AA35, inset -1px -1px 0 rgba(0,0,0,.35);
+  }
+  html[data-skin="minecraft"] .side-nav-link.active .side-nav-link-icon,
+  html[data-skin="minecraft"] .side-nav-link.active .side-nav-idx{color:#fff}
+  /* 语言切换 */
+  html[data-skin="minecraft"] .lang-switch{
+    border:2px solid #373737;background:#6B6B6B;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.35), inset -1px -1px 0 rgba(0,0,0,.35);
+  }
+  html[data-skin="minecraft"] .lang-switch button{color:#eee;text-shadow:1px 1px 0 rgba(0,0,0,.6)}
+  html[data-skin="minecraft"] .lang-switch button.active{background:#3C8527;color:#fff}
+  html[data-skin="minecraft"] .lang-switch button + button{border-left:2px solid #373737}
+  /* 标签 */
+  html[data-skin="minecraft"] .tag,
+  html[data-skin="minecraft"] .dim-badge,
+  html[data-skin="minecraft"] .child-count{
+    border-width:2px;
+    text-shadow:1px 1px 0 rgba(0,0,0,.5);
+  }
+  /* 标题图标方块化 */
+  html[data-skin="minecraft"] .sec-title .st-ico,
+  html[data-skin="minecraft"] .flink-ico,
+  html[data-skin="minecraft"] .tag-modal-icon{
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.1), inset -1px -1px 0 rgba(0,0,0,.35);
+    border-width:2px;
+  }
+  /* 弹窗遮罩纯黑 */
+  html[data-skin="minecraft"] .add-modal-backdrop,
+  html[data-skin="minecraft"] .import-modal-backdrop,
+  html[data-skin="minecraft"] .batch-modal-backdrop,
+  html[data-skin="minecraft"] .side-nav-backdrop{
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+  }
+  /* 移除 UI 的模糊 */
+  html[data-skin="minecraft"] .toolbar,
+  html[data-skin="minecraft"] .side-nav-panel{backdrop-filter:none;-webkit-backdrop-filter:none}
+  /* 高亮反色 */
+  html[data-skin="minecraft"] mark.hl{color:#1a1a1a;font-weight:700}
+  /* stat 数字金色 */
+  html[data-skin="minecraft"] .stat b{color:#FFAA00;text-shadow:1px 1px 0 rgba(0,0,0,.6)}
+  /* 暗色下纯黑背景让像素更锐 */
+  html[data-skin="minecraft"][data-theme="dark"] body{background:#1a1a1a}
+  html[data-skin="minecraft"][data-theme="light"] body{background:#c6c6c6}
 </style>
 </head>
 <body>
@@ -454,6 +665,10 @@
           <button data-lang="zh" class="active">中文</button>
           <button data-lang="en">EN</button>
         </div>
+        <button class="btn" id="btn-skin" title="Skin / 皮肤">
+          <svg class="ico" id="skin-ico" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span class="lbl" id="skin-lbl" data-i18n="skinClassic">经典</span>
+        </button>
         <button class="btn" id="btn-theme" title="Theme">
           <svg class="ico" id="theme-ico" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
           <span class="lbl" id="theme-lbl" data-i18n="themeDark">深色</span>
@@ -660,6 +875,7 @@ const I18N = {
   zh: {
     docTitle:'66QN 服务器地标坐标总览', title:'66QN 服务器地标坐标总览', subtitle:'Minecraft Java 26.2 · 坐标均为准确无误',
     themeDark:'深色', themeLight:'浅色',
+    skinClassic:'经典', skinMinecraft:'像素',
     searchPlaceholder:'搜索名称、说明、坐标、标签…',
     filterDim:'维度', filterCat:'类别',
     chipAll:'全部', chipOverworld:'主世界', chipNether:'下界', chipEnd:'末地',
@@ -674,6 +890,7 @@ const I18N = {
     toastCopied:'已复制：', toastCopyFail:'复制失败',
     toastAdded:'新增成功！', toastUpdated:'更新成功！', toastAddFail:'操作失败：', toastDeleted:'删除成功！',
     toastDlMd:'Markdown 已下载', toastDlTxt:'TXT 已下载', toastDlCsv:'CSV 已下载',
+    toastSkinMc:'已切换到像素皮肤（实验性）', toastSkinGh:'已切换回经典皮肤',
     confirmDelete:'确定删除「{name}」？此操作不可恢复。',
     childPoints:'个点位', expand:'展开', collapse:'收起',
     kvCoords:'坐标', kvRate:'效率', kvNote:'说明', kvProducts:'产物', kvBuilder:'建造者',
@@ -737,6 +954,7 @@ const I18N = {
   en: {
     docTitle:'66QN Server Landmarks', title:'66QN Server Landmarks', subtitle:'Minecraft Java 26.2 · All coordinates verified',
     themeDark:'Dark', themeLight:'Light',
+    skinClassic:'Classic', skinMinecraft:'Pixel',
     searchPlaceholder:'Search name, note, coords, tags…',
     filterDim:'Dimension', filterCat:'Category',
     chipAll:'All', chipOverworld:'Overworld', chipNether:'Nether', chipEnd:'The End',
@@ -751,6 +969,7 @@ const I18N = {
     toastCopied:'Copied: ', toastCopyFail:'Copy failed',
     toastAdded:'Added!', toastUpdated:'Updated!', toastAddFail:'Failed: ', toastDeleted:'Deleted!',
     toastDlMd:'Markdown downloaded', toastDlTxt:'TXT downloaded', toastDlCsv:'CSV downloaded',
+    toastSkinMc:'Switched to Pixel skin (experimental)', toastSkinGh:'Switched back to Classic skin',
     confirmDelete:'Delete "{name}"?',
     childPoints:'points', expand:'Expand', collapse:'Collapse',
     kvCoords:'Coords', kvRate:'Rate', kvNote:'Note', kvProducts:'Products', kvBuilder:'Builder',
@@ -843,7 +1062,9 @@ const ICON = {
   globe:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></svg>',
   users:'<svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M15 20a5 5 0 0 1 7-4.6"/></svg>',
   question:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17.5h.01"/></svg>',
-  info:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v4"/></svg>'
+  info:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v4"/></svg>',
+  skinGh:'<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
+  skinMc:'<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/><rect x="6" y="6" width="3" height="3" fill="currentColor"/><rect x="12" y="12" width="3" height="3" fill="currentColor"/><rect x="15" y="15" width="3" height="3" fill="currentColor"/></svg>'
 };
 
 const DIM_ICON = {
@@ -897,6 +1118,30 @@ function highlight(text, query){
 }
 function builderLineHTML(b){ if (!b) return ''; return `<div class="lm-meta"><span class="meta-item${builderClass(b)}">${builderIcon(b)}${t('kvBuilder')}：${b}</span></div>`; }
 
+/* ===== 皮肤切换 ===== */
+function setSkin(skin, silent){
+  document.documentElement.setAttribute('data-skin', skin);
+  const ico = document.getElementById('skin-ico');
+  const lbl = document.getElementById('skin-lbl');
+  if (ico){
+    const svgStr = (skin === 'minecraft' ? ICON.skinMc : ICON.skinGh).replace('<svg ', '<svg id="skin-ico" ');
+    ico.outerHTML = svgStr;
+  }
+  if (lbl) lbl.textContent = skin === 'minecraft' ? t('skinMinecraft') : t('skinClassic');
+  // 更新 theme-color
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  if (themeColor){
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (skin === 'minecraft') themeColor.setAttribute('content', isDark ? '#1a1a1a' : '#c6c6c6');
+    else themeColor.setAttribute('content', isDark ? '#0d1117' : '#f6f8fa');
+  }
+  try { localStorage.setItem('skin', skin); } catch(_) {}
+  if (!silent){
+    const msg = skin === 'minecraft' ? t('toastSkinMc') : t('toastSkinGh');
+    if (typeof toast === 'function') toast(msg);
+  }
+}
+
 function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if (I18N[curLang][k]) el.textContent = I18N[curLang][k]; });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { const k = el.dataset.i18nPh; if (I18N[curLang][k]) el.placeholder = I18N[curLang][k]; });
@@ -905,6 +1150,8 @@ function applyLang(){
   const lbl = document.getElementById('theme-lbl'); if (lbl) lbl.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? t('themeDark') : t('themeLight');
   const expLbl = document.getElementById('expand-all-lbl'); if (expLbl) expLbl.textContent = allOpen ? t('btnCollapseAll') : t('btnExpandAll');
   const titleEl = document.getElementById('add-modal-title-text'); if (titleEl) titleEl.textContent = editingId ? t('addTitleEdit') : t('addTitle');
+  const skinLbl = document.getElementById('skin-lbl');
+  if (skinLbl) skinLbl.textContent = document.documentElement.getAttribute('data-skin') === 'minecraft' ? t('skinMinecraft') : t('skinClassic');
   updateImportFormatHelp(); updateBatchBar();
   try { localStorage.setItem('lang', curLang); } catch(_) {}
 }
@@ -994,7 +1241,6 @@ function landmarkHTML(l){
 function renderList(sel, arr){ $(sel).innerHTML = arr.map(landmarkHTML).join(''); }
 
 function renderStats(){
-  // 修复：统计 usable + unusable 里的所有点位（含多地点），future 不计（未建成）
   const totalPoints = [...DATA.usable, ...DATA.unusable].reduce((n, l) => n + (l.children && l.children.length ? l.children.length : 1), 0);
   const cntTech = DATA.usable.filter(l => catsOf(l.tags).includes('tech')).length;
   const cntTrade = DATA.usable.filter(l => catsOf(l.tags).includes('trade')).length;
@@ -1042,14 +1288,12 @@ function applyFilter(){
   const q = ($('#search').value || '').trim().toLowerCase();
   const qChanged = q !== currentQuery;
   currentQuery = q;
-  // 如果 query 变了，需要重渲染以刷新高亮
   if (qChanged){ renderList('#sec-usable', DATA.usable); renderList('#sec-unusable', DATA.unusable); }
   let visible = 0;
   document.querySelectorAll('.lm').forEach(el => {
     const okDim = curDim === 'all' || el.dataset.dim === curDim;
     const cats = (el.dataset.cats || '').split(',').filter(Boolean);
     const okCat = curCat === 'all' || cats.includes(curCat);
-    // 模糊搜索：所有空格分隔的词都必须出现（子串匹配）
     const searchText = (el.dataset.search || '').toLowerCase();
     const okQ = !q || q.split(/\s+/).filter(Boolean).every(word => searchText.includes(word));
     const show = okDim && okCat && okQ;
@@ -1074,7 +1318,12 @@ function setTheme(mode){
   const cur = document.getElementById('theme-ico');
   if (cur) cur.outerHTML = (mode === 'dark' ? ICON.moon : ICON.sun).replace('<svg ', '<svg id="theme-ico" ');
   const lbl = document.getElementById('theme-lbl'); if (lbl) lbl.textContent = mode === 'dark' ? t('themeDark') : t('themeLight');
-  const themeColor = document.querySelector('meta[name="theme-color"]'); if (themeColor) themeColor.setAttribute('content', mode === 'dark' ? '#0d1117' : '#f6f8fa');
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  if (themeColor){
+    const skin = root.getAttribute('data-skin') || 'github';
+    if (skin === 'minecraft') themeColor.setAttribute('content', mode === 'dark' ? '#1a1a1a' : '#c6c6c6');
+    else themeColor.setAttribute('content', mode === 'dark' ? '#0d1117' : '#f6f8fa');
+  }
   try { localStorage.setItem('theme', mode); } catch(_) {}
 }
 
@@ -1171,7 +1420,6 @@ function buildBatchTagGrids(){
   const tagList = Object.keys(TAG_META);
   batchAddTagsEl.innerHTML = tagList.map(tag => `<button type="button" class="tag-chip" data-tag="${tag}">${tagLabel(tag)}</button>`).join('');
   batchRemoveTagsEl.innerHTML = tagList.map(tag => `<button type="button" class="tag-chip" data-tag="${tag}">${tagLabel(tag)}</button>`).join('');
-  // 低价联动：批量添加"低价"时必须"交易"也在批量添加集合里
   bindBatchTagGrid(batchAddTagsEl, batchAddTags, batchRemoveTags);
   bindBatchTagGrid(batchRemoveTagsEl, batchRemoveTags, batchAddTags);
 }
@@ -1179,27 +1427,17 @@ function bindBatchTagGrid(el, ownSet, otherSet){
   el.addEventListener('click', e => {
     const chip = e.target.closest('.tag-chip'); if (!chip) return;
     const tag = chip.dataset.tag;
-    // 交易-低价联动
     if (tag === '低价' && el === batchAddTagsEl){
       if (!batchAddTags.has('交易')){ toast(curLang === 'zh' ? '请先勾选"交易"' : 'Select "Trade" first'); return; }
     }
-    if (tag === '交易' && el === batchRemoveTagsEl){
-      // 移除交易时也强制移除低价（同一集合内）
-    }
     if (ownSet.has(tag)) ownSet.delete(tag);
     else { ownSet.add(tag); otherSet.delete(tag); }
-    // 移除交易时清掉低价
-    if (tag === '交易' && ownSet === batchRemoveTags && !ownSet.has('交易')){
-      // 用户点的是取消"移除交易"，无所谓
-    }
     updateBatchTagChips();
   });
 }
 function updateBatchTagChips(){
   batchAddTagsEl.querySelectorAll('.tag-chip').forEach(c => c.classList.toggle('active', batchAddTags.has(c.dataset.tag)));
   batchRemoveTagsEl.querySelectorAll('.tag-chip').forEach(c => c.classList.toggle('active', batchRemoveTags.has(c.dataset.tag)));
-  // 联动：移除交易时强制移除低价
-  if (batchRemoveTags.has('交易') && batchRemoveTags.has('低价')) { /* 允许 */ }
 }
 function openBatchModal(){
   if (selectedIds.size === 0) return;
@@ -1231,7 +1469,6 @@ batchModalConfirm.addEventListener('click', async () => {
     const newTagsSet = new Set(sanitizeTags(lm.tags));
     batchAddTags.forEach(tag => newTagsSet.add(tag));
     batchRemoveTags.forEach(tag => newTagsSet.delete(tag));
-    // 联动：最终标签里如果没有"交易"，就不能有"低价"
     if (!newTagsSet.has('交易')) newTagsSet.delete('低价');
     const body = { name_zh: lm.name.zh, name_en: lm.name.en || '', builder: newBuilder || lm.builder || '', dimension: newDim || lm.dim, category: newStatus || lm.category || 'usable', tags: [...newTagsSet], note_zh: lm.note ? (lm.note.zh || '') : '', note_en: lm.note ? (lm.note.en || '') : '', x: lm.x, y: lm.y, z: lm.z, children: lm.children || [], rate_zh: lm.rate ? (lm.rate.zh || '') : '', rate_en: lm.rate ? (lm.rate.en || '') : '', products_zh: lm.products ? (lm.products.zh || []) : [], products_en: lm.products ? (lm.products.en || []) : [] };
     try { const res = await fetch(`${API_BASE}/api/landmarks/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); if (res.ok) ok++; else fail++; } catch (_){ fail++; }
@@ -1454,7 +1691,6 @@ function parseCsvData(text){
     const mapped = rawTags.map(x => TAG_FROM_LABEL[x] || x);
     const validTags = mapped.filter(x => TAG_META[x]);
     ignoredCount += (mapped.length - validTags.length);
-    // 交易-低价联动：无交易则移除低价
     if (!validTags.includes('交易')) { const idx = validTags.indexOf('低价'); if (idx >= 0) validTags.splice(idx, 1); }
     const prodsArr = (products || '').split(/\s*[\/、,，]\s*/).map(s => s.trim()).filter(Boolean);
     const children = [];
@@ -1502,7 +1738,6 @@ function mergeDuplicates(items){
       if (item.builder && !first.builder) first.builder = item.builder;
     }
     first.tags = [...allTags]; first.products_zh = [...allProducts];
-    // 交易-低价联动
     if (!first.tags.includes('交易')) { const idx = first.tags.indexOf('低价'); if (idx >= 0) first.tags.splice(idx, 1); }
     if (allChildren.length > 0){ first.children = allChildren; first.x = 0; first.y = 0; first.z = 0; }
     merged.push(first);
@@ -1612,6 +1847,7 @@ document.getElementById('search').addEventListener('input', applyFilter);
 document.querySelectorAll('.chip[data-dim]').forEach(chip => { chip.addEventListener('click', () => { document.querySelectorAll('.chip[data-dim]').forEach(c => c.classList.remove('active')); chip.classList.add('active'); curDim = chip.dataset.dim; applyFilter(); }); });
 document.querySelectorAll('.chip[data-cat]').forEach(chip => { chip.addEventListener('click', () => { document.querySelectorAll('.chip[data-cat]').forEach(c => c.classList.remove('active')); chip.classList.add('active'); curCat = chip.dataset.cat; applyFilter(); }); });
 document.getElementById('btn-theme').addEventListener('click', () => { setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
+document.getElementById('btn-skin').addEventListener('click', () => { const cur = root.getAttribute('data-skin') || 'github'; setSkin(cur === 'minecraft' ? 'github' : 'minecraft'); });
 document.addEventListener('click', async e => {
   const btn = e.target.closest('.btn-copy'); if (!btn) return;
   const ok = await copyText(btn.dataset.copy); if (!ok){ toast(t('toastCopyFail')); return; }
@@ -1659,7 +1895,6 @@ function buildAddTagPicker(){
 addTagPicker.addEventListener('click', e => {
   const chip = e.target.closest('.tag-chip'); if (!chip) return;
   const tag = chip.dataset.tag;
-  // 低价必须先选交易
   if (tag === '低价' && !selectedTags.includes('交易')){
     toast(curLang === 'zh' ? '请先勾选"交易"' : 'Select "Trade" first');
     return;
@@ -1667,7 +1902,6 @@ addTagPicker.addEventListener('click', e => {
   const idx = selectedTags.indexOf(tag);
   if (idx >= 0){
     selectedTags.splice(idx, 1);
-    // 取消交易时同时移除低价
     if (tag === '交易'){ const li = selectedTags.indexOf('低价'); if (li >= 0) selectedTags.splice(li, 1); }
   } else selectedTags.push(tag);
   updateTagChips();
@@ -1761,7 +1995,6 @@ addForm.addEventListener('submit', async e => {
       });
       if (body.children.length === 0){ toast(t('errNoLocation')); submitBtn.disabled = false; submitBtn.innerHTML = origHtml; return; }
     }
-    // 最终校验：无交易则移除低价
     if (!body.tags.includes('交易')){ const idx = body.tags.indexOf('低价'); if (idx >= 0) body.tags.splice(idx, 1); }
     const url = editingId ? `${API_BASE}/api/landmarks/${editingId}` : `${API_BASE}/api/landmarks`;
     const method = editingId ? 'PUT' : 'POST';
@@ -1792,7 +2025,6 @@ document.querySelectorAll('.lang-switch button').forEach(btn => {
     curLang = lang;
     document.querySelectorAll('.lang-switch button').forEach(b => b.classList.toggle('active', b === btn));
     applyLang();
-    // 重建标签选择器（含 i18n）
     buildAddTagPicker(); updateTagChips();
     buildBatchTagGrids(); updateBatchTagChips();
     renderAll();
@@ -1812,6 +2044,9 @@ window.addEventListener('resize', () => setTimeout(applyMobileMode, 180), { pass
   let savedTheme = null; try { savedTheme = localStorage.getItem('theme'); } catch(_) {}
   if (!savedTheme) savedTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
   setTheme(savedTheme);
+  let savedSkin = null; try { savedSkin = localStorage.getItem('skin'); } catch(_) {}
+  if (!savedSkin) savedSkin = 'github';
+  setSkin(savedSkin, true);
   buildAddTagPicker();
   buildBatchTagGrids();
   applyLang();
