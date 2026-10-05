@@ -114,7 +114,7 @@
   .lm-left{min-width:0;flex:1;display:flex;gap:10px;align-items:flex-start}
   .lm-left-inner{min-width:0;flex:1}
   .lm-check{width:18px;height:18px;flex-shrink:0;margin-top:4px;cursor:pointer;accent-color:var(--accent);border-radius:4px}
-  .lm-check-wrap{padding-top:2px}
+  .lm-check-wrap{padding-top:2px;display:inline-flex}
   .lm-name{font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px}
   .lm-name .ico{font-size:15px;color:var(--accent)}
   .lm-note{font-size:13px;color:var(--muted);margin-top:3px}
@@ -146,7 +146,6 @@
   .lm-main{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 16px;cursor:pointer}
   .lm-main:hover{background:var(--panel-2)}
   .lm-group.open .lm-main{background:var(--panel-2)}
-  .lm-group .lm-check{margin-right:0}
   .child-count{font-size:11px;font-weight:500;color:var(--accent-2);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);padding:1px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:4px}
   .expand-hint{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);background:var(--tag-bg);border:1px solid var(--border);padding:5px 11px;border-radius:7px}
   .lm-main:hover .expand-hint{color:var(--accent-2)}
@@ -201,30 +200,8 @@
   .empty .ico{font-size:34px;color:var(--faint);display:block;margin:0 auto 12px}
   footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:8px}
 
-  /* ============ 批量操作栏 ============ */
-  .batch-bar{
-    position:fixed;
-    left:50%;
-    bottom:20px;
-    transform:translateX(-50%) translateY(120%);
-    z-index:150;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:12px 16px;
-    background:color-mix(in srgb,var(--panel) 96%,transparent);
-    backdrop-filter:blur(16px);
-    -webkit-backdrop-filter:blur(16px);
-    border:1px solid var(--accent);
-    border-radius:14px;
-    box-shadow:0 16px 40px -10px rgba(0,0,0,.6), 0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent);
-    transition:transform .32s cubic-bezier(.2,.9,.3,1.05), opacity .24s ease;
-    opacity:0;
-    pointer-events:none;
-    max-width:calc(100vw - 32px);
-    flex-wrap:wrap;
-    justify-content:center;
-  }
+  /* 批量操作栏 */
+  .batch-bar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(120%);z-index:150;display:flex;align-items:center;gap:10px;padding:12px 16px;background:color-mix(in srgb,var(--panel) 96%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--accent);border-radius:14px;box-shadow:0 16px 40px -10px rgba(0,0,0,.6), 0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent);transition:transform .32s cubic-bezier(.2,.9,.3,1.05), opacity .24s ease;opacity:0;pointer-events:none;max-width:calc(100vw - 32px);flex-wrap:wrap;justify-content:center}
   .batch-bar.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
   .batch-count{font-size:13.5px;color:var(--text-2);display:inline-flex;align-items:center;gap:6px;font-weight:500}
   .batch-count b{color:var(--accent-2);font-size:16px;font-weight:700;margin:0 2px}
@@ -232,7 +209,7 @@
   .batch-bar .btn{font-size:13px;padding:8px 13px}
   .batch-bar .btn.mini{padding:7px 11px;font-size:12.5px}
 
-  /* ============ 批量编辑弹窗 ============ */
+  /* 批量编辑弹窗 */
   .batch-modal{position:fixed;inset:0;z-index:320;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s ease}
   .batch-modal.open{opacity:1;pointer-events:auto}
   .batch-modal-backdrop{position:absolute;inset:0;background:var(--modal-backdrop);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
@@ -250,7 +227,7 @@
   .batch-field-hint{font-size:11.5px;color:var(--faint);margin-left:auto;font-weight:400}
   .batch-tag-grid{display:flex;flex-wrap:wrap;gap:7px}
 
-  /* ============ 导航 ============ */
+  /* 导航 */
   .side-nav-backdrop{display:none;position:fixed;inset:0;background:var(--modal-backdrop);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);z-index:45;opacity:0;pointer-events:none;transition:opacity .24s ease}
   .side-nav-backdrop.show{opacity:1;pointer-events:auto}
   .side-nav{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
@@ -414,6 +391,7 @@
   .import-preview-more{text-align:center;font-size:12px;color:var(--faint);padding-top:6px}
   .import-format-help{font-size:11.5px;color:var(--faint);line-height:1.7;margin-top:8px;padding:10px 12px;border-radius:8px;background:var(--code-bg);border:1px solid var(--border);font-family:ui-monospace,monospace;white-space:pre-wrap;word-break:break-all}
   .import-merge-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--accent-2);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);padding:2px 9px;border-radius:999px;margin-left:6px}
+  .import-ignore-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);padding:2px 9px;border-radius:999px;margin-left:6px}
 </style>
 </head>
 <body>
@@ -600,7 +578,6 @@
           <option value="future" data-i18n="catFuture">未来计划</option>
         </select>
       </div>
-
       <div class="batch-field-group">
         <label class="batch-field-label"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg><span data-i18n="batchDim">维度</span></label>
         <select class="form-select" id="batch-dim">
@@ -610,7 +587,6 @@
           <option value="end" data-i18n="chipEnd">末地</option>
         </select>
       </div>
-
       <div class="batch-field-group">
         <label class="batch-field-label"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span data-i18n="batchBuilder">建造者</span><span class="batch-field-hint" data-i18n="batchBuilderHint">留空则保持不变</span></label>
         <input class="form-input" type="text" id="batch-builder" placeholder="输入玩家 ID 或选择下方快捷选项">
@@ -621,27 +597,23 @@
           <button type="button" class="builder-preset" data-preset="__clear__"><svg class="ico" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg><span data-i18n="batchBuilderClear">清空</span></button>
         </div>
       </div>
-
       <div class="batch-field-group">
         <label class="batch-field-label"><svg class="ico" viewBox="0 0 24 24"><path d="M20 12 4 12"/><path d="m9 7-5 5 5 5"/></svg><span data-i18n="batchAddTags">添加标签</span><span class="batch-field-hint" data-i18n="batchAddTagsHint">选中后批量追加</span></label>
         <div class="batch-tag-grid" id="batch-add-tags">
           <button type="button" class="tag-chip" data-tag="生电" data-i18n="chipTech">生电</button>
           <button type="button" class="tag-chip" data-tag="交易" data-i18n="chipTrade">交易</button>
           <button type="button" class="tag-chip" data-tag="农场" data-i18n="chipFarm">农场</button>
-          <button type="button" class="tag-chip" data-tag="自建" data-i18n="tagSelf">自建</button>
           <button type="button" class="tag-chip" data-tag="遗留" data-i18n="tagLegacy">遗留</button>
           <button type="button" class="tag-chip" data-tag="低价" data-i18n="tagCheap">低价</button>
           <button type="button" class="tag-chip" data-tag="已毁" data-i18n="tagDead">已毁</button>
         </div>
       </div>
-
       <div class="batch-field-group">
         <label class="batch-field-label"><svg class="ico" viewBox="0 0 24 24"><path d="M20 12 4 12"/><path d="m15 7 5 5-5 5"/></svg><span data-i18n="batchRemoveTags">移除标签</span><span class="batch-field-hint" data-i18n="batchRemoveTagsHint">选中后批量移除</span></label>
         <div class="batch-tag-grid" id="batch-remove-tags">
           <button type="button" class="tag-chip" data-tag="生电" data-i18n="chipTech">生电</button>
           <button type="button" class="tag-chip" data-tag="交易" data-i18n="chipTrade">交易</button>
           <button type="button" class="tag-chip" data-tag="农场" data-i18n="chipFarm">农场</button>
-          <button type="button" class="tag-chip" data-tag="自建" data-i18n="tagSelf">自建</button>
           <button type="button" class="tag-chip" data-tag="遗留" data-i18n="tagLegacy">遗留</button>
           <button type="button" class="tag-chip" data-tag="低价" data-i18n="tagCheap">低价</button>
           <button type="button" class="tag-chip" data-tag="已毁" data-i18n="tagDead">已毁</button>
@@ -671,7 +643,7 @@
       <div class="form-group"><label class="form-label" for="add-name-en"><span data-i18n="addNameEn">英文名称（可选）</span></label><input class="form-input" type="text" id="add-name-en" placeholder="e.g. Mushroom Island"></div>
       <div class="form-group"><label class="form-label" for="add-builder"><span data-i18n="addBuilder">建造者</span><span class="required">*</span></label><input class="form-input" type="text" id="add-builder" placeholder="玩家 ID，或选择下方快捷选项" required><div class="builder-presets" id="builder-presets"><button type="button" class="builder-preset" data-preset="自然生成"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></svg><span data-i18n="builderNatural">自然生成</span></button><button type="button" class="builder-preset" data-preset="多人"><svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M15 20a5 5 0 0 1 7-4.6"/></svg><span data-i18n="builderMulti">多人</span></button><button type="button" class="builder-preset" data-preset="未知"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17.5h.01"/></svg><span data-i18n="builderUnknown">未知</span></button></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label" for="add-dim"><span data-i18n="addDim">维度</span><span class="required">*</span></label><select class="form-select" id="add-dim" required><option value="overworld" data-i18n="chipOverworld">主世界</option><option value="nether" data-i18n="chipNether">下界</option><option value="end" data-i18n="chipEnd">末地</option></select></div><div class="form-group"><label class="form-label" for="add-category"><span data-i18n="addCat">状态</span></label><select class="form-select" id="add-category"><option value="usable" data-i18n="catUsable">可使用</option><option value="unusable" data-i18n="catUnusable">不可使用</option><option value="future" data-i18n="catFuture">未来计划</option></select></div></div>
-      <div class="form-group"><label class="form-label"><span data-i18n="addTags">标签（可多选）</span></label><div class="tag-picker" id="add-tag-picker"><button type="button" class="tag-chip" data-tag="生电" data-i18n="chipTech">生电</button><button type="button" class="tag-chip" data-tag="交易" data-i18n="chipTrade">交易</button><button type="button" class="tag-chip" data-tag="农场" data-i18n="chipFarm">农场</button><button type="button" class="tag-chip" data-tag="自建" data-i18n="tagSelf">自建</button><button type="button" class="tag-chip" data-tag="遗留" data-i18n="tagLegacy">遗留</button><button type="button" class="tag-chip" data-tag="低价" data-i18n="tagCheap">低价</button><button type="button" class="tag-chip" data-tag="已毁" data-i18n="tagDead">已毁</button></div></div>
+      <div class="form-group"><label class="form-label"><span data-i18n="addTags">标签（可多选）</span></label><div class="tag-picker" id="add-tag-picker"><button type="button" class="tag-chip" data-tag="生电" data-i18n="chipTech">生电</button><button type="button" class="tag-chip" data-tag="交易" data-i18n="chipTrade">交易</button><button type="button" class="tag-chip" data-tag="农场" data-i18n="chipFarm">农场</button><button type="button" class="tag-chip" data-tag="遗留" data-i18n="tagLegacy">遗留</button><button type="button" class="tag-chip" data-tag="低价" data-i18n="tagCheap">低价</button><button type="button" class="tag-chip" data-tag="已毁" data-i18n="tagDead">已毁</button></div></div>
       <div class="tech-fields" id="add-tech-fields" style="display:none"><div class="tech-fields-title"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg><span data-i18n="techExtra">生电专属信息</span></div><div class="form-group"><label class="form-label" for="add-rate-zh"><span data-i18n="addRate">效率说明</span><span class="required">*</span></label><input class="form-input" type="text" id="add-rate-zh" placeholder="例如：约 10 分钟 / 3 组"></div><div class="form-group"><label class="form-label" for="add-products-zh"><span data-i18n="addProducts">产物（逗号分隔）</span><span class="required">*</span></label><input class="form-input" type="text" id="add-products-zh" placeholder="例如：岩浆膏, 熟猪排, 皮革"></div></div>
       <div class="form-group"><label class="form-label"><span data-i18n="coordMode">坐标模式</span></label><div class="mode-switch" id="add-mode-switch"><button type="button" class="mode-btn active" data-mode="single" data-i18n="modeSingle">单点坐标</button><button type="button" class="mode-btn" data-mode="multi" data-i18n="modeMulti">多地点列表</button></div></div>
       <div id="add-single-coords"><div class="form-row form-row-3"><div class="form-group"><label class="form-label" for="add-x">X<span class="required">*</span></label><input class="form-input" type="number" id="add-x" placeholder="-683" required></div><div class="form-group"><label class="form-label" for="add-y">Y<span class="required">*</span></label><input class="form-input" type="number" id="add-y" placeholder="68" required></div><div class="form-group"><label class="form-label" for="add-z">Z<span class="required">*</span></label><input class="form-input" type="number" id="add-z" placeholder="-96" required></div></div></div>
@@ -688,7 +660,7 @@
   <div class="import-modal-box" role="dialog" aria-modal="true">
     <button class="import-modal-close" id="import-modal-close"><svg class="ico" viewBox="0 0 24 24"><path d="m6 6 12 12"/><path d="m18 6-12 12"/></svg></button>
     <h2 class="import-modal-title"><svg class="ico" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg><span data-i18n="importTitle">批量导入</span></h2>
-    <p class="import-modal-subtitle" data-i18n="importSubtitle">支持 CSV 和 JSON 格式，可粘贴文本或上传文件。同名项会自动合并。</p>
+    <p class="import-modal-subtitle" data-i18n="importSubtitle">支持 CSV 和 JSON 格式，可粘贴文本或上传文件。同名项自动合并，未知标签自动忽略。</p>
     <div class="import-tabs">
       <button class="import-tab active" data-format="csv">CSV</button>
       <button class="import-tab" data-format="json">JSON</button>
@@ -725,9 +697,9 @@ const I18N = {
     filterDim:'维度', filterCat:'类别',
     chipAll:'全部', chipOverworld:'主世界', chipNether:'下界', chipEnd:'末地',
     chipTech:'生电', chipTrade:'交易', chipFarm:'农场',
-    tagSelf:'自建', tagLegacy:'遗留', tagCheap:'低价', tagDead:'已毁',
+    tagLegacy:'遗留', tagCheap:'低价', tagDead:'已毁',
     btnExpandAll:'全部展开', btnCollapseAll:'全部收起', btnAddLandmark:'新增地标', btnImport:'批量导入', btnSelectMode:'批量选择',
-    secUsable:'可使用', secUnusable:'不可使用', secMachines:'自建生电设施详情',
+    secUsable:'可使用', secUnusable:'不可使用', secMachines:'生电设施详情',
     secFuture:'未来 / 正在筹备 / 正在建设', emptyText:'没有匹配的地标',
     friendLinks:'友情链接', footerAuthor:'网站作者的ID：robot003',
     statLandmarks:'个可使用地标', statPoints:'个传送点位', statTech:'处生电', statTrade:'处交易', statFarm:'处农场',
@@ -762,15 +734,17 @@ const I18N = {
     dTitle:'66QN 服务器地标坐标总览',
     dBasicInfo:'基本信息', dServer:'服务器', dVersion:'版本', dAuthor:'作者', dExportTime:'导出时间',
     dTagLegend:'标签说明', dAvailable:'可使用', dUnavailable:'不可使用', dFuture:'未来 / 正在筹备 / 正在建设',
-    dTechTitle:'自建生电设施详情',
+    dTechTitle:'生电设施详情',
     dCoord:'坐标', dRate:'效率', dProducts:'产物', dNote:'说明', dBuilder:'建造者',
     dTags:'标签', dDimension:'维度', dStatus:'状态', dPoint:'点位', dName:'名称',
     dX:'X', dY:'Y', dZ:'Z',
-    importTitle:'批量导入', importSubtitle:'支持 CSV 和 JSON 格式，可粘贴文本或上传文件。同名项会自动合并。',
-    importChooseFile:'选择文件', importSubmit:'开始导入', importSubmitting:'导入中…',
+    importTitle:'批量导入', importSubtitle:'支持 CSV 和 JSON 格式，可粘贴文本或上传文件。同名项自动合并，未知标签自动忽略。',
+    importChooseFile:'选择文件', importSubmit:'开始导入',
     importPlaceholder:'在此粘贴 CSV 或 JSON 内容...',
-    importParseOk:'✓ 已解析 {n} 条地标，可以开始导入',
-    importParseMerged:'✓ 已解析 {n} 条（其中 {m} 组同名已合并，实际导入 {f} 条）',
+    importParseOk:'✓ 已解析 {n} 条地标',
+    importParseMerged:'✓ 已解析 {n} 条（{m} 组同名已合并 → {f} 条）',
+    importParseIgnored:'✓ 已解析 {n} 条（忽略 {i} 个未知标签）',
+    importParseMergedAndIgnored:'✓ 已解析 {n} 条（{m} 组合并、忽略 {i} 个未知标签 → {f} 条）',
     importParseEmpty:'⚠️ 未解析到有效数据，请检查格式',
     importParseErr:'❌ 格式错误，无法解析',
     importConfirm:'确定导入 {n} 条地标吗？此操作会直接写入数据库。',
@@ -802,9 +776,9 @@ const I18N = {
     filterDim:'Dimension', filterCat:'Category',
     chipAll:'All', chipOverworld:'Overworld', chipNether:'Nether', chipEnd:'The End',
     chipTech:'Tech', chipTrade:'Trade', chipFarm:'Farm',
-    tagSelf:'Self-built', tagLegacy:'Legacy', tagCheap:'Cheap', tagDead:'Ruined',
+    tagLegacy:'Legacy', tagCheap:'Cheap', tagDead:'Ruined',
     btnExpandAll:'Expand All', btnCollapseAll:'Collapse All', btnAddLandmark:'Add Landmark', btnImport:'Bulk Import', btnSelectMode:'Batch Select',
-    secUsable:'Available', secUnusable:'Unavailable', secMachines:'Self-built Tech Facilities',
+    secUsable:'Available', secUnusable:'Unavailable', secMachines:'Tech Facilities',
     secFuture:'Future / Planned / In Progress', emptyText:'No matching landmarks',
     friendLinks:'Friend Links', footerAuthor:'Author ID: robot003',
     statLandmarks:'landmarks', statPoints:'teleport points', statTech:'tech spots', statTrade:'trade spots', statFarm:'farm spots',
@@ -839,15 +813,17 @@ const I18N = {
     dTitle:'66QN Server Landmark Coordinates',
     dBasicInfo:'Basic Info', dServer:'Server', dVersion:'Version', dAuthor:'Author', dExportTime:'Export Time',
     dTagLegend:'Tag Legend', dAvailable:'Available', dUnavailable:'Unavailable', dFuture:'Future / Planned / In Progress',
-    dTechTitle:'Self-built Tech Facilities',
+    dTechTitle:'Tech Facilities',
     dCoord:'Coords', dRate:'Rate', dProducts:'Products', dNote:'Note', dBuilder:'Builder',
     dTags:'Tags', dDimension:'Dimension', dStatus:'Status', dPoint:'Point', dName:'Name',
     dX:'X', dY:'Y', dZ:'Z',
-    importTitle:'Bulk Import', importSubtitle:'Supports CSV and JSON. Same-name items are merged automatically.',
-    importChooseFile:'Choose File', importSubmit:'Start Import', importSubmitting:'Importing…',
+    importTitle:'Bulk Import', importSubtitle:'CSV/JSON supported. Same names are merged, unknown tags ignored.',
+    importChooseFile:'Choose File', importSubmit:'Start Import',
     importPlaceholder:'Paste CSV or JSON content here...',
-    importParseOk:'✓ Parsed {n} landmarks, ready to import',
-    importParseMerged:'✓ Parsed {n} items ({m} duplicates merged, {f} final)',
+    importParseOk:'✓ Parsed {n} landmarks',
+    importParseMerged:'✓ Parsed {n} items ({m} duplicates merged → {f})',
+    importParseIgnored:'✓ Parsed {n} items (ignored {i} unknown tags)',
+    importParseMergedAndIgnored:'✓ Parsed {n} items ({m} merged, {i} unknown tags ignored → {f})',
     importParseEmpty:'⚠️ No valid data parsed',
     importParseErr:'❌ Parse error',
     importConfirm:'Import {n} landmarks? They will be written to the database directly.',
@@ -897,7 +873,6 @@ const ICON = {
   tagTech:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg>',
   tagTrade:'<svg class="ico" viewBox="0 0 24 24"><path d="M4 9h13"/><path d="m14 6 3 3-3 3"/><path d="M20 15H7"/><path d="m10 12-3 3 3 3"/></svg>',
   tagFarm:'<svg class="ico" viewBox="0 0 24 24"><path d="M12 21V9"/><path d="M12 9c0-3-2-5-5-5 0 3 2 5 5 5z"/><path d="M12 13c0-3 2-5 5-5 0 3-2 5-5 5z"/></svg>',
-  tagSelf:'<svg class="ico" viewBox="0 0 24 24"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg>',
   tagLegacy:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   tagCheap:'<svg class="ico" viewBox="0 0 24 24"><path d="M20 12 4 12"/><path d="m9 7-5 5 5 5"/></svg>',
   tagDead:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/></svg>',
@@ -905,7 +880,8 @@ const ICON = {
   globe:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></svg>',
   users:'<svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M15 20a5 5 0 0 1 7-4.6"/></svg>',
   question:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><path d="M12 17.5h.01"/></svg>',
-  select:'<svg class="ico" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'
+  select:'<svg class="ico" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+  info:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v4"/></svg>'
 };
 
 function builderIcon(b){
@@ -926,11 +902,11 @@ const DIM_ICON = {
   end:'<svg class="ico" viewBox="0 0 24 24"><path d="M12 3 4 20l8-4 8 4-8-17z"/><path d="M12 3v13"/></svg>'
 };
 
+/* 已移除「自建」标签 */
 const TAG_META = {
   '生电':{cls:'tech', ico:ICON.tagTech, cat:'tech'},
   '交易':{cls:'trade', ico:ICON.tagTrade, cat:'trade'},
   '农场':{cls:'farm', ico:ICON.tagFarm, cat:'farm'},
-  '自建':{cls:'self', ico:ICON.tagSelf},
   '遗留':{cls:'legacy', ico:ICON.tagLegacy},
   '低价':{cls:'cheap', ico:ICON.tagCheap},
   '已毁':{cls:'dead', ico:ICON.tagDead}
@@ -938,12 +914,13 @@ const TAG_META = {
 
 const DIMS = { overworld:{prefix:'overworld'}, nether:{prefix:'the_nether'}, end:{prefix:'the_end'} };
 const DIM_LABEL = { zh:{overworld:'主世界',nether:'下界',end:'末地'}, en:{overworld:'Overworld',nether:'Nether',end:'The End'} };
-const TAG_LABEL = { zh:{生电:'生电',交易:'交易',农场:'农场',自建:'自建',遗留:'遗留',低价:'低价',已毁:'已毁'}, en:{生电:'Tech',交易:'Trade',农场:'Farm',自建:'Self-built',遗留:'Legacy',低价:'Cheap',已毁:'Ruined'} };
+const TAG_LABEL = { zh:{生电:'生电',交易:'交易',农场:'农场',遗留:'遗留',低价:'低价',已毁:'已毁'}, en:{生电:'Tech',交易:'Trade',农场:'Farm',遗留:'Legacy',低价:'Cheap',已毁:'Ruined'} };
 const ROLE_LABEL = { zh:{hang:'挂机',hangTop:'挂机（顶）',collect:'收集',main:'主体','点位':'点位'}, en:{hang:'AFK',hangTop:'AFK (top)',collect:'Collect',main:'Main','点位':'Point'} };
 const CAT_LABEL = { zh:{usable:'可使用',unusable:'不可使用',future:'未来计划'}, en:{usable:'Available',unusable:'Unavailable',future:'Future'} };
 const CAT_FROM_LABEL = { '可使用':'usable', '不可使用':'unusable', '未来计划':'future', 'Available':'usable', 'Unavailable':'unusable', 'Future':'future' };
 const DIM_FROM_LABEL = { '主世界':'overworld','下界':'nether','末地':'end','Overworld':'overworld','Nether':'nether','The End':'end' };
-const TAG_FROM_LABEL = { '生电':'生电','交易':'交易','农场':'农场','自建':'自建','遗留':'遗留','低价':'低价','已毁':'已毁', 'Tech':'生电','Trade':'交易','Farm':'农场','Self-built':'自建','Legacy':'遗留','Cheap':'低价','Ruined':'已毁' };
+/* 已移除「自建」——旧数据里的这个标签会被自动忽略 */
+const TAG_FROM_LABEL = { '生电':'生电','交易':'交易','农场':'农场','遗留':'遗留','低价':'低价','已毁':'已毁', 'Tech':'生电','Trade':'交易','Farm':'农场','Legacy':'遗留','Cheap':'低价','Ruined':'已毁' };
 const ROLE_FROM_LABEL = { '挂机':'hang','挂机（顶）':'hangTop','收集':'collect','主体':'main','点位':'点位','AFK':'hang','AFK (top)':'hangTop','Collect':'collect','Main':'main','Point':'点位' };
 
 const DATA = { usable: [], unusable: [], machines: [], future: [] };
@@ -960,12 +937,18 @@ function catLabel(c){ return (CAT_LABEL[curLang]||CAT_LABEL.zh)[c] || c; }
 function catsOf(tags){ return (tags||[]).map(x => TAG_META[x] && TAG_META[x].cat).filter(Boolean); }
 function tagHTML(tag){
   const m = TAG_META[tag];
-  if (!m) return `<span class="tag">${tagLabel(tag)}</span>`;
+  if (!m) return '';
   return `<span class="tag ${m.cls}">${m.ico}${tagLabel(tag)}</span>`;
 }
 function builderLineHTML(b){
   if (!b) return '';
   return `<div class="lm-meta"><span class="meta-item${builderClass(b)}">${builderIcon(b)}${t('kvBuilder')}：${b}</span></div>`;
+}
+
+/* 过滤掉不在 TAG_META 中的旧标签 */
+function sanitizeTags(arr){
+  if (!Array.isArray(arr)) return [];
+  return arr.filter(x => TAG_META[x]);
 }
 
 function applyLang(){
@@ -1003,7 +986,7 @@ function convertLM(row){
     dim: row.dimension,
     x: row.x, y: row.y, z: row.z,
     category: row.category || 'usable',
-    tags,
+    tags: sanitizeTags(tags),
     note: row.note_zh ? { zh: row.note_zh, en: row.note_en || '' } : null,
     children,
     rate: { zh: row.rate_zh || '', en: row.rate_en || '' },
@@ -1204,7 +1187,7 @@ function renderAll(){
   updateBatchBar();
 }
 
-/* ==================== 建造者快捷选项 ==================== */
+/* 建造者快捷选项 */
 const addBuilderInput = document.getElementById('add-builder');
 const builderPresetsEl = document.getElementById('builder-presets');
 function updateBuilderPresets(){
@@ -1224,7 +1207,7 @@ if (builderPresetsEl){
   addBuilderInput.addEventListener('input', updateBuilderPresets);
 }
 
-/* ==================== 批量操作 ==================== */
+/* 批量操作 */
 const batchBar = document.getElementById('batch-bar');
 const batchCountNum = document.getElementById('batch-count-num');
 const btnSelectMode = document.getElementById('btn-select-mode');
@@ -1234,7 +1217,6 @@ function updateBatchBar(){
   batchCountNum.textContent = selectedIds.size;
   batchBar.classList.toggle('show', selectMode && selectedIds.size > 0);
 }
-
 function setSelectMode(on){
   selectMode = on;
   if (!on) selectedIds.clear();
@@ -1243,9 +1225,7 @@ function setSelectMode(on){
   renderAll();
   toast(on ? t('toastSelectModeOn') : t('toastSelectModeOff'));
 }
-
 btnSelectMode.addEventListener('click', () => setSelectMode(!selectMode));
-
 document.getElementById('batch-select-all').addEventListener('click', () => {
   document.querySelectorAll('.lm').forEach(el => {
     if (el.style.display === 'none') return;
@@ -1254,11 +1234,7 @@ document.getElementById('batch-select-all').addEventListener('click', () => {
   });
   renderAll();
 });
-document.getElementById('batch-clear').addEventListener('click', () => {
-  selectedIds.clear();
-  renderAll();
-});
-
+document.getElementById('batch-clear').addEventListener('click', () => { selectedIds.clear(); renderAll(); });
 document.addEventListener('change', e => {
   if (!e.target.classList.contains('lm-check')) return;
   const id = Number(e.target.dataset.lmId);
@@ -1268,7 +1244,6 @@ document.addEventListener('change', e => {
   if (card) card.classList.toggle('selected', e.target.checked);
   updateBatchBar();
 });
-
 document.getElementById('batch-delete').addEventListener('click', async () => {
   const ids = [...selectedIds];
   if (ids.length === 0) return;
@@ -1285,7 +1260,7 @@ document.getElementById('batch-delete').addEventListener('click', async () => {
   await loadData();
 });
 
-/* ==================== 批量编辑弹窗 ==================== */
+/* 批量编辑弹窗 */
 const batchModal = document.getElementById('batch-modal');
 const batchModalBackdrop = document.getElementById('batch-modal-backdrop');
 const batchModalClose = document.getElementById('batch-modal-close');
@@ -1331,7 +1306,6 @@ function updateBatchTagChips(){
   batchAddTagsEl.querySelectorAll('.tag-chip').forEach(c => c.classList.toggle('active', batchAddTags.has(c.dataset.tag)));
   batchRemoveTagsEl.querySelectorAll('.tag-chip').forEach(c => c.classList.toggle('active', batchRemoveTags.has(c.dataset.tag)));
 }
-
 batchBuilderPresets.addEventListener('click', e => {
   const btn = e.target.closest('.builder-preset');
   if (!btn) return;
@@ -1340,7 +1314,6 @@ batchBuilderPresets.addEventListener('click', e => {
   updateBatchBuilderPresets();
 });
 batchBuilderInput.addEventListener('input', updateBatchBuilderPresets);
-
 batchAddTagsEl.addEventListener('click', e => {
   const chip = e.target.closest('.tag-chip');
   if (!chip) return;
@@ -1357,33 +1330,29 @@ batchRemoveTagsEl.addEventListener('click', e => {
   else { batchRemoveTags.add(tag); batchAddTags.delete(tag); }
   updateBatchTagChips();
 });
-
 batchModalConfirm.addEventListener('click', async () => {
   const newStatus = batchStatusSel.value;
   const newDim = batchDimSel.value;
   const newBuilder = batchBuilderInput.value.trim();
   const hasChange = newStatus || newDim || newBuilder || batchAddTags.size > 0 || batchRemoveTags.size > 0;
   if (!hasChange){ toast(t('batchNoChange')); return; }
-
   const ids = [...selectedIds];
   let ok = 0, fail = 0;
   const origHtml = batchModalConfirm.innerHTML;
   batchModalConfirm.disabled = true;
   batchModalClose.disabled = true;
   batchModalCancel.disabled = true;
-
   const all = [...DATA.usable, ...DATA.unusable, ...DATA.future];
   for (let i = 0; i < ids.length; i++){
     const id = ids[i];
     batchModalConfirm.innerHTML = '<span>' + tFmt('batchApplying', { i: i+1, n: ids.length }) + '</span>';
     const lm = all.find(x => x.id === id);
     if (!lm){ fail++; continue; }
-    const newTagsSet = new Set(lm.tags || []);
+    const newTagsSet = new Set(sanitizeTags(lm.tags));
     batchAddTags.forEach(tag => newTagsSet.add(tag));
     batchRemoveTags.forEach(tag => newTagsSet.delete(tag));
     const body = {
-      name_zh: lm.name.zh,
-      name_en: lm.name.en || '',
+      name_zh: lm.name.zh, name_en: lm.name.en || '',
       builder: newBuilder || lm.builder || '',
       dimension: newDim || lm.dim,
       category: newStatus || lm.category || 'usable',
@@ -1398,15 +1367,10 @@ batchModalConfirm.addEventListener('click', async () => {
       products_en: lm.products ? (lm.products.en || []) : []
     };
     try {
-      const res = await fetch(`${API_BASE}/api/landmarks/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
+      const res = await fetch(`${API_BASE}/api/landmarks/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       if (res.ok) ok++; else fail++;
     } catch (_){ fail++; }
   }
-
   batchModalConfirm.disabled = false;
   batchModalClose.disabled = false;
   batchModalCancel.disabled = false;
@@ -1416,16 +1380,13 @@ batchModalConfirm.addEventListener('click', async () => {
   closeBatchModal();
   await loadData();
 });
-
 document.getElementById('batch-edit').addEventListener('click', openBatchModal);
 batchModalClose.addEventListener('click', closeBatchModal);
 batchModalBackdrop.addEventListener('click', closeBatchModal);
 batchModalCancel.addEventListener('click', closeBatchModal);
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && batchModal.classList.contains('open')) closeBatchModal();
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && batchModal.classList.contains('open')) closeBatchModal(); });
 
-/* ==================== 下载功能 ==================== */
+/* 下载 */
 function nowStr(){
   const d = new Date();
   const p = n => String(n).padStart(2,'0');
@@ -1437,10 +1398,10 @@ function fileBase(){
   const date = `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`;
   return (curLang === 'zh' ? '66QN服务器地标坐标总览' : '66QN-Server-Landmarks') + '-' + date;
 }
+const TAG_DESC = { zh:{生电:'红石/自动化机器',交易:'村民交易点',农场:'农牧渔场',遗留:'旧地点',低价:'低价附魔',已毁:'已损坏'}, en:{生电:'Redstone/automation',交易:'Villager trade',农场:'Farming',遗留:'Legacy',低价:'Cheap',已毁:'Ruined'} };
 
 function buildTxt(){
-  const L = [];
-  const H = '='.repeat(64), T = '-'.repeat(64);
+  const L = []; const H = '='.repeat(64), T = '-'.repeat(64);
   L.push(H); L.push('   ' + t('dTitle')); L.push(H); L.push('');
   L.push('【' + t('dBasicInfo') + '】');
   L.push('  ' + t('dServer') + '：66QN');
@@ -1449,8 +1410,7 @@ function buildTxt(){
   L.push('  ' + t('dExportTime') + '：' + nowStr());
   L.push('');
   L.push('【' + t('dTagLegend') + '】');
-  const tagDesc = { zh:{生电:'红石/自动化机器',交易:'村民交易点',农场:'农牧渔场',自建:'本人参与建造',遗留:'旧地点',低价:'低价附魔',已毁:'已损坏'}, en:{生电:'Redstone/automation',交易:'Villager trade',农场:'Farming',自建:'Self-built',遗留:'Legacy',低价:'Cheap',已毁:'Ruined'} };
-  Object.keys(TAG_META).forEach(tag => { L.push('  [' + tagLabel(tag) + '] ' + ((tagDesc[curLang]||tagDesc.zh)[tag] || '')); });
+  Object.keys(TAG_META).forEach(tag => { L.push('  [' + tagLabel(tag) + '] ' + ((TAG_DESC[curLang]||TAG_DESC.zh)[tag] || '')); });
   L.push('');
   const txtLM = l => {
     const out = [];
@@ -1503,7 +1463,6 @@ function buildTxt(){
   L.push(''); L.push(H); L.push('  ' + t('footerAuthor')); L.push(H);
   return L.join('\n');
 }
-
 function buildMarkdown(){
   const L = [];
   L.push('# ' + t('dTitle') + '\n');
@@ -1513,8 +1472,7 @@ function buildMarkdown(){
   L.push('- **' + t('dAuthor') + '**：robot003');
   L.push('- **' + t('dExportTime') + '**：' + nowStr() + '\n');
   L.push('## ' + t('dTagLegend') + '\n');
-  const tagDesc = { zh:{生电:'红石/自动化机器',交易:'村民交易点',农场:'农牧渔场',自建:'本人参与建造',遗留:'旧地点',低价:'低价附魔',已毁:'已损坏'}, en:{生电:'Redstone/automation',交易:'Villager trade',农场:'Farming',自建:'Self-built',遗留:'Legacy',低价:'Cheap',已毁:'Ruined'} };
-  Object.keys(TAG_META).forEach(tag => { L.push('- **' + tagLabel(tag) + '**：' + ((tagDesc[curLang]||tagDesc.zh)[tag] || '')); });
+  Object.keys(TAG_META).forEach(tag => { L.push('- **' + tagLabel(tag) + '**：' + ((TAG_DESC[curLang]||TAG_DESC.zh)[tag] || '')); });
   L.push('');
   const mdLM = l => {
     const out = [];
@@ -1567,10 +1525,8 @@ function buildMarkdown(){
   L.push(''); L.push('---'); L.push(t('footerAuthor'));
   return L.join('\n');
 }
-
 function csvEsc(v){ const s = String(v == null ? '' : v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
 function csvRow(arr){ return arr.map(csvEsc).join(','); }
-
 function buildCsv(){
   const rows = [];
   rows.push(csvRow([t('dName'), t('dStatus'), t('dDimension'), t('dX'), t('dY'), t('dZ'), t('dPoint'), t('dTags'), t('dBuilder'), t('dRate'), t('dProducts'), t('dNote')]));
@@ -1599,7 +1555,6 @@ function buildCsv(){
   });
   return '\uFEFF' + rows.join('\r\n');
 }
-
 function downloadBlob(content, mime, filename){
   const blob = new Blob([content], { type: mime });
   const url = URL.createObjectURL(blob);
@@ -1612,7 +1567,7 @@ function downloadTxt(){ downloadBlob(buildTxt(), 'text/plain;charset=utf-8', fil
 function downloadMarkdown(){ downloadBlob(buildMarkdown(), 'text/markdown;charset=utf-8', fileBase() + '.md'); toast(t('toastDlMd')); }
 function downloadCsv(){ downloadBlob(buildCsv(), 'text/csv;charset=utf-8', fileBase() + '.csv'); toast(t('toastDlCsv')); }
 
-/* ==================== 批量导入 ==================== */
+/* 批量导入 */
 const importModal = document.getElementById('import-modal');
 const importBackdrop = document.getElementById('import-modal-backdrop');
 const importCloseBtn = document.getElementById('import-modal-close');
@@ -1630,7 +1585,7 @@ let importFormat = 'csv';
 let importParsed = [];
 let importRunning = false;
 let importDebounce = null;
-let importMergeInfo = { merged: 0 };
+let importMergeInfo = { merged: 0, ignored: 0 };
 
 function openImportModal(){
   importModal.classList.add('open');
@@ -1652,7 +1607,7 @@ function resetImportUI(){
   importPreview.classList.remove('show');
   importPreview.innerHTML = '';
   importParsed = [];
-  importMergeInfo = { merged: 0 };
+  importMergeInfo = { merged: 0, ignored: 0 };
   importSubmitBtn.disabled = false;
   importSubmitBtn.innerHTML = ICON.check + '<span>' + t('importSubmit') + '</span>';
   switchImportFormat('csv');
@@ -1665,14 +1620,15 @@ function switchImportFormat(fmt){
 }
 function updateImportFormatHelp(){
   if (!importFormatHelp) return;
+  const allowed = Object.keys(TAG_META).join(' / ');
   if (importFormat === 'csv'){
     importFormatHelp.textContent = curLang === 'zh'
-      ? 'CSV 列顺序：名称,状态,维度,X,Y,Z,点位,标签,建造者,效率,产物,说明\n可直接用导出的 CSV 文件作为模板。标签和产物用 "/" 分隔。\n建造者可填：玩家ID / 自然生成 / 多人 / 未知\n同名地标会自动合并为一条。'
-      : 'CSV columns: Name,Status,Dimension,X,Y,Z,Point,Tags,Builder,Rate,Products,Note\nUse exported CSV as template. Separate tags/products with "/".\nBuilder: player ID / Natural / Multi-person / Unknown\nSame-name items will be merged automatically.';
+      ? 'CSV 列顺序：名称,状态,维度,X,Y,Z,点位,标签,建造者,效率,产物,说明\n可用导出的 CSV 作为模板。标签和产物用 "/" 分隔。\n建造者可填：玩家ID / 自然生成 / 多人 / 未知\n允许的标签：' + allowed + '（其他标签将被忽略）\n同名地标会自动合并。'
+      : 'CSV columns: Name,Status,Dimension,X,Y,Z,Point,Tags,Builder,Rate,Products,Note\nUse exported CSV as template. Separate with "/".\nBuilder: player ID / Natural / Multi-person / Unknown\nAllowed tags: ' + allowed + ' (others ignored)\nSame-name items will be merged.';
   } else {
     importFormatHelp.textContent = curLang === 'zh'
-      ? 'JSON 格式：[ { "name_zh":"蘑菇岛", "dimension":"overworld", "x":-683, "y":68, "z":-96, "tags":["遗留"], "builder":"Steve" }, ... ]\n同名地标会自动合并为一条。'
-      : 'JSON format: [ { "name_zh":"Mushroom Island", "dimension":"overworld", "x":-683, "y":68, "z":-96, "tags":["Legacy"], "builder":"Steve" }, ... ]\nSame-name items will be merged automatically.';
+      ? 'JSON 格式：[ { "name_zh":"蘑菇岛", "dimension":"overworld", "x":-683, "y":68, "z":-96, "tags":["遗留"], "builder":"Steve" }, ... ]\n允许的标签：' + allowed + '（其他标签将被忽略）\n同名地标会自动合并。'
+      : 'JSON format: [ { "name_zh":"Mushroom Island", "dimension":"overworld", "x":-683, "y":68, "z":-96, "tags":["Legacy"], "builder":"Steve" }, ... ]\nAllowed tags: ' + allowed + ' (others ignored)\nSame-name items will be merged.';
   }
 }
 document.querySelectorAll('.import-tab').forEach(tab => { tab.addEventListener('click', () => switchImportFormat(tab.dataset.format)); });
@@ -1710,8 +1666,9 @@ function parseCsvLine(line){
 }
 function parseCsvData(text){
   const lines = text.split(/\r?\n/).filter(l => l.trim());
-  if (lines.length < 2) return [];
+  if (lines.length < 2) return { items: [], ignoredCount: 0 };
   const items = [];
+  let ignoredCount = 0;
   for (let i = 1; i < lines.length; i++){
     const cols = parseCsvLine(lines[i]);
     if (cols.length < 4) continue;
@@ -1719,35 +1676,42 @@ function parseCsvData(text){
     if (!name || !name.trim()) continue;
     const dimKey = DIM_FROM_LABEL[dim] || DIM_FROM_LABEL[(dim||'').toLowerCase()] || 'overworld';
     const catKey = CAT_FROM_LABEL[status] || CAT_FROM_LABEL[(status||'').toLowerCase()] || 'usable';
-    const tagsArr = (tags || '').split(/\s*[\/、,，·]\s*/).map(s => s.trim()).filter(Boolean).map(x => TAG_FROM_LABEL[x] || x);
+    const rawTags = (tags || '').split(/\s*[\/、,，·]\s*/).map(s => s.trim()).filter(Boolean);
+    const mappedTags = rawTags.map(x => TAG_FROM_LABEL[x] || x);
+    const validTags = mappedTags.filter(x => TAG_META[x]);
+    ignoredCount += (mappedTags.length - validTags.length);
     const prodsArr = (products || '').split(/\s*[\/、,，]\s*/).map(s => s.trim()).filter(Boolean);
     const children = [];
     if (point && point.trim()){ children.push({ label: ROLE_FROM_LABEL[point] || point, x: Number(x) || 0, y: Number(y) || 0, z: Number(z) || 0 }); }
     items.push({
       name_zh: name.trim(), name_en: '', dimension: dimKey,
       x: Number(x) || 0, y: Number(y) || 0, z: Number(z) || 0,
-      category: catKey, tags: tagsArr, builder: (builder || '').trim(),
+      category: catKey, tags: validTags, builder: (builder || '').trim(),
       note_zh: (note || '').trim(), note_en: '',
       rate_zh: (rate || '').trim(), rate_en: '',
       products_zh: prodsArr, products_en: [], children
     });
   }
-  return items;
+  return { items, ignoredCount };
 }
 function parseJsonData(text){
   try {
     const data = JSON.parse(text);
     if (!Array.isArray(data)) return null;
     const items = [];
+    let ignoredCount = 0;
     data.forEach(item => {
       const nameZh = item.name_zh || (item.name && item.name.zh) || '';
       if (!nameZh) return;
-      const tagsArr = Array.isArray(item.tags) ? item.tags.map(x => TAG_FROM_LABEL[x] || x) : [];
+      const rawTags = Array.isArray(item.tags) ? item.tags : [];
+      const mappedTags = rawTags.map(x => TAG_FROM_LABEL[x] || x);
+      const validTags = mappedTags.filter(x => TAG_META[x]);
+      ignoredCount += (mappedTags.length - validTags.length);
       items.push({
         name_zh: nameZh, name_en: item.name_en || (item.name && item.name.en) || '',
         dimension: item.dimension || item.dim || 'overworld',
         x: Number(item.x) || 0, y: Number(item.y) || 0, z: Number(item.z) || 0,
-        category: item.category || 'usable', tags: tagsArr, builder: item.builder || '',
+        category: item.category || 'usable', tags: validTags, builder: item.builder || '',
         note_zh: item.note_zh || (item.note && item.note.zh) || '', note_en: item.note_en || (item.note && item.note.en) || '',
         rate_zh: item.rate_zh || (item.rate && item.rate.zh) || '', rate_en: item.rate_en || (item.rate && item.rate.en) || '',
         products_zh: Array.isArray(item.products_zh) ? item.products_zh : ((item.products && item.products.zh) || []),
@@ -1755,11 +1719,11 @@ function parseJsonData(text){
         children: Array.isArray(item.children) ? item.children : []
       });
     });
-    return items;
+    return { items, ignoredCount };
   } catch (_){ return null; }
 }
 
-/* ============ 合并同名项 ============ */
+/* 合并同名 */
 function mergeDuplicates(items){
   const groups = new Map();
   const order = [];
@@ -1783,7 +1747,6 @@ function mergeDuplicates(items){
 
     (first.tags || []).forEach(t => allTags.add(t));
     (first.products_zh || []).forEach(p => allProducts.add(p));
-    // 如果第一条有坐标点，转成 children
     if (first.children && first.children.length){
       allChildren.push(...first.children);
     } else if (first.x !== undefined){
@@ -1799,7 +1762,6 @@ function mergeDuplicates(items){
       } else if (item.x !== undefined){
         allChildren.push({ label: '点位', x: item.x, y: item.y, z: item.z });
       }
-      // 合并备注
       if (item.note_zh && item.note_zh.trim()){
         if (firstNoteSet || (first.note_zh && first.note_zh.trim() && first.note_zh !== item.note_zh)){
           if (first.note_zh !== item.note_zh){
@@ -1810,7 +1772,6 @@ function mergeDuplicates(items){
         }
         firstNoteSet = true;
       }
-      // 合并建造者
       if (item.builder && !first.builder) first.builder = item.builder;
     }
     first.tags = [...allTags];
@@ -1826,22 +1787,29 @@ function mergeDuplicates(items){
 
 function tryParseImport(){
   const text = importText.value.trim();
-  if (!text){ importParsed = []; importMergeInfo = { merged: 0 }; importHint.style.display = 'none'; importPreview.classList.remove('show'); importPreview.innerHTML = ''; return; }
-  let items = []; let err = false;
-  if (importFormat === 'csv'){ items = parseCsvData(text); }
-  else { const parsed = parseJsonData(text); if (parsed === null) err = true; else items = parsed; }
-  if (err){ importHint.style.display = ''; importHint.className = 'import-hint error'; importHint.textContent = t('importParseErr'); importPreview.classList.remove('show'); importParsed = []; importMergeInfo = { merged: 0 }; return; }
-  if (items.length === 0){ importHint.style.display = ''; importHint.className = 'import-hint warn'; importHint.textContent = t('importParseEmpty'); importPreview.classList.remove('show'); importParsed = []; importMergeInfo = { merged: 0 }; return; }
+  if (!text){ importParsed = []; importMergeInfo = { merged: 0, ignored: 0 }; importHint.style.display = 'none'; importPreview.classList.remove('show'); importPreview.innerHTML = ''; return; }
+  let result;
+  let err = false;
+  if (importFormat === 'csv'){ result = parseCsvData(text); }
+  else { result = parseJsonData(text); if (result === null) err = true; }
+  if (err){ importHint.style.display = ''; importHint.className = 'import-hint error'; importHint.textContent = t('importParseErr'); importPreview.classList.remove('show'); importParsed = []; importMergeInfo = { merged: 0, ignored: 0 }; return; }
+  const items = result.items;
+  const ignored = result.ignoredCount || 0;
+  if (items.length === 0){ importHint.style.display = ''; importHint.className = 'import-hint warn'; importHint.textContent = t('importParseEmpty'); importPreview.classList.remove('show'); importParsed = []; importMergeInfo = { merged: 0, ignored: 0 }; return; }
 
   const original = items.length;
   const { merged, mergedGroups } = mergeDuplicates(items);
   importParsed = merged;
-  importMergeInfo = { merged: mergedGroups };
+  importMergeInfo = { merged: mergedGroups, ignored };
 
   importHint.style.display = '';
   importHint.className = 'import-hint success';
-  if (mergedGroups > 0){
-    importHint.innerHTML = tFmt('importParseMerged', { n: original, m: mergedGroups, f: merged.length });
+  if (mergedGroups > 0 && ignored > 0){
+    importHint.textContent = tFmt('importParseMergedAndIgnored', { n: original, m: mergedGroups, i: ignored, f: merged.length });
+  } else if (mergedGroups > 0){
+    importHint.textContent = tFmt('importParseMerged', { n: original, m: mergedGroups, f: merged.length });
+  } else if (ignored > 0){
+    importHint.textContent = tFmt('importParseIgnored', { n: original, i: ignored });
   } else {
     importHint.textContent = tFmt('importParseOk', { n: original });
   }
@@ -1855,11 +1823,14 @@ function renderImportPreview(){
     return `<div class="import-preview-item"><span class="import-preview-name">${escapeHtml(item.name_zh)}</span><span class="import-preview-meta">${dimLabel(item.dimension)} · ${coord}</span></div>`;
   }).join('');
   const more = importParsed.length > 8 ? `<div class="import-preview-more">…… 共 ${importParsed.length} 条</div>` : '';
-  let badge = '';
+  let badges = '';
   if (importMergeInfo.merged > 0){
-    badge = `<span class="import-merge-badge">${ICON.layers}${importMergeInfo.merged} 组合并</span>`;
+    badges += `<span class="import-merge-badge">${ICON.layers}${importMergeInfo.merged} 组合并</span>`;
   }
-  importPreview.innerHTML = `<div class="import-preview-title">${t('importPreviewTitle')}${badge}</div>${items}${more}`;
+  if (importMergeInfo.ignored > 0){
+    badges += `<span class="import-ignore-badge">${ICON.info}忽略 ${importMergeInfo.ignored} 未知标签</span>`;
+  }
+  importPreview.innerHTML = `<div class="import-preview-title">${t('importPreviewTitle')}${badges}</div>${items}${more}`;
   importPreview.classList.add('show');
 }
 function escapeHtml(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -1891,7 +1862,7 @@ importBackdrop.addEventListener('click', closeImportModal);
 importCancelBtn.addEventListener('click', closeImportModal);
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && importModal.classList.contains('open')) closeImportModal(); });
 
-/* ==================== 导航系统 ==================== */
+/* 导航 */
 const sideNav = document.getElementById('side-nav');
 const sideNavFab = document.getElementById('side-nav-fab');
 const sideNavBackdrop = document.getElementById('side-nav-backdrop');
@@ -1934,7 +1905,7 @@ function setupNavObserver(){
   targets.forEach(t => navObserver.observe(t));
 }
 
-/* ==================== 下载下拉 ==================== */
+/* 下载下拉 */
 const downloadWrap = $('#download-wrap');
 const btnDownload = $('#btn-download');
 const ddBackdrop = $('#dd-backdrop');
@@ -1954,7 +1925,7 @@ $('#download-dropdown').addEventListener('click', e => {
   else if (fmt === 'csv') downloadCsv();
 });
 
-/* ==================== 通用事件 ==================== */
+/* 通用事件 */
 document.addEventListener('click', e => {
   if (e.target.closest('.btn-icon')) return;
   if (e.target.closest('.lm-check-wrap')) return;
@@ -2011,7 +1982,7 @@ document.addEventListener('click', async e => {
   } catch (err){ toast(t('toastAddFail') + err.message); btn.disabled = false; }
 });
 
-/* ==================== 新增/编辑 ==================== */
+/* 新增/编辑 */
 const addModal = document.getElementById('add-modal');
 const addForm = document.getElementById('add-form');
 const addNameZh = document.getElementById('add-name-zh');
@@ -2064,7 +2035,7 @@ function openEditModal(lm){
   addNote.value = lm.note ? (lm.note.zh || '') : '';
   addRateZh.value = lm.rate ? (lm.rate.zh || '') : '';
   addProductsZh.value = lm.products && lm.products.zh ? lm.products.zh.join(', ') : '';
-  selectedTags = [...(lm.tags || [])];
+  selectedTags = sanitizeTags(lm.tags);
   updateTagChips();
   updateBuilderPresets();
   if (lm.children && lm.children.length){
@@ -2150,7 +2121,7 @@ addForm.addEventListener('submit', async e => {
       builder: addBuilder.value.trim(),
       dimension: addDim.value,
       category: addCategory.value,
-      tags: selectedTags,
+      tags: sanitizeTags(selectedTags),
       note_zh: addNote.value.trim(),
       x: coordMode === 'single' ? Number(addX.value) : 0,
       y: coordMode === 'single' ? Number(addY.value) : 0,
@@ -2212,7 +2183,7 @@ document.querySelectorAll('.lang-switch button').forEach(btn => {
   });
 });
 
-/* ==================== 启动 ==================== */
+/* 启动 */
 function applyMobileMode(){
   const ua = navigator.userAgent || '';
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|HarmonyOS/i.test(ua) || (('ontouchstart' in window) && window.matchMedia('(max-width: 820px)').matches);
