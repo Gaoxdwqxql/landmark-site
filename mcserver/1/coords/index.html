@@ -14,6 +14,7 @@
     --over:#6ee7a8; --nether:#ff8a7a; --end:#c3a6ff;
     --code-bg:#0b0f14; --code-text:#9fd8b4; --tag-bg:#1b2230;
     --shadow:0 10px 30px -10px rgba(0,0,0,.8);
+    --shadow-lg:0 20px 50px -15px rgba(0,0,0,.9);
     --hero-a:#eafff1; --hero-b:#8fe6b3; --hero-c:#6ec8ff;
     --tag-tech:#6ec8ff; --tag-trade:#f0c674; --tag-farm:#8fe6b3;
     --tag-legacy:#8b98a9; --tag-cheap:#ff9a7a; --tag-dead:#ff7b7b;
@@ -27,6 +28,7 @@
     --over:#1f8a55; --nether:#d1452f; --end:#7a4fd6;
     --code-bg:#f0f3f8; --code-text:#1f7048; --tag-bg:#eef2f8;
     --shadow:0 20px 50px -20px rgba(31,52,80,.35);
+    --shadow-lg:0 24px 60px -20px rgba(31,52,80,.5);
     --hero-a:#1f8a55; --hero-b:#2f8f5f; --hero-c:#3a7bd5;
     --tag-tech:#1d6fb8; --tag-trade:#a07000; --tag-farm:#1f8a55;
     --tag-legacy:#6b7686; --tag-cheap:#c2571f; --tag-dead:#c0392b;
@@ -36,7 +38,7 @@
   html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
   body{margin:0;background:radial-gradient(1100px 520px at 50% -220px,var(--bg-grad-1),transparent 70%),radial-gradient(900px 500px at 90% 10%,var(--bg-grad-2),transparent 70%),var(--bg);background-repeat:no-repeat;color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased;transition:background-color .3s ease,color .3s ease;overflow-x:hidden}
   .wrap{max-width:1120px;margin:0 auto;padding:36px 20px 90px}
-  section[id],header[id],div[id^="anchor"]{scroll-margin-top:90px}
+  header[id],h2[id],section[id],div[id^="anchor"]{scroll-margin-top:90px}
   .ico{width:1em;height:1em;display:inline-block;vertical-align:-0.13em;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
   .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
   h1{margin:0;font-size:clamp(24px,3.6vw,38px);letter-spacing:.4px;line-height:1.25;background:linear-gradient(92deg,var(--hero-a),var(--hero-b) 55%,var(--hero-c));-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -67,7 +69,6 @@
   .btn-icon.edit:hover{color:var(--accent);border-color:var(--accent)}
   .btn-icon.delete:hover{color:#e5534b;border-color:#e5534b;background:color-mix(in srgb,#e5534b 10%,transparent)}
   .btn-icon .ico{font-size:14px}
-  code.inline{font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12.5px;background:var(--code-bg);border:1px solid var(--border);padding:2px 7px;border-radius:6px;color:var(--code-text)}
   .toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:20;margin:26px 0 6px;padding:12px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:13px}
   .search-box{flex:1;min-width:190px;position:relative;display:flex;align-items:center}
   .search-box .ico{position:absolute;left:12px;font-size:16px;color:var(--faint);pointer-events:none}
@@ -161,123 +162,304 @@
   .empty .ico{font-size:34px;color:var(--faint);display:block;margin:0 auto 12px}
   footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:8px}
 
-  /* ============ 右侧导航 ============ */
-  .side-nav{
-    position:fixed;right:18px;top:50%;transform:translateY(-50%);
-    z-index:50;
-    display:flex;flex-direction:column;gap:8px;
-    max-height:82vh;
-  }
-  .side-nav-toggle{
+  /* ==================== 导航系统 v2 ==================== */
+  .side-nav-backdrop{
     display:none;
-    width:48px;height:48px;
-    border-radius:50%;
-    align-items:center;justify-content:center;
-    background:var(--panel);
-    border:1px solid var(--border);
-    color:var(--accent);
-    box-shadow:var(--shadow);
-    transition:.16s;
-    font-size:20px;
+    position:fixed;inset:0;
+    background:var(--modal-backdrop);
+    backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
+    z-index:45;
+    opacity:0;pointer-events:none;
+    transition:opacity .24s ease;
   }
-  .side-nav-toggle:hover{border-color:var(--accent);color:var(--accent-2)}
-  .side-nav-toggle .ico{font-size:20px}
+  .side-nav-backdrop.show{opacity:1;pointer-events:auto}
+
+  .side-nav{
+    position:fixed;
+    right:22px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:50;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:12px;
+  }
+
+  /* 移动端悬浮按钮 */
+  .side-nav-fab{
+    display:none;
+    width:58px;height:58px;
+    border-radius:50%;
+    border:none;
+    background:linear-gradient(180deg,#3f8f5f,#2f7049);
+    color:#eaffef;
+    box-shadow:0 10px 28px -10px rgba(95,191,127,.95), 0 3px 10px -4px rgba(0,0,0,.6);
+    align-items:center;justify-content:center;
+    transition:transform .16s ease, box-shadow .16s ease;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    cursor:pointer;
+  }
+  .side-nav-fab:active{transform:scale(.92)}
+  .side-nav-fab .ico{font-size:24px}
+  .side-nav-fab .fab-open{display:block}
+  .side-nav-fab .fab-close{display:none}
+  .side-nav.open .side-nav-fab .fab-open{display:none}
+  .side-nav.open .side-nav-fab .fab-close{display:block}
+
+  /* 面板 */
   .side-nav-panel{
-    display:flex;flex-direction:column;
-    background:color-mix(in srgb,var(--panel) 92%,transparent);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
+    width:220px;
+    max-height:80vh;
+    background:color-mix(in srgb,var(--panel) 94%,transparent);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
     border:1px solid var(--border);
-    border-radius:14px;
-    padding:8px;
-    box-shadow:var(--shadow);
-    gap:2px;
-    max-height:82vh;
+    border-radius:16px;
+    padding:14px 12px;
+    box-shadow:var(--shadow-lg);
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    transition:
+      width .32s cubic-bezier(.2,.9,.3,1),
+      padding .32s cubic-bezier(.2,.9,.3,1);
+    overflow:hidden;
+  }
+
+  /* 头部 */
+  .side-nav-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:2px 4px 10px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:6px;
+    min-height:32px;
+  }
+  .side-nav-title{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--faint);
+    white-space:nowrap;
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+  }
+  .side-nav-title .ico{font-size:14px;color:var(--accent);flex-shrink:0}
+
+  .side-nav-collapse{
+    width:28px;height:28px;
+    border-radius:8px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:1px solid transparent;
+    color:var(--muted);
+    transition:.16s;
+    flex-shrink:0;
+  }
+  .side-nav-collapse:hover{
+    background:var(--panel-2);
+    border-color:var(--border);
+    color:var(--text);
+  }
+  .side-nav-collapse .ico{font-size:15px}
+  .side-nav-collapse .chev-right{display:none}
+
+  /* 列表 */
+  .side-nav-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:3px;
     overflow-y:auto;
     scrollbar-width:thin;
   }
-  .side-nav-panel::-webkit-scrollbar{width:5px}
-  .side-nav-panel::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:3px}
-  .side-nav-title{
-    display:flex;align-items:center;gap:7px;
-    font-size:10.5px;font-weight:700;letter-spacing:.9px;
-    text-transform:uppercase;color:var(--faint);
-    padding:6px 10px 8px;
-    border-bottom:1px solid var(--border);
-    margin-bottom:4px;
-  }
-  .side-nav-title .ico{font-size:12px;color:var(--accent)}
-  .side-nav-list{
-    list-style:none;margin:0;padding:0;
-    display:flex;flex-direction:column;gap:1px;
-  }
+  .side-nav-list::-webkit-scrollbar{width:4px}
+  .side-nav-list::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:3px}
+
   .side-nav-link{
-    display:flex;align-items:center;gap:9px;
-    padding:7px 10px;
-    border-radius:8px;
-    font-size:12.8px;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:10px 12px;
+    border-radius:9px;
+    font-size:13.5px;
     color:var(--muted);
     text-decoration:none;
-    transition:.16s;
-    position:relative;
-    border-left:2px solid transparent;
-    margin-left:-2px;
+    transition:.16s ease;
+    border-left:3px solid transparent;
+    margin-left:-1px;
     white-space:nowrap;
-  }
-  .side-nav-link::before{
-    content:'';
-    width:6px;height:6px;
-    border-radius:2px;
-    background:currentColor;
-    opacity:.35;
-    flex-shrink:0;
-    transition:.18s;
+    min-height:42px;
+    position:relative;
   }
   .side-nav-link:hover{
     color:var(--text);
     background:var(--panel-2);
   }
-  .side-nav-link:hover::before{opacity:.7}
-  .side-nav-link.active{
-    color:var(--accent-2);
-    background:color-mix(in srgb,var(--accent) 10%,transparent);
-    border-left-color:var(--accent);
-    font-weight:600;
+  .side-nav-link-icon{
+    width:22px;height:22px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    color:var(--muted);
+    transition:.16s;
   }
-  .side-nav-link.active::before{
-    opacity:1;
-    width:14px;
-    background:var(--accent);
+  .side-nav-link-icon .ico{font-size:16px}
+  .side-nav-link-text{
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   .side-nav-idx{
-    margin-left:auto;
-    font-family:ui-monospace,monospace;
+    font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;
     font-size:10.5px;
     color:var(--faint);
     letter-spacing:.4px;
+    flex-shrink:0;
+    transition:.16s;
   }
+  .side-nav-link.active{
+    color:var(--accent-2);
+    background:color-mix(in srgb,var(--accent) 12%,transparent);
+    border-left-color:var(--accent);
+    font-weight:600;
+  }
+  .side-nav-link.active .side-nav-link-icon{color:var(--accent)}
   .side-nav-link.active .side-nav-idx{color:var(--accent)}
 
-  @media (max-width:1180px){
-    .side-nav{right:12px}
-    .side-nav-toggle{display:flex}
+  /* 折叠态（仅桌面） */
+  .side-nav.collapsed .side-nav-panel{
+    width:60px;
+    padding:14px 8px;
+  }
+  .side-nav.collapsed .side-nav-head{
+    justify-content:center;
+    padding:2px 0 10px;
+  }
+  .side-nav.collapsed .side-nav-title{display:none}
+  .side-nav.collapsed .side-nav-collapse .chev-left{display:none}
+  .side-nav.collapsed .side-nav-collapse .chev-right{display:block}
+  .side-nav.collapsed .side-nav-link{
+    justify-content:center;
+    padding:10px 0;
+    border-left-color:transparent;
+  }
+  .side-nav.collapsed .side-nav-link-text,
+  .side-nav.collapsed .side-nav-idx{display:none}
+  .side-nav.collapsed .side-nav-link.active{
+    border-left-color:transparent;
+    background:color-mix(in srgb,var(--accent) 15%,transparent);
+  }
+
+  /* ============ 移动端 / 平板 ============ */
+  @media (max-width: 1180px) {
+    .side-nav-backdrop{display:block}
+
+    .side-nav{
+      top:auto;
+      bottom:calc(20px + env(safe-area-inset-bottom,0px));
+      right:16px;
+      transform:none;
+      align-items:flex-end;
+      gap:0;
+    }
+
+    .side-nav-fab{display:flex}
+
     .side-nav-panel{
-      position:absolute;
-      right:0;top:calc(100% + 8px);
-      transform-origin:top right;
-      opacity:0;pointer-events:none;
-      transform:translateY(-8px) scale(.96);
-      transition:opacity .2s ease, transform .22s cubic-bezier(.2,.9,.3,1.1);
-      min-width:180px;
+      position:fixed;
+      right:16px;
+      bottom:calc(90px + env(safe-area-inset-bottom,0px));
+      width:calc(100% - 32px);
+      max-width:400px;
+      max-height:62vh;
+      padding:16px 14px;
+      border-radius:18px;
+      opacity:0;
+      pointer-events:none;
+      transform:translateY(20px) scale(.96);
+      transform-origin:bottom right;
+      transition:opacity .24s ease, transform .32s cubic-bezier(.2,.9,.3,1.05);
+      box-shadow:0 24px 60px -12px rgba(0,0,0,.55);
     }
     .side-nav.open .side-nav-panel{
-      opacity:1;pointer-events:auto;
+      opacity:1;
+      pointer-events:auto;
       transform:translateY(0) scale(1);
     }
-    .side-nav{flex-direction:column-reverse;top:auto;bottom:24px;transform:none;max-height:none}
+
+    /* 忽略桌面折叠态 */
+    .side-nav.collapsed .side-nav-panel{
+      width:calc(100% - 32px);
+      padding:16px 14px;
+    }
+    .side-nav.collapsed .side-nav-title{display:inline-flex}
+    .side-nav.collapsed .side-nav-link-text,
+    .side-nav.collapsed .side-nav-idx{display:inline}
+    .side-nav.collapsed .side-nav-head{justify-content:space-between;padding:2px 4px 12px}
+    .side-nav.collapsed .side-nav-link{
+      justify-content:flex-start;
+      padding:14px 16px;
+      border-left-width:3px;
+    }
+    .side-nav.collapsed .side-nav-link.active{
+      border-left-color:var(--accent);
+      background:color-mix(in srgb,var(--accent) 12%,transparent);
+    }
+
+    .side-nav-collapse{display:none}
+
+    /* 移动端大触摸目标 */
+    .side-nav-head{
+      padding:2px 6px 14px;
+      margin-bottom:8px;
+      min-height:34px;
+    }
+    .side-nav-title{font-size:12px;letter-spacing:1.1px}
+    .side-nav-title .ico{font-size:15px}
+
+    .side-nav-link{
+      padding:14px 16px;
+      min-height:52px;
+      font-size:15px;
+      gap:14px;
+      border-radius:11px;
+    }
+    .side-nav-link-icon{width:26px;height:26px}
+    .side-nav-link-icon .ico{font-size:18px}
+    .side-nav-idx{font-size:11.5px}
   }
+
+  /* 手机竖屏微调 */
+  @media (max-width: 480px) {
+    .side-nav-panel{
+      right:12px;
+      left:12px;
+      width:auto;
+      max-width:none;
+      bottom:calc(88px + env(safe-area-inset-bottom,0px));
+    }
+  }
+
+  /* ============ 通用响应式 ============ */
   @media (max-width:660px){
-    .wrap{padding:20px 14px 80px}
+    .wrap{padding:20px 14px 100px}
     .btn .lbl{display:none}
     .hero-top{flex-direction:column;align-items:stretch;gap:12px}
     .toolbar{flex-direction:column;align-items:stretch;margin:16px -14px 4px;padding:10px 14px;border-radius:0}
@@ -289,14 +471,23 @@
     .form-row{grid-template-columns:1fr}
     .form-actions{flex-direction:column-reverse}
     .form-actions .btn{width:100%;justify-content:center}
-    .side-nav{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px))}
-    .side-nav-toggle{width:52px;height:52px}
+    .stats{gap:10px 14px;padding:10px 0 4px;border-top:1px dashed var(--border)}
+    .stat{font-size:12px}
+    .stat b{font-size:14.5px}
+    .sec-title{font-size:17px;margin:28px 0 12px}
+    .tag{padding:3px 8px;min-height:22px}
+    .dim-badge{padding:4px 10px;min-height:26px}
+    .coords{padding:8px 12px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;flex:1}
+    .btn-copy{padding:8px 13px;font-size:12.5px;min-height:40px;justify-content:center}
+    .friend-links{padding:16px}
+    #toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   }
 
+  /* ==================== 新增地标弹窗 ==================== */
   .add-modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s ease}
   .add-modal.open{opacity:1;pointer-events:auto}
   .add-modal-backdrop{position:absolute;inset:0;background:var(--modal-backdrop);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
-  .add-modal-box{position:relative;z-index:1;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px 30px 24px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow);transform:translateY(14px) scale(.96);transition:transform .24s cubic-bezier(.2,.9,.3,1.2)}
+  .add-modal-box{position:relative;z-index:1;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px 30px 24px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:translateY(14px) scale(.96);transition:transform .24s cubic-bezier(.2,.9,.3,1.2)}
   .add-modal.open .add-modal-box{transform:translateY(0) scale(1)}
   .add-modal-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:16px;transition:.16s;cursor:pointer}
   .add-modal-close:hover{color:var(--text);border-color:var(--border-hover);background:var(--panel-2)}
@@ -338,23 +529,55 @@
 </head>
 <body>
 
-<!-- ============ 右侧导航 ============ -->
+<!-- ==================== 导航系统 ==================== -->
+<div class="side-nav-backdrop" id="side-nav-backdrop"></div>
 <nav class="side-nav" id="side-nav" aria-label="Section navigation">
-  <button class="side-nav-toggle" id="side-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-    <svg class="ico" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="5" cy="18" r="1.5"/><path d="M10 6h10"/><path d="M10 12h10"/><path d="M10 18h10"/></svg>
+  <button class="side-nav-fab" id="side-nav-fab" aria-label="Toggle navigation" aria-expanded="false">
+    <svg class="ico fab-open" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="5" cy="18" r="1.5"/><path d="M10 6h10"/><path d="M10 12h10"/><path d="M10 18h10"/></svg>
+    <svg class="ico fab-close" viewBox="0 0 24 24"><path d="m6 6 12 12"/><path d="m18 6-12 12"/></svg>
   </button>
-  <div class="side-nav-panel" id="side-nav-panel">
-    <div class="side-nav-title">
-      <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v4"/></svg>
-      <span data-i18n="navTitle">导航</span>
+  <div class="side-nav-panel">
+    <div class="side-nav-head">
+      <span class="side-nav-title">
+        <svg class="ico" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="5" cy="18" r="1.5"/><path d="M10 6h10"/><path d="M10 12h10"/><path d="M10 18h10"/></svg>
+        <span data-i18n="navTitle">导航</span>
+      </span>
+      <button class="side-nav-collapse" id="side-nav-collapse" aria-label="Collapse/Expand">
+        <svg class="ico chev-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg>
+        <svg class="ico chev-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
     </div>
     <ul class="side-nav-list">
-      <li><a class="side-nav-link" href="#anchor-hero" data-nav-target="anchor-hero"><span data-i18n="navOverview">概览</span><span class="side-nav-idx">01</span></a></li>
-      <li><a class="side-nav-link" href="#anchor-usable" data-nav-target="anchor-usable"><span data-i18n="navUsable">可使用</span><span class="side-nav-idx">02</span></a></li>
-      <li><a class="side-nav-link" href="#anchor-unusable" data-nav-target="anchor-unusable"><span data-i18n="navUnusable">不可使用</span><span class="side-nav-idx">03</span></a></li>
-      <li><a class="side-nav-link" href="#anchor-machines" data-nav-target="anchor-machines"><span data-i18n="navMachines">生电设施</span><span class="side-nav-idx">04</span></a></li>
-      <li><a class="side-nav-link" href="#anchor-future" data-nav-target="anchor-future"><span data-i18n="navFuture">未来计划</span><span class="side-nav-idx">05</span></a></li>
-      <li><a class="side-nav-link" href="#anchor-links" data-nav-target="anchor-links"><span data-i18n="navLinks">友情链接</span><span class="side-nav-idx">06</span></a></li>
+      <li><a class="side-nav-link" href="#anchor-hero" data-nav-target="anchor-hero">
+        <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+        <span class="side-nav-link-text" data-i18n="navOverview">概览</span>
+        <span class="side-nav-idx">01</span>
+      </a></li>
+      <li><a class="side-nav-link" href="#anchor-usable" data-nav-target="anchor-usable">
+        <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg></span>
+        <span class="side-nav-link-text" data-i18n="navUsable">可使用</span>
+        <span class="side-nav-idx">02</span>
+      </a></li>
+      <li><a class="side-nav-link" href="#anchor-unusable" data-nav-target="anchor-unusable">
+        <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/></svg></span>
+        <span class="side-nav-link-text" data-i18n="navUnusable">不可使用</span>
+        <span class="side-nav-idx">03</span>
+      </a></li>
+      <li><a class="side-nav-link" href="#anchor-machines" data-nav-target="anchor-machines">
+        <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v4"/><path d="M15 2v4"/><path d="M9 18v4"/><path d="M15 18v4"/><path d="M2 9h4"/><path d="M2 15h4"/><path d="M18 9h4"/><path d="M18 15h4"/></svg></span>
+        <span class="side-nav-link-text" data-i18n="navMachines">生电设施</span>
+        <span class="side-nav-idx">04</span>
+      </a></li>
+      <li><a class="side-nav-link" href="#anchor-future" data-nav-target="anchor-future">
+        <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-5h6v5"/></svg></span>
+        <span class="side-nav-link-text" data-i18n="navFuture">未来计划</span>
+        <span class="side-nav-idx">05</span>
+      </a></li>
+      <li><a class="side-nav-link" href="#anchor-links" data-nav-target="anchor-links">
+        <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg></span>
+        <span class="side-nav-link-text" data-i18n="navLinks">友情链接</span>
+        <span class="side-nav-idx">06</span>
+      </a></li>
     </ul>
   </div>
 </nav>
@@ -438,7 +661,7 @@
   </div>
 
   <h2 class="sec-title" id="anchor-machines">
-    <span class="st-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg></span>
+    <span class="st-ico"><svg class="ico" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v4"/><path d="M15 2v4"/><path d="M9 18v4"/><path d="M15 18v4"/><path d="M2 9h4"/><path d="M2 15h4"/><path d="M18 9h4"/><path d="M18 15h4"/></svg></span>
     <span data-i18n="secMachines">自建生电设施详情</span>
   </h2>
   <div class="machines" id="machines"></div>
@@ -478,6 +701,7 @@
   </footer>
 </div>
 
+<!-- 新增/编辑弹窗 -->
 <div class="add-modal" id="add-modal" aria-hidden="true">
   <div class="add-modal-backdrop" id="add-modal-backdrop"></div>
   <div class="add-modal-box" role="dialog" aria-modal="true">
@@ -991,22 +1215,51 @@ function renderAll(){
   setupNavObserver();
 }
 
-/* ============ 导航系统 ============ */
+/* ==================== 导航系统逻辑 ==================== */
 const sideNav = document.getElementById('side-nav');
-const sideNavToggle = document.getElementById('side-nav-toggle');
-const NAV_TARGETS = ['anchor-hero', 'anchor-usable', 'anchor-unusable', 'anchor-machines', 'anchor-future', 'anchor-links'];
+const sideNavFab = document.getElementById('side-nav-fab');
+const sideNavBackdrop = document.getElementById('side-nav-backdrop');
+const sideNavCollapse = document.getElementById('side-nav-collapse');
+const NAV_TARGETS = ['anchor-hero','anchor-usable','anchor-unusable','anchor-machines','anchor-future','anchor-links'];
 
-if (sideNavToggle){
-  sideNavToggle.addEventListener('click', e => {
-    e.stopPropagation();
-    const open = sideNav.classList.toggle('open');
-    sideNavToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-}
-document.addEventListener('click', e => {
-  if (!sideNav.contains(e.target)) sideNav.classList.remove('open');
+// 桌面端折叠
+let navCollapsed = false;
+try { navCollapsed = localStorage.getItem('sideNavCollapsed') === '1'; } catch(_) {}
+if (navCollapsed) sideNav.classList.add('collapsed');
+
+sideNavCollapse && sideNavCollapse.addEventListener('click', () => {
+  navCollapsed = !navCollapsed;
+  sideNav.classList.toggle('collapsed', navCollapsed);
+  try { localStorage.setItem('sideNavCollapsed', navCollapsed ? '1' : '0'); } catch(_) {}
 });
 
+// 移动端抽屉
+function openMobileNav(){
+  sideNav.classList.add('open');
+  sideNavBackdrop.classList.add('show');
+  sideNavFab && sideNavFab.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileNav(){
+  sideNav.classList.remove('open');
+  sideNavBackdrop.classList.remove('show');
+  sideNavFab && sideNavFab.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
+}
+
+sideNavFab && sideNavFab.addEventListener('click', e => {
+  e.stopPropagation();
+  if (sideNav.classList.contains('open')) closeMobileNav();
+  else openMobileNav();
+});
+
+sideNavBackdrop && sideNavBackdrop.addEventListener('click', closeMobileNav);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && sideNav.classList.contains('open')) closeMobileNav();
+});
+
+// 导航链接
 document.querySelectorAll('.side-nav-link').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
@@ -1015,8 +1268,7 @@ document.querySelectorAll('.side-nav-link').forEach(link => {
     if (!target) return;
     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setActiveNav(id);
-    sideNav.classList.remove('open');
-    sideNavToggle && sideNavToggle.setAttribute('aria-expanded', 'false');
+    if (window.innerWidth <= 1180) closeMobileNav();
   });
 });
 
@@ -1032,12 +1284,9 @@ function setupNavObserver(){
   const targets = NAV_TARGETS.map(id => document.getElementById(id)).filter(Boolean);
   if (!targets.length) return;
   navObserver = new IntersectionObserver(entries => {
-    // 找到最靠上、当前可见的
     const visible = entries.filter(en => en.isIntersecting)
       .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-    if (visible.length > 0){
-      setActiveNav(visible[0].target.id);
-    }
+    if (visible.length > 0) setActiveNav(visible[0].target.id);
   }, {
     rootMargin: '-120px 0px -55% 0px',
     threshold: 0
@@ -1045,6 +1294,7 @@ function setupNavObserver(){
   targets.forEach(t => navObserver.observe(t));
 }
 
+/* ==================== 事件绑定 ==================== */
 document.addEventListener('click', e => {
   if (e.target.closest('.btn-icon')) return;
   const main = e.target.closest('.lm-main');
