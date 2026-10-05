@@ -13,8 +13,6 @@
     --accent:#5fbf7f; --accent-2:#8fe6b3;
     --over:#6ee7a8; --nether:#ff8a7a; --end:#c3a6ff;
     --code-bg:#0b0f14; --code-text:#9fd8b4; --tag-bg:#1b2230;
-    --warn-bg:#2a1d0c; --warn-border:#5c4318; --warn-text:#f0c674;
-    --danger-bg:#2a1113; --danger-border:#5c2226; --danger-text:#ff9a95;
     --shadow:0 10px 30px -10px rgba(0,0,0,.8);
     --hero-a:#eafff1; --hero-b:#8fe6b3; --hero-c:#6ec8ff;
     --tag-tech:#6ec8ff; --tag-trade:#f0c674; --tag-farm:#8fe6b3;
@@ -28,8 +26,6 @@
     --accent:#2f8f5f; --accent-2:#1f7048;
     --over:#1f8a55; --nether:#d1452f; --end:#7a4fd6;
     --code-bg:#f0f3f8; --code-text:#1f7048; --tag-bg:#eef2f8;
-    --warn-bg:#fff8e3; --warn-border:#e9c46a; --warn-text:#8a6100;
-    --danger-bg:#fdeceb; --danger-border:#e9a5a0; --danger-text:#a02b23;
     --shadow:0 20px 50px -20px rgba(31,52,80,.35);
     --hero-a:#1f8a55; --hero-b:#2f8f5f; --hero-c:#3a7bd5;
     --tag-tech:#1d6fb8; --tag-trade:#a07000; --tag-farm:#1f8a55;
@@ -40,6 +36,7 @@
   html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
   body{margin:0;background:radial-gradient(1100px 520px at 50% -220px,var(--bg-grad-1),transparent 70%),radial-gradient(900px 500px at 90% 10%,var(--bg-grad-2),transparent 70%),var(--bg);background-repeat:no-repeat;color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased;transition:background-color .3s ease,color .3s ease;overflow-x:hidden}
   .wrap{max-width:1120px;margin:0 auto;padding:36px 20px 90px}
+  section[id],header[id],div[id^="anchor"]{scroll-margin-top:90px}
   .ico{width:1em;height:1em;display:inline-block;vertical-align:-0.13em;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
   .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
   h1{margin:0;font-size:clamp(24px,3.6vw,38px);letter-spacing:.4px;line-height:1.25;background:linear-gradient(92deg,var(--hero-a),var(--hero-b) 55%,var(--hero-c));-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -164,6 +161,138 @@
   .empty .ico{font-size:34px;color:var(--faint);display:block;margin:0 auto 12px}
   footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:8px}
 
+  /* ============ 右侧导航 ============ */
+  .side-nav{
+    position:fixed;right:18px;top:50%;transform:translateY(-50%);
+    z-index:50;
+    display:flex;flex-direction:column;gap:8px;
+    max-height:82vh;
+  }
+  .side-nav-toggle{
+    display:none;
+    width:48px;height:48px;
+    border-radius:50%;
+    align-items:center;justify-content:center;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--accent);
+    box-shadow:var(--shadow);
+    transition:.16s;
+    font-size:20px;
+  }
+  .side-nav-toggle:hover{border-color:var(--accent);color:var(--accent-2)}
+  .side-nav-toggle .ico{font-size:20px}
+  .side-nav-panel{
+    display:flex;flex-direction:column;
+    background:color-mix(in srgb,var(--panel) 92%,transparent);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:8px;
+    box-shadow:var(--shadow);
+    gap:2px;
+    max-height:82vh;
+    overflow-y:auto;
+    scrollbar-width:thin;
+  }
+  .side-nav-panel::-webkit-scrollbar{width:5px}
+  .side-nav-panel::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:3px}
+  .side-nav-title{
+    display:flex;align-items:center;gap:7px;
+    font-size:10.5px;font-weight:700;letter-spacing:.9px;
+    text-transform:uppercase;color:var(--faint);
+    padding:6px 10px 8px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:4px;
+  }
+  .side-nav-title .ico{font-size:12px;color:var(--accent)}
+  .side-nav-list{
+    list-style:none;margin:0;padding:0;
+    display:flex;flex-direction:column;gap:1px;
+  }
+  .side-nav-link{
+    display:flex;align-items:center;gap:9px;
+    padding:7px 10px;
+    border-radius:8px;
+    font-size:12.8px;
+    color:var(--muted);
+    text-decoration:none;
+    transition:.16s;
+    position:relative;
+    border-left:2px solid transparent;
+    margin-left:-2px;
+    white-space:nowrap;
+  }
+  .side-nav-link::before{
+    content:'';
+    width:6px;height:6px;
+    border-radius:2px;
+    background:currentColor;
+    opacity:.35;
+    flex-shrink:0;
+    transition:.18s;
+  }
+  .side-nav-link:hover{
+    color:var(--text);
+    background:var(--panel-2);
+  }
+  .side-nav-link:hover::before{opacity:.7}
+  .side-nav-link.active{
+    color:var(--accent-2);
+    background:color-mix(in srgb,var(--accent) 10%,transparent);
+    border-left-color:var(--accent);
+    font-weight:600;
+  }
+  .side-nav-link.active::before{
+    opacity:1;
+    width:14px;
+    background:var(--accent);
+  }
+  .side-nav-idx{
+    margin-left:auto;
+    font-family:ui-monospace,monospace;
+    font-size:10.5px;
+    color:var(--faint);
+    letter-spacing:.4px;
+  }
+  .side-nav-link.active .side-nav-idx{color:var(--accent)}
+
+  @media (max-width:1180px){
+    .side-nav{right:12px}
+    .side-nav-toggle{display:flex}
+    .side-nav-panel{
+      position:absolute;
+      right:0;top:calc(100% + 8px);
+      transform-origin:top right;
+      opacity:0;pointer-events:none;
+      transform:translateY(-8px) scale(.96);
+      transition:opacity .2s ease, transform .22s cubic-bezier(.2,.9,.3,1.1);
+      min-width:180px;
+    }
+    .side-nav.open .side-nav-panel{
+      opacity:1;pointer-events:auto;
+      transform:translateY(0) scale(1);
+    }
+    .side-nav{flex-direction:column-reverse;top:auto;bottom:24px;transform:none;max-height:none}
+  }
+  @media (max-width:660px){
+    .wrap{padding:20px 14px 80px}
+    .btn .lbl{display:none}
+    .hero-top{flex-direction:column;align-items:stretch;gap:12px}
+    .toolbar{flex-direction:column;align-items:stretch;margin:16px -14px 4px;padding:10px 14px;border-radius:0}
+    .lm{flex-direction:column;align-items:stretch;gap:10px}
+    .lm-main{flex-direction:column;align-items:stretch;gap:10px}
+    .lm-right{width:100%;flex-wrap:wrap;justify-content:space-between;padding-top:8px;border-top:1px dashed var(--border)}
+    .machines,.future{grid-template-columns:1fr}
+    .flink-list{grid-template-columns:1fr}
+    .form-row{grid-template-columns:1fr}
+    .form-actions{flex-direction:column-reverse}
+    .form-actions .btn{width:100%;justify-content:center}
+    .side-nav{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+    .side-nav-toggle{width:52px;height:52px}
+  }
+
   .add-modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s ease}
   .add-modal.open{opacity:1;pointer-events:auto}
   .add-modal-backdrop{position:absolute;inset:0;background:var(--modal-backdrop);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
@@ -205,27 +334,34 @@
   .form-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:8px;border-top:1px solid var(--border)}
   .btn-cancel{background:transparent;border:1px solid var(--border);color:var(--muted)}
   .btn-cancel:hover{color:var(--text);border-color:var(--border-hover)}
-
-  @media (max-width:660px){
-    .wrap{padding:20px 14px 80px}
-    .btn .lbl{display:none}
-    .hero-top{flex-direction:column;align-items:stretch;gap:12px}
-    .toolbar{flex-direction:column;align-items:stretch;margin:16px -14px 4px;padding:10px 14px;border-radius:0}
-    .lm{flex-direction:column;align-items:stretch;gap:10px}
-    .lm-main{flex-direction:column;align-items:stretch;gap:10px}
-    .lm-right{width:100%;flex-wrap:wrap;justify-content:space-between;padding-top:8px;border-top:1px dashed var(--border)}
-    .machines,.future{grid-template-columns:1fr}
-    .flink-list{grid-template-columns:1fr}
-    .form-row{grid-template-columns:1fr}
-    .form-actions{flex-direction:column-reverse}
-    .form-actions .btn{width:100%;justify-content:center}
-  }
 </style>
 </head>
 <body>
+
+<!-- ============ 右侧导航 ============ -->
+<nav class="side-nav" id="side-nav" aria-label="Section navigation">
+  <button class="side-nav-toggle" id="side-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <svg class="ico" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="5" cy="18" r="1.5"/><path d="M10 6h10"/><path d="M10 12h10"/><path d="M10 18h10"/></svg>
+  </button>
+  <div class="side-nav-panel" id="side-nav-panel">
+    <div class="side-nav-title">
+      <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v4"/></svg>
+      <span data-i18n="navTitle">导航</span>
+    </div>
+    <ul class="side-nav-list">
+      <li><a class="side-nav-link" href="#anchor-hero" data-nav-target="anchor-hero"><span data-i18n="navOverview">概览</span><span class="side-nav-idx">01</span></a></li>
+      <li><a class="side-nav-link" href="#anchor-usable" data-nav-target="anchor-usable"><span data-i18n="navUsable">可使用</span><span class="side-nav-idx">02</span></a></li>
+      <li><a class="side-nav-link" href="#anchor-unusable" data-nav-target="anchor-unusable"><span data-i18n="navUnusable">不可使用</span><span class="side-nav-idx">03</span></a></li>
+      <li><a class="side-nav-link" href="#anchor-machines" data-nav-target="anchor-machines"><span data-i18n="navMachines">生电设施</span><span class="side-nav-idx">04</span></a></li>
+      <li><a class="side-nav-link" href="#anchor-future" data-nav-target="anchor-future"><span data-i18n="navFuture">未来计划</span><span class="side-nav-idx">05</span></a></li>
+      <li><a class="side-nav-link" href="#anchor-links" data-nav-target="anchor-links"><span data-i18n="navLinks">友情链接</span><span class="side-nav-idx">06</span></a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="wrap">
 
-  <header>
+  <header id="anchor-hero">
     <div class="hero-top">
       <div>
         <h1 data-i18n="title">66QN 服务器地标坐标总览</h1>
@@ -282,14 +418,14 @@
     </button>
   </div>
 
-  <h2 class="sec-title">
+  <h2 class="sec-title" id="anchor-usable">
     <span class="st-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg></span>
     <span data-i18n="secUsable">可使用</span>
     <span class="count" id="cnt-usable"></span>
   </h2>
   <div data-section id="sec-usable"></div>
 
-  <h2 class="sec-title">
+  <h2 class="sec-title" id="anchor-unusable">
     <span class="st-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/></svg></span>
     <span data-i18n="secUnusable">不可使用</span>
     <span class="count" id="cnt-unusable"></span>
@@ -301,19 +437,19 @@
     <span data-i18n="emptyText">没有匹配的地标</span>
   </div>
 
-  <h2 class="sec-title">
+  <h2 class="sec-title" id="anchor-machines">
     <span class="st-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg></span>
     <span data-i18n="secMachines">自建生电设施详情</span>
   </h2>
   <div class="machines" id="machines"></div>
 
-  <h2 class="sec-title">
+  <h2 class="sec-title" id="anchor-future">
     <span class="st-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 20V9l6-4 6 4v11"/><path d="M10 20v-5h4v5"/></svg></span>
     <span data-i18n="secFuture">未来 / 正在筹备 / 正在建设</span>
   </h2>
   <div class="future" id="future"></div>
 
-  <section class="friend-links">
+  <section class="friend-links" id="anchor-links">
     <h3>
       <svg class="ico" viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>
       <span data-i18n="friendLinks">友情链接</span>
@@ -326,6 +462,10 @@
       <a class="flink" href="https://www.minecraft.net/" target="_blank" rel="noopener">
         <span class="flink-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="m3 7 9 5 9-5"/><path d="M12 12v10"/></svg></span>
         <span class="flink-body"><span class="flink-title">Minecraft 官网</span><span class="flink-sub">minecraft.net</span></span>
+      </a>
+      <a class="flink" href="https://bugs.mojang.com/" target="_blank" rel="noopener">
+        <span class="flink-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="m6 6-2.5-2.5"/><path d="m18 6 2.5-2.5"/><path d="m6 18-2.5 2.5"/><path d="m18 18 2.5 2.5"/><path d="M9 12H3"/><path d="M21 12h-6"/><path d="M12 9V3"/><path d="M12 21v-6"/></svg></span>
+        <span class="flink-body"><span class="flink-title">漏洞追踪器</span><span class="flink-sub">bugs.mojang.com</span></span>
       </a>
     </div>
   </section>
@@ -497,7 +637,10 @@ const I18N = {
     errBuilder:'请填写建造者',
     errTechRate:'勾选“生电”后必须填写效率说明',
     errTechProducts:'勾选“生电”后必须填写产物',
-    errNoLocation:'请至少填写一个有效的地点坐标'
+    errNoLocation:'请至少填写一个有效的地点坐标',
+    navTitle:'导航',
+    navOverview:'概览', navUsable:'可使用', navUnusable:'不可使用',
+    navMachines:'生电设施', navFuture:'未来计划', navLinks:'友情链接'
   },
   en: {
     docTitle:'66QN Server Landmark Coordinates', title:'66QN Server Landmark Coordinates', subtitle:'Minecraft Java 26.2 · All coordinates verified',
@@ -531,7 +674,10 @@ const I18N = {
     errBuilder:'Builder is required',
     errTechRate:'Rate is required when "Tech" tag is selected',
     errTechProducts:'Products are required when "Tech" tag is selected',
-    errNoLocation:'Please fill in at least one valid location'
+    errNoLocation:'Please fill in at least one valid location',
+    navTitle:'Navigation',
+    navOverview:'Overview', navUsable:'Available', navUnusable:'Unavailable',
+    navMachines:'Tech', navFuture:'Future', navLinks:'Links'
   }
 };
 
@@ -842,6 +988,61 @@ function renderAll(){
   renderFuture();
   applyFilter();
   syncExpandAllBtn();
+  setupNavObserver();
+}
+
+/* ============ 导航系统 ============ */
+const sideNav = document.getElementById('side-nav');
+const sideNavToggle = document.getElementById('side-nav-toggle');
+const NAV_TARGETS = ['anchor-hero', 'anchor-usable', 'anchor-unusable', 'anchor-machines', 'anchor-future', 'anchor-links'];
+
+if (sideNavToggle){
+  sideNavToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = sideNav.classList.toggle('open');
+    sideNavToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+}
+document.addEventListener('click', e => {
+  if (!sideNav.contains(e.target)) sideNav.classList.remove('open');
+});
+
+document.querySelectorAll('.side-nav-link').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const id = link.dataset.navTarget;
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveNav(id);
+    sideNav.classList.remove('open');
+    sideNavToggle && sideNavToggle.setAttribute('aria-expanded', 'false');
+  });
+});
+
+function setActiveNav(id){
+  document.querySelectorAll('.side-nav-link').forEach(a => {
+    a.classList.toggle('active', a.dataset.navTarget === id);
+  });
+}
+
+let navObserver = null;
+function setupNavObserver(){
+  if (navObserver) navObserver.disconnect();
+  const targets = NAV_TARGETS.map(id => document.getElementById(id)).filter(Boolean);
+  if (!targets.length) return;
+  navObserver = new IntersectionObserver(entries => {
+    // 找到最靠上、当前可见的
+    const visible = entries.filter(en => en.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    if (visible.length > 0){
+      setActiveNav(visible[0].target.id);
+    }
+  }, {
+    rootMargin: '-120px 0px -55% 0px',
+    threshold: 0
+  });
+  targets.forEach(t => navObserver.observe(t));
 }
 
 document.addEventListener('click', e => {
