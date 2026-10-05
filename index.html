@@ -75,17 +75,7 @@
   .notice .n-body{flex:1;min-width:0}
   .notice .n-title{font-weight:600;margin-bottom:2px}
   .notice.warn{background:var(--warn-bg);border-color:var(--warn-border);color:var(--warn-text)}
-  .notice.danger{background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger-text)}
-  .seed-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
-  .seed-label{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
   code.inline{font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;font-size:12.5px;background:var(--code-bg);border:1px solid var(--border);padding:2px 7px;border-radius:6px;color:var(--code-text)}
-  .panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin:18px 0}
-  .panel h2{margin:0 0 12px;font-size:17px;display:flex;align-items:center;gap:9px}
-  .panel h2 .ico{font-size:18px;color:var(--accent)}
-  .panel p{margin:6px 0;font-size:14px;color:var(--text-2)}
-  .panel ul{margin:8px 0 4px;padding-left:0;list-style:none;font-size:14px;color:var(--text-2)}
-  .panel li{margin:6px 0;display:flex;gap:9px;align-items:flex-start}
-  .panel li .ico{font-size:15px;color:var(--accent);margin-top:3px}
   .toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:20;margin:26px 0 6px;padding:12px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:13px}
   .search-box{flex:1;min-width:190px;position:relative;display:flex;align-items:center}
   .search-box .ico{position:absolute;left:12px;font-size:16px;color:var(--faint);pointer-events:none}
@@ -262,36 +252,10 @@
       <svg class="ico" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3z"/><path d="M12 9v5"/><path d="M12 17.5h.01"/></svg>
       <div class="n-body">
         <div class="n-title" data-i18n="warnTitle">保密提示</div>
-        <div data-i18n="warnText">以下坐标、建筑与种子信息注意保密，请勿对外传播。</div>
+        <div data-i18n="warnText">以下坐标与建筑信息注意保密，请勿对外传播。</div>
       </div>
-    </div>
-    <div class="notice danger">
-      <svg class="ico" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.3"/></svg>
-      <div class="n-body">
-        <div class="n-title" data-i18n="seedTitle">世界种子（严禁传播）</div>
-        <div data-i18n="seedText">使用 SeedcrackerX 获取，经验证为真。</div>
-      </div>
-    </div>
-    <div class="seed-row">
-      <span class="seed-label">
-        <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-        <span data-i18n="seedLabel">种子</span>
-      </span>
-      <code class="inline">-7333588517802470129</code>
-      <button class="btn-copy" data-copy="-7333588517802470129">
-        <svg class="ico" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-        <span data-i18n="btnCopy">复制</span>
-      </button>
     </div>
   </header>
-
-  <section class="panel">
-    <h2>
-      <svg class="ico" viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-      <span data-i18n="lskTitle">传送指令 /lsktp</span>
-    </h2>
-    <p data-i18n="lskDesc">可直接传送至某维度的指定坐标，无需权限即可使用。</p>
-  </section>
 
   <div class="toolbar">
     <div class="search-box">
@@ -516,9 +480,7 @@ const I18N = {
   zh: {
     docTitle:'66QN 服务器地标坐标总览', title:'66QN 服务器地标坐标总览', subtitle:'Minecraft Java 26.2 · 坐标均为准确无误',
     themeDark:'深色模式', themeLight:'浅色模式',
-    warnTitle:'保密提示', warnText:'以下坐标、建筑与种子信息注意保密，请勿对外传播。',
-    seedTitle:'世界种子（严禁传播）', seedText:'使用 SeedcrackerX 获取，经验证为真。', seedLabel:'种子', btnCopy:'复制',
-    lskTitle:'传送指令 /lsktp', lskDesc:'可直接传送至某维度的指定坐标，无需权限即可使用。',
+    warnTitle:'保密提示', warnText:'以下坐标与建筑信息注意保密，请勿对外传播。',
     searchPlaceholder:'搜索名称、说明、坐标、标签…',
     filterDim:'维度', filterCat:'类别',
     chipAll:'全部', chipOverworld:'主世界', chipNether:'下界', chipEnd:'末地',
@@ -553,9 +515,7 @@ const I18N = {
   en: {
     docTitle:'66QN Server Landmark Coordinates', title:'66QN Server Landmark Coordinates', subtitle:'Minecraft Java 26.2 · All coordinates verified',
     themeDark:'Dark Mode', themeLight:'Light Mode',
-    warnTitle:'Confidential Notice', warnText:'Coordinates, builds and seed below are confidential.',
-    seedTitle:'World Seed (STRICTLY CONFIDENTIAL)', seedText:'Obtained via SeedcrackerX, verified genuine.', seedLabel:'Seed', btnCopy:'Copy',
-    lskTitle:'Teleport /lsktp', lskDesc:'Teleport directly to any dimension and coordinate. No permission required.',
+    warnTitle:'Confidential Notice', warnText:'Coordinates and builds below are confidential.',
     searchPlaceholder:'Search name, note, coordinates, tags…',
     filterDim:'Dimension', filterCat:'Category',
     chipAll:'All', chipOverworld:'Overworld', chipNether:'Nether', chipEnd:'The End',
