@@ -18,6 +18,7 @@
     --hero-a:#eafff1; --hero-b:#8fe6b3; --hero-c:#6ec8ff;
     --tag-tech:#6ec8ff; --tag-trade:#f0c674; --tag-farm:#8fe6b3;
     --tag-legacy:#8b98a9; --tag-cheap:#ff9a7a; --tag-dead:#ff7b7b;
+    --warn:#f0c674;
     --modal-backdrop:rgba(0,0,0,.65);
   }
   :root[data-theme="light"]{
@@ -32,13 +33,14 @@
     --hero-a:#1f8a55; --hero-b:#2f8f5f; --hero-c:#3a7bd5;
     --tag-tech:#1d6fb8; --tag-trade:#a07000; --tag-farm:#1f8a55;
     --tag-legacy:#6b7686; --tag-cheap:#c2571f; --tag-dead:#c0392b;
+    --warn:#8a6100;
     --modal-backdrop:rgba(40,60,90,.42);
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
   body{margin:0;background:radial-gradient(1100px 520px at 50% -220px,var(--bg-grad-1),transparent 70%),radial-gradient(900px 500px at 90% 10%,var(--bg-grad-2),transparent 70%),var(--bg);background-repeat:no-repeat;color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased;transition:background-color .3s ease,color .3s ease;overflow-x:hidden}
   .wrap{max-width:1120px;margin:0 auto;padding:36px 20px 90px}
-  header[id],h2[id],section[id],div[id^="anchor"]{scroll-margin-top:90px}
+  header[id],h2[id],section[id]{scroll-margin-top:90px}
   .ico{width:1em;height:1em;display:inline-block;vertical-align:-0.13em;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
   .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
   h1{margin:0;font-size:clamp(24px,3.6vw,38px);letter-spacing:.4px;line-height:1.25;background:linear-gradient(92deg,var(--hero-a),var(--hero-b) 55%,var(--hero-c));-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -60,15 +62,32 @@
   .btn.primary{background:linear-gradient(180deg,#3f8f5f,#2f7049);border-color:#4aa06c;color:#eaffef;font-weight:600;box-shadow:0 4px 14px -6px rgba(95,191,127,.7)}
   .btn.primary:hover{filter:brightness(1.08)}
   .btn.mini{font-size:13px;padding:7px 13px}
-  .btn-copy{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--code-text);background:var(--tag-bg);border:1px solid var(--border);padding:5px 11px;border-radius:7px;transition:.16s ease;white-space:nowrap}
-  .btn-copy:hover{background:var(--panel-2);border-color:var(--border-hover)}
-  .btn-copy .ico{font-size:13px}
-  .btn-copy.done{background:#2c5a41;color:#eafff1;border-color:#3f8f5f}
-  .btn-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);transition:.16s;flex-shrink:0}
-  .btn-icon:hover{background:var(--panel-2)}
-  .btn-icon.edit:hover{color:var(--accent);border-color:var(--accent)}
-  .btn-icon.delete:hover{color:#e5534b;border-color:#e5534b;background:color-mix(in srgb,#e5534b 10%,transparent)}
-  .btn-icon .ico{font-size:14px}
+  .download-wrap{position:relative;display:inline-block}
+  .download-wrap .chev-down{font-size:12px;transition:transform .22s ease;margin-left:-2px}
+  .download-wrap.open .chev-down{transform:rotate(180deg)}
+  .download-wrap.open .btn{border-color:var(--accent)}
+  .download-dropdown{position:absolute;top:calc(100% + 8px);right:0;min-width:270px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:8px;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transform:translateY(-8px) scale(.96);transform-origin:top right;transition:opacity .2s ease, transform .24s cubic-bezier(.2,.9,.3,1.1);z-index:80}
+  .download-wrap.open .download-dropdown{opacity:1;pointer-events:auto;transform:translateY(0) scale(1)}
+  .dd-item{display:flex;align-items:center;gap:12px;width:100%;padding:11px 13px;border-radius:10px;background:transparent;border:none;color:var(--text);text-align:left;font-family:inherit;transition:background-color .15s ease, transform .12s ease;-webkit-tap-highlight-color:transparent;cursor:pointer}
+  .dd-item:hover{background:var(--panel-2)}
+  .dd-item:active{transform:scale(.985)}
+  .dd-item .ico{font-size:20px;color:var(--accent);flex-shrink:0}
+  .dd-item-main{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+  .dd-item-title{font-weight:600;font-size:13.5px;color:var(--text);line-height:1.35}
+  .dd-item-sub{font-size:11.5px;color:var(--muted);font-family:ui-monospace,monospace;letter-spacing:.2px}
+  .dd-item:hover .dd-item-title{color:var(--accent-2)}
+  .dd-backdrop{position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .2s ease;display:none}
+  body.is-mobile .dd-backdrop{display:block}
+  body.is-mobile .dd-backdrop.show{opacity:1;pointer-events:auto}
+  @media (max-width:660px){
+    .download-wrap{display:contents}
+    .download-dropdown{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));top:auto;min-width:0;border-radius:18px;padding:10px;transform:translateY(24px) scale(.98);transform-origin:bottom center}
+    .download-wrap.open .download-dropdown{transform:translateY(0) scale(1)}
+    .dd-item{padding:14px;border-radius:12px;gap:14px}
+    .dd-item .ico{font-size:22px}
+    .dd-item-title{font-size:15px}
+    .dd-item-sub{font-size:12px}
+  }
   .toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:20;margin:26px 0 6px;padding:12px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:13px}
   .search-box{flex:1;min-width:190px;position:relative;display:flex;align-items:center}
   .search-box .ico{position:absolute;left:12px;font-size:16px;color:var(--faint);pointer-events:none}
@@ -130,6 +149,15 @@
   .child-label .ico{font-size:12px;color:var(--accent)}
   .child-row .coords{flex-shrink:0}
   .child-row .btn-copy{margin-left:auto}
+  .btn-copy{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--code-text);background:var(--tag-bg);border:1px solid var(--border);padding:5px 11px;border-radius:7px;transition:.16s ease;white-space:nowrap}
+  .btn-copy:hover{background:var(--panel-2);border-color:var(--border-hover)}
+  .btn-copy .ico{font-size:13px}
+  .btn-copy.done{background:#2c5a41;color:#eafff1;border-color:#3f8f5f}
+  .btn-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);transition:.16s;flex-shrink:0}
+  .btn-icon:hover{background:var(--panel-2)}
+  .btn-icon.edit:hover{color:var(--accent);border-color:var(--accent)}
+  .btn-icon.delete:hover{color:#e5534b;border-color:#e5534b;background:color-mix(in srgb,#e5534b 10%,transparent)}
+  .btn-icon .ico{font-size:14px}
   .machines{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
   .machine{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:16px 18px}
   .machine h3{margin:0 0 12px;font-size:16px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
@@ -161,303 +189,68 @@
   .empty{text-align:center;color:var(--muted);font-size:14px;padding:50px 0;display:none}
   .empty .ico{font-size:34px;color:var(--faint);display:block;margin:0 auto 12px}
   footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:8px}
-
-  /* ==================== 导航系统 v2 ==================== */
-  .side-nav-backdrop{
-    display:none;
-    position:fixed;inset:0;
-    background:var(--modal-backdrop);
-    backdrop-filter:blur(5px);
-    -webkit-backdrop-filter:blur(5px);
-    z-index:45;
-    opacity:0;pointer-events:none;
-    transition:opacity .24s ease;
-  }
+  .side-nav-backdrop{display:none;position:fixed;inset:0;background:var(--modal-backdrop);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);z-index:45;opacity:0;pointer-events:none;transition:opacity .24s ease}
   .side-nav-backdrop.show{opacity:1;pointer-events:auto}
-
-  .side-nav{
-    position:fixed;
-    right:22px;
-    top:50%;
-    transform:translateY(-50%);
-    z-index:50;
-    display:flex;
-    flex-direction:column;
-    align-items:flex-end;
-    gap:12px;
-  }
-
-  /* 移动端悬浮按钮 */
-  .side-nav-fab{
-    display:none;
-    width:58px;height:58px;
-    border-radius:50%;
-    border:none;
-    background:linear-gradient(180deg,#3f8f5f,#2f7049);
-    color:#eaffef;
-    box-shadow:0 10px 28px -10px rgba(95,191,127,.95), 0 3px 10px -4px rgba(0,0,0,.6);
-    align-items:center;justify-content:center;
-    transition:transform .16s ease, box-shadow .16s ease;
-    -webkit-tap-highlight-color:transparent;
-    touch-action:manipulation;
-    cursor:pointer;
-  }
+  .side-nav{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+  .side-nav-fab{display:none;width:58px;height:58px;border-radius:50%;border:none;background:linear-gradient(180deg,#3f8f5f,#2f7049);color:#eaffef;box-shadow:0 10px 28px -10px rgba(95,191,127,.95), 0 3px 10px -4px rgba(0,0,0,.6);align-items:center;justify-content:center;transition:transform .16s ease;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .side-nav-fab:active{transform:scale(.92)}
   .side-nav-fab .ico{font-size:24px}
   .side-nav-fab .fab-open{display:block}
   .side-nav-fab .fab-close{display:none}
   .side-nav.open .side-nav-fab .fab-open{display:none}
   .side-nav.open .side-nav-fab .fab-close{display:block}
-
-  /* 面板 */
-  .side-nav-panel{
-    width:220px;
-    max-height:80vh;
-    background:color-mix(in srgb,var(--panel) 94%,transparent);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:14px 12px;
-    box-shadow:var(--shadow-lg);
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-    transition:
-      width .32s cubic-bezier(.2,.9,.3,1),
-      padding .32s cubic-bezier(.2,.9,.3,1);
-    overflow:hidden;
-  }
-
-  /* 头部 */
-  .side-nav-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    padding:2px 4px 10px;
-    border-bottom:1px solid var(--border);
-    margin-bottom:6px;
-    min-height:32px;
-  }
-  .side-nav-title{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:1px;
-    text-transform:uppercase;
-    color:var(--faint);
-    white-space:nowrap;
-    flex:1;
-    min-width:0;
-    overflow:hidden;
-  }
+  .side-nav-panel{width:220px;max-height:80vh;background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:16px;padding:14px 12px;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;gap:4px;transition:width .32s cubic-bezier(.2,.9,.3,1), padding .32s cubic-bezier(.2,.9,.3,1);overflow:hidden}
+  .side-nav-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 4px 10px;border-bottom:1px solid var(--border);margin-bottom:6px;min-height:32px}
+  .side-nav-title{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--faint);white-space:nowrap;flex:1;min-width:0;overflow:hidden}
   .side-nav-title .ico{font-size:14px;color:var(--accent);flex-shrink:0}
-
-  .side-nav-collapse{
-    width:28px;height:28px;
-    border-radius:8px;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    background:transparent;
-    border:1px solid transparent;
-    color:var(--muted);
-    transition:.16s;
-    flex-shrink:0;
-  }
-  .side-nav-collapse:hover{
-    background:var(--panel-2);
-    border-color:var(--border);
-    color:var(--text);
-  }
+  .side-nav-collapse{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;color:var(--muted);transition:.16s;flex-shrink:0}
+  .side-nav-collapse:hover{background:var(--panel-2);border-color:var(--border);color:var(--text)}
   .side-nav-collapse .ico{font-size:15px}
   .side-nav-collapse .chev-right{display:none}
-
-  /* 列表 */
-  .side-nav-list{
-    list-style:none;
-    margin:0;
-    padding:0;
-    display:flex;
-    flex-direction:column;
-    gap:3px;
-    overflow-y:auto;
-    scrollbar-width:thin;
-  }
+  .side-nav-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;overflow-y:auto;scrollbar-width:thin}
   .side-nav-list::-webkit-scrollbar{width:4px}
   .side-nav-list::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:3px}
-
-  .side-nav-link{
-    display:flex;
-    align-items:center;
-    gap:11px;
-    padding:10px 12px;
-    border-radius:9px;
-    font-size:13.5px;
-    color:var(--muted);
-    text-decoration:none;
-    transition:.16s ease;
-    border-left:3px solid transparent;
-    margin-left:-1px;
-    white-space:nowrap;
-    min-height:42px;
-    position:relative;
-  }
-  .side-nav-link:hover{
-    color:var(--text);
-    background:var(--panel-2);
-  }
-  .side-nav-link-icon{
-    width:22px;height:22px;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-    color:var(--muted);
-    transition:.16s;
-  }
+  .side-nav-link{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:.16s ease;border-left:3px solid transparent;margin-left:-1px;white-space:nowrap;min-height:42px;position:relative}
+  .side-nav-link:hover{color:var(--text);background:var(--panel-2)}
+  .side-nav-link-icon{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--muted);transition:.16s}
   .side-nav-link-icon .ico{font-size:16px}
-  .side-nav-link-text{
-    flex:1;
-    min-width:0;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .side-nav-idx{
-    font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;
-    font-size:10.5px;
-    color:var(--faint);
-    letter-spacing:.4px;
-    flex-shrink:0;
-    transition:.16s;
-  }
-  .side-nav-link.active{
-    color:var(--accent-2);
-    background:color-mix(in srgb,var(--accent) 12%,transparent);
-    border-left-color:var(--accent);
-    font-weight:600;
-  }
+  .side-nav-link-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .side-nav-idx{font-family:ui-monospace,monospace;font-size:10.5px;color:var(--faint);letter-spacing:.4px;flex-shrink:0;transition:.16s}
+  .side-nav-link.active{color:var(--accent-2);background:color-mix(in srgb,var(--accent) 12%,transparent);border-left-color:var(--accent);font-weight:600}
   .side-nav-link.active .side-nav-link-icon{color:var(--accent)}
   .side-nav-link.active .side-nav-idx{color:var(--accent)}
-
-  /* 折叠态（仅桌面） */
-  .side-nav.collapsed .side-nav-panel{
-    width:60px;
-    padding:14px 8px;
-  }
-  .side-nav.collapsed .side-nav-head{
-    justify-content:center;
-    padding:2px 0 10px;
-  }
+  .side-nav.collapsed .side-nav-panel{width:60px;padding:14px 8px}
+  .side-nav.collapsed .side-nav-head{justify-content:center;padding:2px 0 10px}
   .side-nav.collapsed .side-nav-title{display:none}
   .side-nav.collapsed .side-nav-collapse .chev-left{display:none}
   .side-nav.collapsed .side-nav-collapse .chev-right{display:block}
-  .side-nav.collapsed .side-nav-link{
-    justify-content:center;
-    padding:10px 0;
-    border-left-color:transparent;
-  }
-  .side-nav.collapsed .side-nav-link-text,
-  .side-nav.collapsed .side-nav-idx{display:none}
-  .side-nav.collapsed .side-nav-link.active{
-    border-left-color:transparent;
-    background:color-mix(in srgb,var(--accent) 15%,transparent);
-  }
-
-  /* ============ 移动端 / 平板 ============ */
-  @media (max-width: 1180px) {
+  .side-nav.collapsed .side-nav-link{justify-content:center;padding:10px 0;border-left-color:transparent}
+  .side-nav.collapsed .side-nav-link-text,.side-nav.collapsed .side-nav-idx{display:none}
+  .side-nav.collapsed .side-nav-link.active{border-left-color:transparent;background:color-mix(in srgb,var(--accent) 15%,transparent)}
+  @media (max-width:1180px){
     .side-nav-backdrop{display:block}
-
-    .side-nav{
-      top:auto;
-      bottom:calc(20px + env(safe-area-inset-bottom,0px));
-      right:16px;
-      transform:none;
-      align-items:flex-end;
-      gap:0;
-    }
-
+    .side-nav{top:auto;bottom:calc(20px + env(safe-area-inset-bottom,0px));right:16px;transform:none;align-items:flex-end;gap:0}
     .side-nav-fab{display:flex}
-
-    .side-nav-panel{
-      position:fixed;
-      right:16px;
-      bottom:calc(90px + env(safe-area-inset-bottom,0px));
-      width:calc(100% - 32px);
-      max-width:400px;
-      max-height:62vh;
-      padding:16px 14px;
-      border-radius:18px;
-      opacity:0;
-      pointer-events:none;
-      transform:translateY(20px) scale(.96);
-      transform-origin:bottom right;
-      transition:opacity .24s ease, transform .32s cubic-bezier(.2,.9,.3,1.05);
-      box-shadow:0 24px 60px -12px rgba(0,0,0,.55);
-    }
-    .side-nav.open .side-nav-panel{
-      opacity:1;
-      pointer-events:auto;
-      transform:translateY(0) scale(1);
-    }
-
-    /* 忽略桌面折叠态 */
-    .side-nav.collapsed .side-nav-panel{
-      width:calc(100% - 32px);
-      padding:16px 14px;
-    }
+    .side-nav-panel{position:fixed;right:16px;bottom:calc(90px + env(safe-area-inset-bottom,0px));width:calc(100% - 32px);max-width:400px;max-height:62vh;padding:16px 14px;border-radius:18px;opacity:0;pointer-events:none;transform:translateY(20px) scale(.96);transform-origin:bottom right;transition:opacity .24s ease, transform .32s cubic-bezier(.2,.9,.3,1.05);box-shadow:0 24px 60px -12px rgba(0,0,0,.55)}
+    .side-nav.open .side-nav-panel{opacity:1;pointer-events:auto;transform:translateY(0) scale(1)}
+    .side-nav.collapsed .side-nav-panel{width:calc(100% - 32px);padding:16px 14px}
     .side-nav.collapsed .side-nav-title{display:inline-flex}
-    .side-nav.collapsed .side-nav-link-text,
-    .side-nav.collapsed .side-nav-idx{display:inline}
+    .side-nav.collapsed .side-nav-link-text,.side-nav.collapsed .side-nav-idx{display:inline}
     .side-nav.collapsed .side-nav-head{justify-content:space-between;padding:2px 4px 12px}
-    .side-nav.collapsed .side-nav-link{
-      justify-content:flex-start;
-      padding:14px 16px;
-      border-left-width:3px;
-    }
-    .side-nav.collapsed .side-nav-link.active{
-      border-left-color:var(--accent);
-      background:color-mix(in srgb,var(--accent) 12%,transparent);
-    }
-
+    .side-nav.collapsed .side-nav-link{justify-content:flex-start;padding:14px 16px;border-left-width:3px}
+    .side-nav.collapsed .side-nav-link.active{border-left-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
     .side-nav-collapse{display:none}
-
-    /* 移动端大触摸目标 */
-    .side-nav-head{
-      padding:2px 6px 14px;
-      margin-bottom:8px;
-      min-height:34px;
-    }
+    .side-nav-head{padding:2px 6px 14px;margin-bottom:8px;min-height:34px}
     .side-nav-title{font-size:12px;letter-spacing:1.1px}
     .side-nav-title .ico{font-size:15px}
-
-    .side-nav-link{
-      padding:14px 16px;
-      min-height:52px;
-      font-size:15px;
-      gap:14px;
-      border-radius:11px;
-    }
+    .side-nav-link{padding:14px 16px;min-height:52px;font-size:15px;gap:14px;border-radius:11px}
     .side-nav-link-icon{width:26px;height:26px}
     .side-nav-link-icon .ico{font-size:18px}
     .side-nav-idx{font-size:11.5px}
   }
-
-  /* 手机竖屏微调 */
-  @media (max-width: 480px) {
-    .side-nav-panel{
-      right:12px;
-      left:12px;
-      width:auto;
-      max-width:none;
-      bottom:calc(88px + env(safe-area-inset-bottom,0px));
-    }
+  @media (max-width:480px){
+    .side-nav-panel{right:12px;left:12px;width:auto;max-width:none;bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   }
-
-  /* ============ 通用响应式 ============ */
   @media (max-width:660px){
     .wrap{padding:20px 14px 100px}
     .btn .lbl{display:none}
@@ -475,26 +268,22 @@
     .stat{font-size:12px}
     .stat b{font-size:14.5px}
     .sec-title{font-size:17px;margin:28px 0 12px}
-    .tag{padding:3px 8px;min-height:22px}
-    .dim-badge{padding:4px 10px;min-height:26px}
     .coords{padding:8px 12px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;flex:1}
     .btn-copy{padding:8px 13px;font-size:12.5px;min-height:40px;justify-content:center}
-    .friend-links{padding:16px}
     #toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   }
 
-  /* ==================== 新增地标弹窗 ==================== */
-  .add-modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s ease}
-  .add-modal.open{opacity:1;pointer-events:auto}
-  .add-modal-backdrop{position:absolute;inset:0;background:var(--modal-backdrop);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
-  .add-modal-box{position:relative;z-index:1;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px 30px 24px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:translateY(14px) scale(.96);transition:transform .24s cubic-bezier(.2,.9,.3,1.2)}
-  .add-modal.open .add-modal-box{transform:translateY(0) scale(1)}
-  .add-modal-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:16px;transition:.16s;cursor:pointer}
-  .add-modal-close:hover{color:var(--text);border-color:var(--border-hover);background:var(--panel-2)}
-  .add-modal-title{margin:0 0 4px;font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
-  .add-modal-title .ico{font-size:22px;color:var(--accent)}
-  .add-modal-subtitle{margin:0 0 20px;font-size:13px;color:var(--muted)}
-  .add-form{display:flex;flex-direction:column;gap:16px}
+  /* 弹窗通用 */
+  .add-modal,.import-modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s ease}
+  .add-modal.open,.import-modal.open{opacity:1;pointer-events:auto}
+  .add-modal-backdrop,.import-modal-backdrop{position:absolute;inset:0;background:var(--modal-backdrop);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+  .add-modal-box,.import-modal-box{position:relative;z-index:1;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px 30px 24px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:translateY(14px) scale(.96);transition:transform .24s cubic-bezier(.2,.9,.3,1.2)}
+  .add-modal.open .add-modal-box,.import-modal.open .import-modal-box{transform:translateY(0) scale(1)}
+  .add-modal-close,.import-modal-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:16px;transition:.16s;cursor:pointer}
+  .add-modal-close:hover,.import-modal-close:hover{color:var(--text);border-color:var(--border-hover);background:var(--panel-2)}
+  .add-modal-title,.import-modal-title{margin:0 0 4px;font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
+  .add-modal-title .ico,.import-modal-title .ico{font-size:22px;color:var(--accent)}
+  .add-modal-subtitle,.import-modal-subtitle{margin:0 0 20px;font-size:13px;color:var(--muted)}
   .form-group{display:flex;flex-direction:column;gap:5px}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .form-row-3{grid-template-columns:1fr 1fr 1fr}
@@ -502,7 +291,7 @@
   .required{color:#e5534b;font-weight:700}
   .form-input,.form-select,.form-textarea{width:100%;background:var(--code-bg);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:.16s;-webkit-appearance:none;appearance:none}
   .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(95,191,127,.13)}
-  .form-input::placeholder{color:var(--faint)}
+  .form-input::placeholder,.form-textarea::placeholder{color:var(--faint)}
   .form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b98a9' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;cursor:pointer}
   .form-textarea{resize:vertical;min-height:70px;line-height:1.6}
   .tag-picker{display:flex;flex-wrap:wrap;gap:7px}
@@ -522,14 +311,37 @@
   .location-row .btn-remove-location:hover{color:#e5534b;border-color:#e5534b}
   .btn-add-location{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:7px 14px;border-radius:8px;border:1px dashed var(--border-hover);background:transparent;color:var(--muted);transition:.16s;cursor:pointer;font-family:inherit}
   .btn-add-location:hover{color:var(--accent-2);border-color:var(--accent)}
-  .form-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:8px;border-top:1px solid var(--border)}
+  .form-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:8px;border-top:1px solid var(--border);margin-top:16px}
   .btn-cancel{background:transparent;border:1px solid var(--border);color:var(--muted)}
   .btn-cancel:hover{color:var(--text);border-color:var(--border-hover)}
+  .add-form{display:flex;flex-direction:column;gap:16px}
+
+  /* 批量导入专用 */
+  .import-tabs{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--panel-2);margin-bottom:14px}
+  .import-tab{font-size:13px;padding:8px 20px;background:transparent;border:none;color:var(--muted);transition:.16s;cursor:pointer;font-family:inherit;font-weight:600;letter-spacing:.4px}
+  .import-tab.active{background:var(--tag-bg);color:var(--accent-2)}
+  .import-tab + .import-tab{border-left:1px solid var(--border)}
+  .import-upload{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .import-filename{font-size:12px;color:var(--muted);font-family:ui-monospace,monospace;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .import-textarea{width:100%;min-height:180px;background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:13px;font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;outline:none;transition:.16s;resize:vertical;line-height:1.6;-webkit-appearance:none;appearance:none}
+  .import-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(95,191,127,.13)}
+  .import-hint{margin-top:10px;font-size:12.5px;color:var(--muted);padding:8px 12px;border-radius:8px;border:1px dashed var(--border);background:var(--panel-2)}
+  .import-hint.success{color:var(--accent-2);border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:color-mix(in srgb,var(--accent) 8%,transparent);border-style:solid}
+  .import-hint.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent);background:color-mix(in srgb,var(--warn) 8%,transparent);border-style:solid}
+  .import-hint.error{color:#e5534b;border-color:color-mix(in srgb,#e5534b 45%,transparent);background:color-mix(in srgb,#e5534b 8%,transparent);border-style:solid}
+  .import-preview{margin-top:10px;max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--panel-2);display:none}
+  .import-preview.show{display:block}
+  .import-preview-title{font-size:11.5px;font-weight:700;color:var(--faint);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+  .import-preview-item{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px dashed color-mix(in srgb,var(--border) 70%,transparent)}
+  .import-preview-item:last-child{border-bottom:none}
+  .import-preview-name{color:var(--text-2);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  .import-preview-meta{color:var(--muted);font-family:ui-monospace,monospace;font-size:11.5px;flex-shrink:0}
+  .import-preview-more{text-align:center;font-size:12px;color:var(--faint);padding-top:6px}
+  .import-format-help{font-size:11.5px;color:var(--faint);line-height:1.7;margin-top:8px;padding:10px 12px;border-radius:8px;background:var(--code-bg);border:1px solid var(--border);font-family:ui-monospace,monospace;white-space:pre-wrap;word-break:break-all}
 </style>
 </head>
 <body>
 
-<!-- ==================== 导航系统 ==================== -->
 <div class="side-nav-backdrop" id="side-nav-backdrop"></div>
 <nav class="side-nav" id="side-nav" aria-label="Section navigation">
   <button class="side-nav-fab" id="side-nav-fab" aria-label="Toggle navigation" aria-expanded="false">
@@ -550,40 +362,33 @@
     <ul class="side-nav-list">
       <li><a class="side-nav-link" href="#anchor-hero" data-nav-target="anchor-hero">
         <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-        <span class="side-nav-link-text" data-i18n="navOverview">概览</span>
-        <span class="side-nav-idx">01</span>
+        <span class="side-nav-link-text" data-i18n="navOverview">概览</span><span class="side-nav-idx">01</span>
       </a></li>
       <li><a class="side-nav-link" href="#anchor-usable" data-nav-target="anchor-usable">
         <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg></span>
-        <span class="side-nav-link-text" data-i18n="navUsable">可使用</span>
-        <span class="side-nav-idx">02</span>
+        <span class="side-nav-link-text" data-i18n="navUsable">可使用</span><span class="side-nav-idx">02</span>
       </a></li>
       <li><a class="side-nav-link" href="#anchor-unusable" data-nav-target="anchor-unusable">
         <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/></svg></span>
-        <span class="side-nav-link-text" data-i18n="navUnusable">不可使用</span>
-        <span class="side-nav-idx">03</span>
+        <span class="side-nav-link-text" data-i18n="navUnusable">不可使用</span><span class="side-nav-idx">03</span>
       </a></li>
       <li><a class="side-nav-link" href="#anchor-machines" data-nav-target="anchor-machines">
         <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v4"/><path d="M15 2v4"/><path d="M9 18v4"/><path d="M15 18v4"/><path d="M2 9h4"/><path d="M2 15h4"/><path d="M18 9h4"/><path d="M18 15h4"/></svg></span>
-        <span class="side-nav-link-text" data-i18n="navMachines">生电设施</span>
-        <span class="side-nav-idx">04</span>
+        <span class="side-nav-link-text" data-i18n="navMachines">生电设施</span><span class="side-nav-idx">04</span>
       </a></li>
       <li><a class="side-nav-link" href="#anchor-future" data-nav-target="anchor-future">
         <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-5h6v5"/></svg></span>
-        <span class="side-nav-link-text" data-i18n="navFuture">未来计划</span>
-        <span class="side-nav-idx">05</span>
+        <span class="side-nav-link-text" data-i18n="navFuture">未来计划</span><span class="side-nav-idx">05</span>
       </a></li>
       <li><a class="side-nav-link" href="#anchor-links" data-nav-target="anchor-links">
         <span class="side-nav-link-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg></span>
-        <span class="side-nav-link-text" data-i18n="navLinks">友情链接</span>
-        <span class="side-nav-idx">06</span>
+        <span class="side-nav-link-text" data-i18n="navLinks">友情链接</span><span class="side-nav-idx">06</span>
       </a></li>
     </ul>
   </div>
 </nav>
 
 <div class="wrap">
-
   <header id="anchor-hero">
     <div class="hero-top">
       <div>
@@ -599,6 +404,37 @@
           <svg class="ico" id="theme-ico" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
           <span class="lbl" id="theme-lbl" data-i18n="themeDark">深色模式</span>
         </button>
+        <div class="download-wrap" id="download-wrap">
+          <button class="btn" id="btn-download" aria-haspopup="menu" aria-expanded="false" title="Download">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 12 5 5 5-5"/><path d="M5 21h14"/></svg>
+            <span class="lbl" data-i18n="btnDownload">下载</span>
+            <svg class="ico chev-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="download-dropdown" id="download-dropdown" role="menu">
+            <button class="dd-item" data-format="md" role="menuitem">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13v4"/><path d="M9 13h1.5a1.5 1.5 0 0 1 0 3H9"/><path d="M14 13v4"/></svg>
+              <span class="dd-item-main">
+                <span class="dd-item-title" data-i18n="dlMdTitle">Markdown 文档</span>
+                <span class="dd-item-sub">.md · <span data-i18n="dlMdSub">保留格式，适合再次编辑</span></span>
+              </span>
+            </button>
+            <button class="dd-item" data-format="txt" role="menuitem">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 9h1"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
+              <span class="dd-item-main">
+                <span class="dd-item-title" data-i18n="dlTxtTitle">纯文本</span>
+                <span class="dd-item-sub">.txt · <span data-i18n="dlTxtSub">纯文本，适合直接查看</span></span>
+              </span>
+            </button>
+            <button class="dd-item" data-format="csv" role="menuitem">
+              <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+              <span class="dd-item-main">
+                <span class="dd-item-title" data-i18n="dlCsvTitle">CSV 表格</span>
+                <span class="dd-item-sub">.csv · <span data-i18n="dlCsvSub">可用 Excel 打开</span></span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="dd-backdrop" id="dd-backdrop"></div>
       </div>
     </div>
     <div class="stats" id="stats"></div>
@@ -611,20 +447,14 @@
     </div>
     <div class="filter-rows">
       <div class="filter-row">
-        <span class="filter-label">
-          <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg>
-          <span data-i18n="filterDim">维度</span>
-        </span>
+        <span class="filter-label"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg><span data-i18n="filterDim">维度</span></span>
         <button class="chip active" data-dim="all" data-i18n="chipAll">全部</button>
         <button class="chip" data-dim="overworld" data-i18n="chipOverworld">主世界</button>
         <button class="chip" data-dim="nether" data-i18n="chipNether">下界</button>
         <button class="chip" data-dim="end" data-i18n="chipEnd">末地</button>
       </div>
       <div class="filter-row">
-        <span class="filter-label">
-          <svg class="ico" viewBox="0 0 24 24"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9-9-9z"/><circle cx="7.5" cy="7.5" r="1.3"/></svg>
-          <span data-i18n="filterCat">类别</span>
-        </span>
+        <span class="filter-label"><svg class="ico" viewBox="0 0 24 24"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9-9-9z"/><circle cx="7.5" cy="7.5" r="1.3"/></svg><span data-i18n="filterCat">类别</span></span>
         <button class="chip active" data-cat="all" data-i18n="chipAll">全部</button>
         <button class="chip" data-cat="tech" data-i18n="chipTech">生电</button>
         <button class="chip" data-cat="trade" data-i18n="chipTrade">交易</button>
@@ -635,6 +465,10 @@
       <svg class="ico" id="expand-all-ico" viewBox="0 0 24 24"><path d="m7 6 6 6-6 6"/><path d="m13 6 6 6-6 6"/></svg>
       <span id="expand-all-lbl" data-i18n="btnExpandAll">全部展开</span>
     </button>
+    <button class="btn" id="btn-import" title="Import">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg>
+      <span class="lbl" data-i18n="btnImport">批量导入</span>
+    </button>
     <button class="btn primary" id="btn-add-landmark">
       <svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
       <span class="lbl" data-i18n="btnAddLandmark">新增地标</span>
@@ -643,15 +477,13 @@
 
   <h2 class="sec-title" id="anchor-usable">
     <span class="st-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg></span>
-    <span data-i18n="secUsable">可使用</span>
-    <span class="count" id="cnt-usable"></span>
+    <span data-i18n="secUsable">可使用</span><span class="count" id="cnt-usable"></span>
   </h2>
   <div data-section id="sec-usable"></div>
 
   <h2 class="sec-title" id="anchor-unusable">
     <span class="st-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/></svg></span>
-    <span data-i18n="secUnusable">不可使用</span>
-    <span class="count" id="cnt-unusable"></span>
+    <span data-i18n="secUnusable">不可使用</span><span class="count" id="cnt-unusable"></span>
   </h2>
   <div data-section id="sec-unusable"></div>
 
@@ -673,10 +505,7 @@
   <div class="future" id="future"></div>
 
   <section class="friend-links" id="anchor-links">
-    <h3>
-      <svg class="ico" viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>
-      <span data-i18n="friendLinks">友情链接</span>
-    </h3>
+    <h3><svg class="ico" viewBox="0 0 24 24"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg><span data-i18n="friendLinks">友情链接</span></h3>
     <div class="flink-list">
       <a class="flink" href="https://zh.minecraft.wiki/" target="_blank" rel="noopener">
         <span class="flink-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M4 5h9a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4z"/><path d="M20 5h-3a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h3z"/></svg></span>
@@ -705,118 +534,65 @@
 <div class="add-modal" id="add-modal" aria-hidden="true">
   <div class="add-modal-backdrop" id="add-modal-backdrop"></div>
   <div class="add-modal-box" role="dialog" aria-modal="true">
-    <button class="add-modal-close" id="add-modal-close">
-      <svg class="ico" viewBox="0 0 24 24"><path d="m6 6 12 12"/><path d="m18 6-12 12"/></svg>
-    </button>
-    <h2 class="add-modal-title">
-      <svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-      <span id="add-modal-title-text" data-i18n="addTitle">新增地标</span>
-    </h2>
+    <button class="add-modal-close" id="add-modal-close"><svg class="ico" viewBox="0 0 24 24"><path d="m6 6 12 12"/><path d="m18 6-12 12"/></svg></button>
+    <h2 class="add-modal-title"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span id="add-modal-title-text" data-i18n="addTitle">新增地标</span></h2>
     <p class="add-modal-subtitle" data-i18n="addSubtitle">填写以下信息，提交后即刻生效</p>
     <form class="add-form" id="add-form">
-      <div class="form-group">
-        <label class="form-label" for="add-name-zh"><span data-i18n="addNameZh">名称（中文）</span><span class="required">*</span></label>
-        <input class="form-input" type="text" id="add-name-zh" placeholder="例如：蘑菇岛" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="add-name-en"><span data-i18n="addNameEn">英文名称（可选）</span></label>
-        <input class="form-input" type="text" id="add-name-en" placeholder="e.g. Mushroom Island">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="add-builder"><span data-i18n="addBuilder">建造者</span><span class="required">*</span></label>
-        <input class="form-input" type="text" id="add-builder" placeholder="例如：Steve" required>
-      </div>
+      <div class="form-group"><label class="form-label" for="add-name-zh"><span data-i18n="addNameZh">名称（中文）</span><span class="required">*</span></label><input class="form-input" type="text" id="add-name-zh" placeholder="例如：蘑菇岛" required></div>
+      <div class="form-group"><label class="form-label" for="add-name-en"><span data-i18n="addNameEn">英文名称（可选）</span></label><input class="form-input" type="text" id="add-name-en" placeholder="e.g. Mushroom Island"></div>
+      <div class="form-group"><label class="form-label" for="add-builder"><span data-i18n="addBuilder">建造者</span><span class="required">*</span></label><input class="form-input" type="text" id="add-builder" placeholder="例如：Steve" required></div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label" for="add-dim"><span data-i18n="addDim">维度</span><span class="required">*</span></label>
-          <select class="form-select" id="add-dim" required>
-            <option value="overworld" data-i18n="chipOverworld">主世界</option>
-            <option value="nether" data-i18n="chipNether">下界</option>
-            <option value="end" data-i18n="chipEnd">末地</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="add-category"><span data-i18n="addCat">状态</span></label>
-          <select class="form-select" id="add-category">
-            <option value="usable" data-i18n="catUsable">可使用</option>
-            <option value="unusable" data-i18n="catUnusable">不可使用</option>
-            <option value="future" data-i18n="catFuture">未来计划</option>
-          </select>
-        </div>
+        <div class="form-group"><label class="form-label" for="add-dim"><span data-i18n="addDim">维度</span><span class="required">*</span></label><select class="form-select" id="add-dim" required><option value="overworld" data-i18n="chipOverworld">主世界</option><option value="nether" data-i18n="chipNether">下界</option><option value="end" data-i18n="chipEnd">末地</option></select></div>
+        <div class="form-group"><label class="form-label" for="add-category"><span data-i18n="addCat">状态</span></label><select class="form-select" id="add-category"><option value="usable" data-i18n="catUsable">可使用</option><option value="unusable" data-i18n="catUnusable">不可使用</option><option value="future" data-i18n="catFuture">未来计划</option></select></div>
       </div>
-      <div class="form-group">
-        <label class="form-label"><span data-i18n="addTags">标签（可多选）</span></label>
-        <div class="tag-picker" id="add-tag-picker">
-          <button type="button" class="tag-chip" data-tag="生电" data-i18n="chipTech">生电</button>
-          <button type="button" class="tag-chip" data-tag="交易" data-i18n="chipTrade">交易</button>
-          <button type="button" class="tag-chip" data-tag="农场" data-i18n="chipFarm">农场</button>
-          <button type="button" class="tag-chip" data-tag="自建" data-i18n="tagSelf">自建</button>
-          <button type="button" class="tag-chip" data-tag="遗留" data-i18n="tagLegacy">遗留</button>
-          <button type="button" class="tag-chip" data-tag="低价" data-i18n="tagCheap">低价</button>
-          <button type="button" class="tag-chip" data-tag="已毁" data-i18n="tagDead">已毁</button>
-        </div>
-      </div>
-
-      <div class="tech-fields" id="add-tech-fields" style="display:none">
-        <div class="tech-fields-title">
-          <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg>
-          <span data-i18n="techExtra">生电专属信息</span>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="add-rate-zh"><span data-i18n="addRate">效率说明</span><span class="required">*</span></label>
-          <input class="form-input" type="text" id="add-rate-zh" placeholder="例如：约 10 分钟 / 3 组">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="add-products-zh"><span data-i18n="addProducts">产物（逗号分隔）</span><span class="required">*</span></label>
-          <input class="form-input" type="text" id="add-products-zh" placeholder="例如：岩浆膏, 熟猪排, 皮革">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label"><span data-i18n="coordMode">坐标模式</span></label>
-        <div class="mode-switch" id="add-mode-switch">
-          <button type="button" class="mode-btn active" data-mode="single" data-i18n="modeSingle">单点坐标</button>
-          <button type="button" class="mode-btn" data-mode="multi" data-i18n="modeMulti">多地点列表</button>
-        </div>
-      </div>
-      <div id="add-single-coords">
-        <div class="form-row form-row-3">
-          <div class="form-group">
-            <label class="form-label" for="add-x">X<span class="required">*</span></label>
-            <input class="form-input" type="number" id="add-x" placeholder="-683" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="add-y">Y<span class="required">*</span></label>
-            <input class="form-input" type="number" id="add-y" placeholder="68" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="add-z">Z<span class="required">*</span></label>
-            <input class="form-input" type="number" id="add-z" placeholder="-96" required>
-          </div>
-        </div>
-      </div>
-      <div id="add-multi-coords" style="display:none">
-        <div class="form-group">
-          <label class="form-label"><span data-i18n="locationList">地点列表</span></label>
-          <div id="add-location-list"></div>
-          <button type="button" class="btn-add-location" id="btn-add-location">
-            <svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-            <span data-i18n="addLocation">添加一个地点</span>
-          </button>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="add-note"><span data-i18n="addNote">补充说明</span></label>
-        <textarea class="form-input form-textarea" id="add-note" rows="3" placeholder="例如：包含满级附魔台及相关设施"></textarea>
-      </div>
-      <div class="form-actions">
-        <button type="button" class="btn btn-cancel" id="add-cancel" data-i18n="btnCancel">取消</button>
-        <button type="submit" class="btn primary" id="add-submit">
-          <svg class="ico" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
-          <span data-i18n="btnSubmit">提交</span>
-        </button>
-      </div>
+      <div class="form-group"><label class="form-label"><span data-i18n="addTags">标签（可多选）</span></label><div class="tag-picker" id="add-tag-picker"><button type="button" class="tag-chip" data-tag="生电" data-i18n="chipTech">生电</button><button type="button" class="tag-chip" data-tag="交易" data-i18n="chipTrade">交易</button><button type="button" class="tag-chip" data-tag="农场" data-i18n="chipFarm">农场</button><button type="button" class="tag-chip" data-tag="自建" data-i18n="tagSelf">自建</button><button type="button" class="tag-chip" data-tag="遗留" data-i18n="tagLegacy">遗留</button><button type="button" class="tag-chip" data-tag="低价" data-i18n="tagCheap">低价</button><button type="button" class="tag-chip" data-tag="已毁" data-i18n="tagDead">已毁</button></div></div>
+      <div class="tech-fields" id="add-tech-fields" style="display:none"><div class="tech-fields-title"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg><span data-i18n="techExtra">生电专属信息</span></div><div class="form-group"><label class="form-label" for="add-rate-zh"><span data-i18n="addRate">效率说明</span><span class="required">*</span></label><input class="form-input" type="text" id="add-rate-zh" placeholder="例如：约 10 分钟 / 3 组"></div><div class="form-group"><label class="form-label" for="add-products-zh"><span data-i18n="addProducts">产物（逗号分隔）</span><span class="required">*</span></label><input class="form-input" type="text" id="add-products-zh" placeholder="例如：岩浆膏, 熟猪排, 皮革"></div></div>
+      <div class="form-group"><label class="form-label"><span data-i18n="coordMode">坐标模式</span></label><div class="mode-switch" id="add-mode-switch"><button type="button" class="mode-btn active" data-mode="single" data-i18n="modeSingle">单点坐标</button><button type="button" class="mode-btn" data-mode="multi" data-i18n="modeMulti">多地点列表</button></div></div>
+      <div id="add-single-coords"><div class="form-row form-row-3"><div class="form-group"><label class="form-label" for="add-x">X<span class="required">*</span></label><input class="form-input" type="number" id="add-x" placeholder="-683" required></div><div class="form-group"><label class="form-label" for="add-y">Y<span class="required">*</span></label><input class="form-input" type="number" id="add-y" placeholder="68" required></div><div class="form-group"><label class="form-label" for="add-z">Z<span class="required">*</span></label><input class="form-input" type="number" id="add-z" placeholder="-96" required></div></div></div>
+      <div id="add-multi-coords" style="display:none"><div class="form-group"><label class="form-label"><span data-i18n="locationList">地点列表</span></label><div id="add-location-list"></div><button type="button" class="btn-add-location" id="btn-add-location"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span data-i18n="addLocation">添加一个地点</span></button></div></div>
+      <div class="form-group"><label class="form-label" for="add-note"><span data-i18n="addNote">补充说明</span></label><textarea class="form-input form-textarea" id="add-note" rows="3" placeholder="例如：包含满级附魔台及相关设施"></textarea></div>
+      <div class="form-actions"><button type="button" class="btn btn-cancel" id="add-cancel" data-i18n="btnCancel">取消</button><button type="submit" class="btn primary" id="add-submit"><svg class="ico" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span data-i18n="btnSubmit">提交</span></button></div>
     </form>
+  </div>
+</div>
+
+<!-- 批量导入弹窗 -->
+<div class="import-modal" id="import-modal" aria-hidden="true">
+  <div class="import-modal-backdrop" id="import-modal-backdrop"></div>
+  <div class="import-modal-box" role="dialog" aria-modal="true">
+    <button class="import-modal-close" id="import-modal-close"><svg class="ico" viewBox="0 0 24 24"><path d="m6 6 12 12"/><path d="m18 6-12 12"/></svg></button>
+    <h2 class="import-modal-title"><svg class="ico" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg><span data-i18n="importTitle">批量导入</span></h2>
+    <p class="import-modal-subtitle" data-i18n="importSubtitle">支持 CSV 和 JSON 格式，可粘贴文本或上传文件</p>
+
+    <div class="import-tabs">
+      <button class="import-tab active" data-format="csv">CSV</button>
+      <button class="import-tab" data-format="json">JSON</button>
+    </div>
+
+    <div class="import-upload">
+      <input type="file" id="import-file" accept=".csv,.json,.txt" hidden>
+      <button class="btn" id="import-file-btn">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>
+        <span data-i18n="importChooseFile">选择文件</span>
+      </button>
+      <span class="import-filename" id="import-filename"></span>
+    </div>
+
+    <textarea class="import-textarea" id="import-text" data-i18n-ph="importPlaceholder" placeholder="在此粘贴 CSV 或 JSON 内容..."></textarea>
+
+    <div class="import-format-help" id="import-format-help"></div>
+
+    <div class="import-hint" id="import-hint" style="display:none"></div>
+
+    <div class="import-preview" id="import-preview"></div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-cancel" id="import-cancel" data-i18n="btnCancel">取消</button>
+      <button type="button" class="btn primary" id="import-submit">
+        <svg class="ico" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+        <span data-i18n="importSubmit">开始导入</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -837,7 +613,7 @@ const I18N = {
     chipAll:'全部', chipOverworld:'主世界', chipNether:'下界', chipEnd:'末地',
     chipTech:'生电', chipTrade:'交易', chipFarm:'农场',
     tagSelf:'自建', tagLegacy:'遗留', tagCheap:'低价', tagDead:'已毁',
-    btnExpandAll:'全部展开', btnCollapseAll:'全部收起', btnAddLandmark:'新增地标',
+    btnExpandAll:'全部展开', btnCollapseAll:'全部收起', btnAddLandmark:'新增地标', btnImport:'批量导入',
     secUsable:'可使用', secUnusable:'不可使用', secMachines:'自建生电设施详情',
     secFuture:'未来 / 正在筹备 / 正在建设', emptyText:'没有匹配的地标',
     friendLinks:'友情链接', footerAuthor:'网站作者的ID：robot003',
@@ -846,6 +622,7 @@ const I18N = {
     toastCopied:'已复制：', toastCopyFail:'复制失败，请手动选择',
     toastAdded:'新增成功！', toastUpdated:'更新成功！', toastAddFail:'操作失败：',
     toastDeleted:'删除成功！',
+    toastDlMd:'Markdown 已下载', toastDlTxt:'TXT 已下载', toastDlCsv:'CSV 已下载',
     confirmDelete:'确定要删除「{name}」吗？此操作不可恢复。',
     childPoints:'个点位', expand:'展开', collapse:'收起',
     kvCoords:'坐标', kvRate:'效率', kvNote:'说明', kvProducts:'产物', kvBuilder:'建造者',
@@ -862,9 +639,31 @@ const I18N = {
     errTechRate:'勾选“生电”后必须填写效率说明',
     errTechProducts:'勾选“生电”后必须填写产物',
     errNoLocation:'请至少填写一个有效的地点坐标',
-    navTitle:'导航',
-    navOverview:'概览', navUsable:'可使用', navUnusable:'不可使用',
-    navMachines:'生电设施', navFuture:'未来计划', navLinks:'友情链接'
+    navTitle:'导航', navOverview:'概览', navUsable:'可使用', navUnusable:'不可使用',
+    navMachines:'生电设施', navFuture:'未来计划', navLinks:'友情链接',
+    btnDownload:'下载',
+    dlMdTitle:'Markdown 文档', dlMdSub:'保留格式，适合再次编辑',
+    dlTxtTitle:'纯文本', dlTxtSub:'纯文本，适合直接查看',
+    dlCsvTitle:'CSV 表格', dlCsvSub:'可用 Excel 打开',
+    dTitle:'66QN 服务器地标坐标总览',
+    dBasicInfo:'基本信息', dServer:'服务器', dVersion:'版本', dAuthor:'作者', dExportTime:'导出时间',
+    dTagLegend:'标签说明', dAvailable:'可使用', dUnavailable:'不可使用', dFuture:'未来 / 正在筹备 / 正在建设',
+    dTechTitle:'自建生电设施详情',
+    dCoord:'坐标', dRate:'效率', dProducts:'产物', dNote:'说明', dBuilder:'建造者',
+    dTags:'标签', dDimension:'维度', dStatus:'状态', dPoint:'点位', dName:'名称',
+    dX:'X', dY:'Y', dZ:'Z',
+    importTitle:'批量导入', importSubtitle:'支持 CSV 和 JSON 格式，可粘贴文本或上传文件',
+    importChooseFile:'选择文件', importSubmit:'开始导入', importSubmitting:'导入中…',
+    importPlaceholder:'在此粘贴 CSV 或 JSON 内容...',
+    importParseOk:'✓ 已解析 {n} 条地标，可以开始导入',
+    importParseEmpty:'⚠️ 未解析到有效数据，请检查格式',
+    importParseErr:'❌ 格式错误，无法解析',
+    importConfirm:'确定导入 {n} 条地标吗？此操作会直接写入数据库。',
+    importProgress:'导入中 {i}/{n}…',
+    importDone:'✓ 导入完成：成功 {s} 条',
+    importDoneWithFail:'导入完成：成功 {s} 条，失败 {f} 条',
+    importEmpty:'没有可导入的数据',
+    importPreviewTitle:'预览前 5 条'
   },
   en: {
     docTitle:'66QN Server Landmark Coordinates', title:'66QN Server Landmark Coordinates', subtitle:'Minecraft Java 26.2 · All coordinates verified',
@@ -874,7 +673,7 @@ const I18N = {
     chipAll:'All', chipOverworld:'Overworld', chipNether:'Nether', chipEnd:'The End',
     chipTech:'Tech', chipTrade:'Trade', chipFarm:'Farm',
     tagSelf:'Self-built', tagLegacy:'Legacy', tagCheap:'Cheap', tagDead:'Ruined',
-    btnExpandAll:'Expand All', btnCollapseAll:'Collapse All', btnAddLandmark:'Add Landmark',
+    btnExpandAll:'Expand All', btnCollapseAll:'Collapse All', btnAddLandmark:'Add Landmark', btnImport:'Bulk Import',
     secUsable:'Available', secUnusable:'Unavailable', secMachines:'Self-built Tech Facilities',
     secFuture:'Future / Planned / In Progress', emptyText:'No matching landmarks',
     friendLinks:'Friend Links', footerAuthor:'Author ID: robot003',
@@ -883,6 +682,7 @@ const I18N = {
     toastCopied:'Copied: ', toastCopyFail:'Copy failed',
     toastAdded:'Added!', toastUpdated:'Updated!', toastAddFail:'Operation failed: ',
     toastDeleted:'Deleted!',
+    toastDlMd:'Markdown downloaded', toastDlTxt:'TXT downloaded', toastDlCsv:'CSV downloaded',
     confirmDelete:'Delete "{name}"? This cannot be undone.',
     childPoints:'points', expand:'Expand', collapse:'Collapse',
     kvCoords:'Coords', kvRate:'Rate', kvNote:'Note', kvProducts:'Products', kvBuilder:'Builder',
@@ -899,14 +699,41 @@ const I18N = {
     errTechRate:'Rate is required when "Tech" tag is selected',
     errTechProducts:'Products are required when "Tech" tag is selected',
     errNoLocation:'Please fill in at least one valid location',
-    navTitle:'Navigation',
-    navOverview:'Overview', navUsable:'Available', navUnusable:'Unavailable',
-    navMachines:'Tech', navFuture:'Future', navLinks:'Links'
+    navTitle:'Navigation', navOverview:'Overview', navUsable:'Available', navUnusable:'Unavailable',
+    navMachines:'Tech', navFuture:'Future', navLinks:'Links',
+    btnDownload:'Download',
+    dlMdTitle:'Markdown File', dlMdSub:'Keeps formatting, editable',
+    dlTxtTitle:'Plain Text', dlTxtSub:'Plain text, easy to read',
+    dlCsvTitle:'CSV Table', dlCsvSub:'Open with Excel',
+    dTitle:'66QN Server Landmark Coordinates',
+    dBasicInfo:'Basic Info', dServer:'Server', dVersion:'Version', dAuthor:'Author', dExportTime:'Export Time',
+    dTagLegend:'Tag Legend', dAvailable:'Available', dUnavailable:'Unavailable', dFuture:'Future / Planned / In Progress',
+    dTechTitle:'Self-built Tech Facilities',
+    dCoord:'Coords', dRate:'Rate', dProducts:'Products', dNote:'Note', dBuilder:'Builder',
+    dTags:'Tags', dDimension:'Dimension', dStatus:'Status', dPoint:'Point', dName:'Name',
+    dX:'X', dY:'Y', dZ:'Z',
+    importTitle:'Bulk Import', importSubtitle:'Supports CSV and JSON. Paste text or upload a file.',
+    importChooseFile:'Choose File', importSubmit:'Start Import', importSubmitting:'Importing…',
+    importPlaceholder:'Paste CSV or JSON content here...',
+    importParseOk:'✓ Parsed {n} landmarks, ready to import',
+    importParseEmpty:'⚠️ No valid data parsed, please check format',
+    importParseErr:'❌ Parse error, unable to import',
+    importConfirm:'Import {n} landmarks? They will be written to the database directly.',
+    importProgress:'Importing {i}/{n}…',
+    importDone:'✓ Import complete: {s} succeeded',
+    importDoneWithFail:'Import complete: {s} succeeded, {f} failed',
+    importEmpty:'No data to import',
+    importPreviewTitle:'Preview (first 5)'
   }
 };
 
 let curLang = 'zh';
 function t(k){ return (I18N[curLang] && I18N[curLang][k]) || k; }
+function tFmt(k, vars){
+  let s = t(k);
+  Object.keys(vars).forEach(v => { s = s.replace('{' + v + '}', vars[v]); });
+  return s;
+}
 
 const ICON = {
   pin:'<svg class="ico" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
@@ -954,6 +781,11 @@ const DIMS = { overworld:{prefix:'overworld'}, nether:{prefix:'the_nether'}, end
 const DIM_LABEL = { zh:{overworld:'主世界',nether:'下界',end:'末地'}, en:{overworld:'Overworld',nether:'Nether',end:'The End'} };
 const TAG_LABEL = { zh:{生电:'生电',交易:'交易',农场:'农场',自建:'自建',遗留:'遗留',低价:'低价',已毁:'已毁'}, en:{生电:'Tech',交易:'Trade',农场:'Farm',自建:'Self-built',遗留:'Legacy',低价:'Cheap',已毁:'Ruined'} };
 const ROLE_LABEL = { zh:{hang:'挂机',hangTop:'挂机（顶）',collect:'收集',main:'主体','点位':'点位'}, en:{hang:'AFK',hangTop:'AFK (top)',collect:'Collect',main:'Main','点位':'Point'} };
+const CAT_LABEL = { zh:{usable:'可使用',unusable:'不可使用',future:'未来计划'}, en:{usable:'Available',unusable:'Unavailable',future:'Future'} };
+const CAT_FROM_LABEL = { '可使用':'usable', '不可使用':'unusable', '未来计划':'future', 'Available':'usable', 'Unavailable':'unusable', 'Future':'future' };
+const DIM_FROM_LABEL = { '主世界':'overworld','下界':'nether','末地':'end','Overworld':'overworld','Nether':'nether','The End':'end' };
+const TAG_FROM_LABEL = { '生电':'生电','交易':'交易','农场':'农场','自建':'自建','遗留':'遗留','低价':'低价','已毁':'已毁', 'Tech':'生电','Trade':'交易','Farm':'农场','Self-built':'自建','Legacy':'遗留','Cheap':'低价','Ruined':'已毁' };
+const ROLE_FROM_LABEL = { '挂机':'hang','挂机（顶）':'hangTop','收集':'collect','主体':'main','点位':'点位','AFK':'hang','AFK (top)':'hangTop','Collect':'collect','Main':'main','Point':'点位' };
 
 const DATA = { usable: [], unusable: [], machines: [], future: [] };
 const $ = s => document.querySelector(s);
@@ -962,6 +794,7 @@ function pick(o){ if (typeof o === 'string') return o; if (!o) return ''; return
 function dimLabel(d){ return (DIM_LABEL[curLang]||DIM_LABEL.zh)[d] || d; }
 function tagLabel(x){ return (TAG_LABEL[curLang]||TAG_LABEL.zh)[x] || x; }
 function roleLabel(r){ return (ROLE_LABEL[curLang]||ROLE_LABEL.zh)[r] || r; }
+function catLabel(c){ return (CAT_LABEL[curLang]||CAT_LABEL.zh)[c] || c; }
 function catsOf(tags){ return (tags||[]).map(x => TAG_META[x] && TAG_META[x].cat).filter(Boolean); }
 function tagHTML(tag){
   const m = TAG_META[tag];
@@ -986,6 +819,7 @@ function applyLang(){
   if (expLbl) expLbl.textContent = allOpen ? t('btnCollapseAll') : t('btnExpandAll');
   const titleEl = document.getElementById('add-modal-title-text');
   if (titleEl) titleEl.textContent = editingId ? t('addTitleEdit') : t('addTitle');
+  updateImportFormatHelp();
   try { localStorage.setItem('lang', curLang); } catch(_) {}
 }
 
@@ -1041,19 +875,13 @@ function landmarkHTML(l){
     const childrenHTML = l.children.map(c => {
       const cmd = `/lsktp ${DIMS[l.dim].prefix} ${c.x} ${c.y} ${c.z}`;
       const ico = (c.label || '').indexOf('collect') >= 0 ? ICON.inbox : ICON.monitor;
-      return `<div class="child-row">
-        <span class="child-label">${ico}${roleLabel(c.label)}</span>
-        <code class="coords">${c.x} ${c.y} ${c.z}</code>
-        <button class="btn-copy" data-copy="${cmd}">${ICON.copy}${t('btnTeleport')}</button>
-      </div>`;
+      return `<div class="child-row"><span class="child-label">${ico}${roleLabel(c.label)}</span><code class="coords">${c.x} ${c.y} ${c.z}</code><button class="btn-copy" data-copy="${cmd}">${ICON.copy}${t('btnTeleport')}</button></div>`;
     }).join('');
     const searchText = [lname, lnote, l.builder, dlabel, ...(l.tags||[]).map(tagLabel)].join(' ').toLowerCase();
     return `<article class="lm lm-group${deadCls}" data-dim="${l.dim}" data-cats="${cats}" data-search="${searchText}">
       <div class="lm-main" role="button" tabindex="0" aria-expanded="false">
         <div class="lm-left">
-          <div class="lm-name">${ICON.pin}${lname}${tags}
-            <span class="child-count">${ICON.layers}${l.children.length} ${t('childPoints')}</span>
-          </div>
+          <div class="lm-name">${ICON.pin}${lname}${tags}<span class="child-count">${ICON.layers}${l.children.length} ${t('childPoints')}</span></div>
           ${lnote ? `<div class="lm-note">${lnote}</div>` : ''}
           ${builderLine}
         </div>
@@ -1105,9 +933,7 @@ function renderMachines(){
   $('#machines').innerHTML = techs.map(m => {
     let pointsHTML = '';
     if (m.children && m.children.length){
-      pointsHTML = m.children.map(p =>
-        `<code>${p.x} ${p.y} ${p.z}</code><span style="font-size:12px;color:var(--muted);margin-right:6px">（${roleLabel(p.label)} · ${dimLabel(m.dim)}）</span>`
-      ).join('');
+      pointsHTML = m.children.map(p => `<code>${p.x} ${p.y} ${p.z}</code><span style="font-size:12px;color:var(--muted);margin-right:6px">（${roleLabel(p.label)} · ${dimLabel(m.dim)}）</span>`).join('');
     } else {
       pointsHTML = `<code>${m.x} ${m.y} ${m.z}</code><span style="font-size:12px;color:var(--muted);margin-right:6px">（${dimLabel(m.dim)}）</span>`;
     }
@@ -1215,14 +1041,490 @@ function renderAll(){
   setupNavObserver();
 }
 
-/* ==================== 导航系统逻辑 ==================== */
+/* ==================== 下载功能 ==================== */
+function nowStr(){
+  const d = new Date();
+  const p = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+function fileBase(){
+  const d = new Date();
+  const p = n => String(n).padStart(2,'0');
+  const date = `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`;
+  return (curLang === 'zh' ? '66QN服务器地标坐标总览' : '66QN-Server-Landmarks') + '-' + date;
+}
+
+function buildTxt(){
+  const L = [];
+  const H = '='.repeat(64);
+  const T = '-'.repeat(64);
+  L.push(H); L.push('   ' + t('dTitle')); L.push(H); L.push('');
+  L.push('【' + t('dBasicInfo') + '】');
+  L.push('  ' + t('dServer') + '：66QN');
+  L.push('  ' + t('dVersion') + '：Minecraft Java 26.2');
+  L.push('  ' + t('dAuthor') + '：robot003');
+  L.push('  ' + t('dExportTime') + '：' + nowStr());
+  L.push('');
+  L.push('【' + t('dTagLegend') + '】');
+  const tagDesc = { zh:{生电:'红石/自动化机器',交易:'村民交易点',农场:'农牧渔场',自建:'本人参与建造',遗留:'旧地点',低价:'低价附魔',已毁:'已损坏'}, en:{生电:'Redstone/automation',交易:'Villager trade',农场:'Farming',自建:'Self-built',遗留:'Legacy',低价:'Cheap',已毁:'Ruined'} };
+  Object.keys(TAG_META).forEach(tag => { L.push('  [' + tagLabel(tag) + '] ' + ((tagDesc[curLang]||tagDesc.zh)[tag] || '')); });
+  L.push('');
+  const txtLM = l => {
+    const out = [];
+    out.push('◆ ' + pick(l.name) + '  （' + dimLabel(l.dim) + '）');
+    if (l.builder) out.push('    ' + t('dBuilder') + '：' + l.builder);
+    const tags = (l.tags||[]).map(tagLabel).join(' · ');
+    const note = l.note ? pick(l.note) : '';
+    if (l.children && l.children.length){
+      if (tags) out.push('    ' + t('dTags') + '：' + tags);
+      if (note) out.push('    ' + t('dNote') + '：' + note);
+      if (pick(l.rate)) out.push('    ' + t('dRate') + '：' + pick(l.rate));
+      const prod = (curLang==='zh'?l.products.zh:l.products.en)||[];
+      if (prod.length) out.push('    ' + t('dProducts') + '：' + prod.join('、'));
+      out.push('    ' + t('dCoord') + '：');
+      l.children.forEach((c, i) => { out.push((i === l.children.length-1 ? '      └─ ' : '      ├─ ') + roleLabel(c.label) + '：' + c.x + ' ' + c.y + ' ' + c.z); });
+    } else {
+      out.push('    ' + t('dCoord') + '：' + l.x + ' ' + l.y + ' ' + l.z);
+      if (tags) out.push('    ' + t('dTags') + '：' + tags);
+      if (note) out.push('    ' + t('dNote') + '：' + note);
+    }
+    out.push('');
+    return out.join('\n');
+  };
+  L.push(T); L.push('【' + t('dAvailable') + '】（' + DATA.usable.length + '）'); L.push(T); L.push('');
+  DATA.usable.forEach(l => L.push(txtLM(l)));
+  L.push(T); L.push('【' + t('dUnavailable') + '】（' + DATA.unusable.length + '）'); L.push(T); L.push('');
+  DATA.unusable.forEach(l => L.push(txtLM(l)));
+  L.push(T); L.push('【' + t('dTechTitle') + '】'); L.push(T); L.push('');
+  const techs = DATA.usable.filter(l => catsOf(l.tags).includes('tech'));
+  techs.forEach(m => {
+    L.push('◆ ' + pick(m.name) + '  [' + (m.tags||[]).map(tagLabel).join(' · ') + ']');
+    if (m.builder) L.push('    ' + t('dBuilder') + '：' + m.builder);
+    L.push('    ' + t('dCoord') + '：');
+    if (m.children && m.children.length) m.children.forEach(c => L.push('      · ' + c.x + ' ' + c.y + ' ' + c.z + '  (' + roleLabel(c.label) + ' · ' + dimLabel(m.dim) + ')'));
+    else L.push('      · ' + m.x + ' ' + m.y + ' ' + m.z + '  (' + dimLabel(m.dim) + ')');
+    if (pick(m.rate)) L.push('    ' + t('dRate') + '：' + pick(m.rate));
+    if (m.note) L.push('    ' + t('dNote') + '：' + pick(m.note));
+    const prod = (curLang==='zh'?m.products.zh:m.products.en)||[];
+    if (prod.length) L.push('    ' + t('dProducts') + '：' + prod.join('、'));
+    L.push('');
+  });
+  L.push(T); L.push('【' + t('dFuture') + '】（' + DATA.future.length + '）'); L.push(T); L.push('');
+  DATA.future.forEach(f => {
+    const tags = (f.tags||[]).map(tagLabel).join(' · ');
+    let line = '  · ' + pick(f.name);
+    if (tags) line += '  [' + tags + ']';
+    if (f.note) line += '  (' + pick(f.note) + ')';
+    L.push(line);
+  });
+  L.push(''); L.push(H); L.push('  ' + t('footerAuthor')); L.push(H);
+  return L.join('\n');
+}
+
+function buildMarkdown(){
+  const L = [];
+  L.push('# ' + t('dTitle') + '\n');
+  L.push('## ' + t('dBasicInfo') + '\n');
+  L.push('- **' + t('dServer') + '**：66QN');
+  L.push('- **' + t('dVersion') + '**：Minecraft Java 26.2');
+  L.push('- **' + t('dAuthor') + '**：robot003');
+  L.push('- **' + t('dExportTime') + '**：' + nowStr() + '\n');
+  L.push('## ' + t('dTagLegend') + '\n');
+  const tagDesc = { zh:{生电:'红石/自动化机器',交易:'村民交易点',农场:'农牧渔场',自建:'本人参与建造',遗留:'旧地点',低价:'低价附魔',已毁:'已损坏'}, en:{生电:'Redstone/automation',交易:'Villager trade',农场:'Farming',自建:'Self-built',遗留:'Legacy',低价:'Cheap',已毁:'Ruined'} };
+  Object.keys(TAG_META).forEach(tag => { L.push('- **' + tagLabel(tag) + '**：' + ((tagDesc[curLang]||tagDesc.zh)[tag] || '')); });
+  L.push('');
+  const mdLM = l => {
+    const out = [];
+    out.push('### ' + pick(l.name)); out.push('');
+    out.push('- **' + t('dDimension') + '**：' + dimLabel(l.dim));
+    if (l.builder) out.push('- **' + t('dBuilder') + '**：' + l.builder);
+    if (l.children && l.children.length){
+      if (l.tags && l.tags.length) out.push('- **' + t('dTags') + '**：' + l.tags.map(tagLabel).join(' / '));
+      if (pick(l.rate)) out.push('- **' + t('dRate') + '**：' + pick(l.rate));
+      const prod = (curLang==='zh'?l.products.zh:l.products.en)||[];
+      if (prod.length) out.push('- **' + t('dProducts') + '**：' + prod.join('、'));
+      if (l.note) out.push('- **' + t('dNote') + '**：' + pick(l.note));
+      out.push('- **' + t('dCoord') + '**：');
+      l.children.forEach(c => { out.push('  - ' + roleLabel(c.label) + '：`' + c.x + ' ' + c.y + ' ' + c.z + '`'); });
+    } else {
+      out.push('- **' + t('dCoord') + '**：`' + l.x + ' ' + l.y + ' ' + l.z + '`');
+      if (l.tags && l.tags.length) out.push('- **' + t('dTags') + '**：' + l.tags.map(tagLabel).join(' / '));
+      if (l.note) out.push('- **' + t('dNote') + '**：' + pick(l.note));
+    }
+    out.push('');
+    return out.join('\n');
+  };
+  L.push('## ' + t('dAvailable') + '（' + DATA.usable.length + '）\n');
+  DATA.usable.forEach(l => L.push(mdLM(l)));
+  L.push('## ' + t('dUnavailable') + '（' + DATA.unusable.length + '）\n');
+  DATA.unusable.forEach(l => L.push(mdLM(l)));
+  L.push('## ' + t('dTechTitle') + '\n');
+  DATA.usable.filter(l => catsOf(l.tags).includes('tech')).forEach(m => {
+    L.push('### ' + pick(m.name) + '  [' + (m.tags||[]).map(tagLabel).join(' / ') + ']'); L.push('');
+    if (m.builder) L.push('- **' + t('dBuilder') + '**：' + m.builder);
+    const coordsStr = [];
+    if (m.children && m.children.length) m.children.forEach(c => coordsStr.push('`' + c.x + ' ' + c.y + ' ' + c.z + '`（' + roleLabel(c.label) + '）'));
+    else coordsStr.push('`' + m.x + ' ' + m.y + ' ' + m.z + '`（' + dimLabel(m.dim) + '）');
+    L.push('- **' + t('dCoord') + '**：' + coordsStr.join(' / '));
+    if (pick(m.rate)) L.push('- **' + t('dRate') + '**：' + pick(m.rate));
+    const prod = (curLang==='zh'?m.products.zh:m.products.en)||[];
+    if (prod.length) L.push('- **' + t('dProducts') + '**：' + prod.join('、'));
+    if (m.note) L.push('- **' + t('dNote') + '**：' + pick(m.note));
+    L.push('');
+  });
+  L.push('## ' + t('dFuture') + '（' + DATA.future.length + '）\n');
+  DATA.future.forEach(f => {
+    const tags = (f.tags||[]).map(tagLabel).join(' / ');
+    let line = '- ' + pick(f.name);
+    if (tags) line += '  `' + tags + '`';
+    if (f.note) line += '  _' + pick(f.note) + '_';
+    L.push(line);
+  });
+  L.push(''); L.push('---'); L.push(t('footerAuthor'));
+  return L.join('\n');
+}
+
+function csvEsc(v){
+  const s = String(v == null ? '' : v);
+  return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function csvRow(arr){ return arr.map(csvEsc).join(','); }
+
+function buildCsv(){
+  const rows = [];
+  rows.push(csvRow([t('dName'), t('dStatus'), t('dDimension'), t('dX'), t('dY'), t('dZ'), t('dPoint'), t('dTags'), t('dBuilder'), t('dRate'), t('dProducts'), t('dNote')]));
+  const statusLabel = c => (CAT_LABEL[curLang]||CAT_LABEL.zh)[c] || c;
+  DATA.usable.forEach(l => {
+    const tags = (l.tags||[]).map(tagLabel).join(' / ');
+    const note = l.note ? pick(l.note) : '';
+    const rate = pick(l.rate);
+    const prods = (curLang==='zh'?l.products.zh:l.products.en)||[];
+    const prodsStr = prods.join(' / ');
+    if (l.children && l.children.length){
+      l.children.forEach(c => { rows.push(csvRow([pick(l.name), statusLabel('usable'), dimLabel(l.dim), c.x, c.y, c.z, roleLabel(c.label), tags, l.builder || '', rate, prodsStr, note])); });
+    } else {
+      rows.push(csvRow([pick(l.name), statusLabel('usable'), dimLabel(l.dim), l.x, l.y, l.z, '', tags, l.builder || '', rate, prodsStr, note]));
+    }
+  });
+  DATA.unusable.forEach(l => {
+    const tags = (l.tags||[]).map(tagLabel).join(' / ');
+    const note = l.note ? pick(l.note) : '';
+    rows.push(csvRow([pick(l.name), statusLabel('unusable'), dimLabel(l.dim), l.x, l.y, l.z, '', tags, l.builder || '', '', '', note]));
+  });
+  DATA.future.forEach(l => {
+    const tags = (l.tags||[]).map(tagLabel).join(' / ');
+    const note = l.note ? pick(l.note) : '';
+    rows.push(csvRow([pick(l.name), statusLabel('future'), dimLabel(l.dim), '', '', '', '', tags, l.builder || '', '', '', note]));
+  });
+  return '\uFEFF' + rows.join('\r\n');
+}
+
+function downloadBlob(content, mime, filename){
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+function downloadTxt(){ downloadBlob(buildTxt(), 'text/plain;charset=utf-8', fileBase() + '.txt'); toast(t('toastDlTxt')); }
+function downloadMarkdown(){ downloadBlob(buildMarkdown(), 'text/markdown;charset=utf-8', fileBase() + '.md'); toast(t('toastDlMd')); }
+function downloadCsv(){ downloadBlob(buildCsv(), 'text/csv;charset=utf-8', fileBase() + '.csv'); toast(t('toastDlCsv')); }
+
+/* ==================== 批量导入 ==================== */
+const importModal = document.getElementById('import-modal');
+const importBackdrop = document.getElementById('import-modal-backdrop');
+const importCloseBtn = document.getElementById('import-modal-close');
+const importCancelBtn = document.getElementById('import-cancel');
+const importSubmitBtn = document.getElementById('import-submit');
+const importText = document.getElementById('import-text');
+const importHint = document.getElementById('import-hint');
+const importPreview = document.getElementById('import-preview');
+const importFile = document.getElementById('import-file');
+const importFileBtn = document.getElementById('import-file-btn');
+const importFilename = document.getElementById('import-filename');
+const importFormatHelp = document.getElementById('import-format-help');
+
+let importFormat = 'csv';
+let importParsed = [];
+let importRunning = false;
+let importDebounce = null;
+
+function openImportModal(){
+  importModal.classList.add('open');
+  importModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  resetImportUI();
+}
+function closeImportModal(){
+  if (importRunning) return;
+  importModal.classList.remove('open');
+  importModal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+function resetImportUI(){
+  importText.value = '';
+  importFilename.textContent = '';
+  importHint.style.display = 'none';
+  importHint.className = 'import-hint';
+  importPreview.classList.remove('show');
+  importPreview.innerHTML = '';
+  importParsed = [];
+  importSubmitBtn.disabled = false;
+  importSubmitBtn.innerHTML = ICON.check + '<span>' + t('importSubmit') + '</span>';
+  switchImportFormat('csv');
+}
+function switchImportFormat(fmt){
+  importFormat = fmt;
+  document.querySelectorAll('.import-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.format === fmt);
+  });
+  updateImportFormatHelp();
+  tryParseImport();
+}
+function updateImportFormatHelp(){
+  if (!importFormatHelp) return;
+  if (importFormat === 'csv'){
+    importFormatHelp.textContent = curLang === 'zh'
+      ? 'CSV 列顺序：名称,状态,维度,X,Y,Z,点位,标签,建造者,效率,产物,说明\n可直接用导出的 CSV 文件作为模板。标签和产物用 "/" 分隔。'
+      : 'CSV columns: Name,Status,Dimension,X,Y,Z,Point,Tags,Builder,Rate,Products,Note\nYou can use the exported CSV as a template. Separate tags/products with "/".';
+  } else {
+    importFormatHelp.textContent = curLang === 'zh'
+      ? 'JSON 格式：[ { "name_zh":"蘑菇岛", "dimension":"overworld", "x":-683, "y":68, "z":-96, "tags":["遗留"], "builder":"Steve" }, ... ]'
+      : 'JSON format: [ { "name_zh":"Mushroom Island", "dimension":"overworld", "x":-683, "y":68, "z":-96, "tags":["Legacy"], "builder":"Steve" }, ... ]';
+  }
+}
+
+document.querySelectorAll('.import-tab').forEach(tab => {
+  tab.addEventListener('click', () => switchImportFormat(tab.dataset.format));
+});
+
+importFileBtn.addEventListener('click', () => importFile.click());
+importFile.addEventListener('change', e => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  importFilename.textContent = file.name + ' (' + Math.round(file.size/1024) + ' KB)';
+  const reader = new FileReader();
+  reader.onload = ev => {
+    importText.value = ev.target.result;
+    if (/\.json$/i.test(file.name)) switchImportFormat('json');
+    else if (/\.csv$/i.test(file.name)) switchImportFormat('csv');
+    else tryParseImport();
+  };
+  reader.readAsText(file, 'UTF-8');
+  e.target.value = '';
+});
+
+importText.addEventListener('input', () => {
+  clearTimeout(importDebounce);
+  importDebounce = setTimeout(tryParseImport, 250);
+});
+
+function parseCsvLine(line){
+  const result = [];
+  let cur = '';
+  let inQ = false;
+  for (let i = 0; i < line.length; i++){
+    const ch = line[i];
+    if (inQ){
+      if (ch === '"'){
+        if (line[i+1] === '"'){ cur += '"'; i++; }
+        else inQ = false;
+      } else cur += ch;
+    } else {
+      if (ch === '"') inQ = true;
+      else if (ch === ','){ result.push(cur); cur = ''; }
+      else cur += ch;
+    }
+  }
+  result.push(cur);
+  return result;
+}
+
+function parseCsvData(text){
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const items = [];
+  for (let i = 1; i < lines.length; i++){
+    const cols = parseCsvLine(lines[i]);
+    if (cols.length < 4) continue;
+    const [name, status, dim, x, y, z, point, tags, builder, rate, products, note] = cols;
+    if (!name || !name.trim()) continue;
+    const dimKey = DIM_FROM_LABEL[dim] || DIM_FROM_LABEL[(dim||'').toLowerCase()] || 'overworld';
+    const catKey = CAT_FROM_LABEL[status] || CAT_FROM_LABEL[(status||'').toLowerCase()] || 'usable';
+    const tagsArr = (tags || '').split(/\s*[\/、,，·]\s*/).map(s => s.trim()).filter(Boolean).map(x => TAG_FROM_LABEL[x] || x);
+    const prodsArr = (products || '').split(/\s*[\/、,，]\s*/).map(s => s.trim()).filter(Boolean);
+    // 点位列如果非空，转成 children 中的一条
+    const children = [];
+    if (point && point.trim()){
+      children.push({ label: ROLE_FROM_LABEL[point] || point, x: Number(x) || 0, y: Number(y) || 0, z: Number(z) || 0 });
+    }
+    items.push({
+      name_zh: name.trim(),
+      name_en: '',
+      dimension: dimKey,
+      x: Number(x) || 0,
+      y: Number(y) || 0,
+      z: Number(z) || 0,
+      category: catKey,
+      tags: tagsArr,
+      builder: (builder || '').trim(),
+      note_zh: (note || '').trim(),
+      note_en: '',
+      rate_zh: (rate || '').trim(),
+      rate_en: '',
+      products_zh: prodsArr,
+      products_en: [],
+      children: children
+    });
+  }
+  return items;
+}
+
+function parseJsonData(text){
+  try {
+    const data = JSON.parse(text);
+    if (!Array.isArray(data)) return null;
+    const items = [];
+    data.forEach(item => {
+      const nameZh = item.name_zh || (item.name && item.name.zh) || '';
+      if (!nameZh) return;
+      const tagsArr = Array.isArray(item.tags) ? item.tags.map(x => TAG_FROM_LABEL[x] || x) : [];
+      items.push({
+        name_zh: nameZh,
+        name_en: item.name_en || (item.name && item.name.en) || '',
+        dimension: item.dimension || item.dim || 'overworld',
+        x: Number(item.x) || 0,
+        y: Number(item.y) || 0,
+        z: Number(item.z) || 0,
+        category: item.category || 'usable',
+        tags: tagsArr,
+        builder: item.builder || '',
+        note_zh: item.note_zh || (item.note && item.note.zh) || '',
+        note_en: item.note_en || (item.note && item.note.en) || '',
+        rate_zh: item.rate_zh || (item.rate && item.rate.zh) || '',
+        rate_en: item.rate_en || (item.rate && item.rate.en) || '',
+        products_zh: Array.isArray(item.products_zh) ? item.products_zh : ((item.products && item.products.zh) || []),
+        products_en: Array.isArray(item.products_en) ? item.products_en : ((item.products && item.products.en) || []),
+        children: Array.isArray(item.children) ? item.children : []
+      });
+    });
+    return items;
+  } catch (_){ return null; }
+}
+
+function tryParseImport(){
+  const text = importText.value.trim();
+  if (!text){
+    importParsed = [];
+    importHint.style.display = 'none';
+    importPreview.classList.remove('show');
+    importPreview.innerHTML = '';
+    return;
+  }
+  let items = [];
+  let err = false;
+  if (importFormat === 'csv'){
+    items = parseCsvData(text);
+  } else {
+    const parsed = parseJsonData(text);
+    if (parsed === null) err = true;
+    else items = parsed;
+  }
+  importParsed = items;
+  if (err){
+    importHint.style.display = '';
+    importHint.className = 'import-hint error';
+    importHint.textContent = t('importParseErr');
+    importPreview.classList.remove('show');
+    return;
+  }
+  if (items.length === 0){
+    importHint.style.display = '';
+    importHint.className = 'import-hint warn';
+    importHint.textContent = t('importParseEmpty');
+    importPreview.classList.remove('show');
+    return;
+  }
+  importHint.style.display = '';
+  importHint.className = 'import-hint success';
+  importHint.textContent = tFmt('importParseOk', { n: items.length });
+  renderImportPreview();
+}
+
+function renderImportPreview(){
+  const first5 = importParsed.slice(0, 5);
+  const items = first5.map(item => `
+    <div class="import-preview-item">
+      <span class="import-preview-name">${escapeHtml(item.name_zh)}</span>
+      <span class="import-preview-meta">${dimLabel(item.dimension)} · ${item.x} ${item.y} ${item.z}</span>
+    </div>
+  `).join('');
+  const more = importParsed.length > 5 ? `<div class="import-preview-more">…… 共 ${importParsed.length} 条</div>` : '';
+  importPreview.innerHTML = `<div class="import-preview-title">${t('importPreviewTitle')}</div>${items}${more}`;
+  importPreview.classList.add('show');
+}
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+importSubmitBtn.addEventListener('click', async () => {
+  if (importRunning) return;
+  if (importParsed.length === 0){ toast(t('importEmpty')); return; }
+  if (!confirm(tFmt('importConfirm', { n: importParsed.length }))) return;
+
+  importRunning = true;
+  importSubmitBtn.disabled = true;
+  importCancelBtn.disabled = true;
+  importCloseBtn.disabled = true;
+  let success = 0, failed = 0;
+
+  for (let i = 0; i < importParsed.length; i++){
+    importSubmitBtn.innerHTML = '<span>' + tFmt('importProgress', { i: i+1, n: importParsed.length }) + '</span>';
+    try {
+      const res = await fetch(`${API_BASE}/api/landmarks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(importParsed[i])
+      });
+      if (res.ok) success++;
+      else failed++;
+    } catch (_){ failed++; }
+  }
+
+  importRunning = false;
+  importSubmitBtn.disabled = false;
+  importCancelBtn.disabled = false;
+  importCloseBtn.disabled = false;
+  importSubmitBtn.innerHTML = ICON.check + '<span>' + t('importSubmit') + '</span>';
+
+  if (failed > 0) toast(tFmt('importDoneWithFail', { s: success, f: failed }));
+  else toast(tFmt('importDone', { s: success }));
+
+  if (success > 0){
+    closeImportModal();
+    await loadData();
+  }
+});
+
+document.getElementById('btn-import').addEventListener('click', openImportModal);
+importCloseBtn.addEventListener('click', closeImportModal);
+importBackdrop.addEventListener('click', closeImportModal);
+importCancelBtn.addEventListener('click', closeImportModal);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && importModal.classList.contains('open')) closeImportModal();
+});
+
+/* ==================== 导航系统 ==================== */
 const sideNav = document.getElementById('side-nav');
 const sideNavFab = document.getElementById('side-nav-fab');
 const sideNavBackdrop = document.getElementById('side-nav-backdrop');
 const sideNavCollapse = document.getElementById('side-nav-collapse');
 const NAV_TARGETS = ['anchor-hero','anchor-usable','anchor-unusable','anchor-machines','anchor-future','anchor-links'];
 
-// 桌面端折叠
 let navCollapsed = false;
 try { navCollapsed = localStorage.getItem('sideNavCollapsed') === '1'; } catch(_) {}
 if (navCollapsed) sideNav.classList.add('collapsed');
@@ -1233,7 +1535,6 @@ sideNavCollapse && sideNavCollapse.addEventListener('click', () => {
   try { localStorage.setItem('sideNavCollapsed', navCollapsed ? '1' : '0'); } catch(_) {}
 });
 
-// 移动端抽屉
 function openMobileNav(){
   sideNav.classList.add('open');
   sideNavBackdrop.classList.add('show');
@@ -1249,17 +1550,13 @@ function closeMobileNav(){
 
 sideNavFab && sideNavFab.addEventListener('click', e => {
   e.stopPropagation();
-  if (sideNav.classList.contains('open')) closeMobileNav();
-  else openMobileNav();
+  if (sideNav.classList.contains('open')) closeMobileNav(); else openMobileNav();
 });
-
 sideNavBackdrop && sideNavBackdrop.addEventListener('click', closeMobileNav);
-
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && sideNav.classList.contains('open')) closeMobileNav();
 });
 
-// 导航链接
 document.querySelectorAll('.side-nav-link').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
@@ -1284,15 +1581,49 @@ function setupNavObserver(){
   const targets = NAV_TARGETS.map(id => document.getElementById(id)).filter(Boolean);
   if (!targets.length) return;
   navObserver = new IntersectionObserver(entries => {
-    const visible = entries.filter(en => en.isIntersecting)
-      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    const visible = entries.filter(en => en.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
     if (visible.length > 0) setActiveNav(visible[0].target.id);
-  }, {
-    rootMargin: '-120px 0px -55% 0px',
-    threshold: 0
-  });
+  }, { rootMargin: '-120px 0px -55% 0px', threshold: 0 });
   targets.forEach(t => navObserver.observe(t));
 }
+
+/* ==================== 下载下拉菜单 ==================== */
+const downloadWrap = $('#download-wrap');
+const btnDownload = $('#btn-download');
+const ddBackdrop = $('#dd-backdrop');
+
+function openDownloadMenu(){
+  downloadWrap.classList.add('open');
+  btnDownload.setAttribute('aria-expanded','true');
+  if (document.body.classList.contains('is-mobile') || window.innerWidth <= 660){ ddBackdrop.classList.add('show'); }
+}
+function closeDownloadMenu(){
+  downloadWrap.classList.remove('open');
+  btnDownload.setAttribute('aria-expanded','false');
+  ddBackdrop.classList.remove('show');
+}
+btnDownload.addEventListener('click', e => {
+  e.stopPropagation();
+  if (downloadWrap.classList.contains('open')) closeDownloadMenu(); else openDownloadMenu();
+});
+ddBackdrop.addEventListener('click', closeDownloadMenu);
+document.addEventListener('click', e => {
+  if (!downloadWrap.classList.contains('open')) return;
+  if (downloadWrap.contains(e.target)) return;
+  closeDownloadMenu();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && downloadWrap.classList.contains('open')){ closeDownloadMenu(); btnDownload.focus(); }
+});
+$('#download-dropdown').addEventListener('click', e => {
+  const item = e.target.closest('.dd-item');
+  if (!item) return;
+  const fmt = item.dataset.format;
+  closeDownloadMenu();
+  if (fmt === 'md') downloadMarkdown();
+  else if (fmt === 'txt') downloadTxt();
+  else if (fmt === 'csv') downloadCsv();
+});
 
 /* ==================== 事件绑定 ==================== */
 document.addEventListener('click', e => {
@@ -1302,13 +1633,11 @@ document.addEventListener('click', e => {
   const group = main.closest('.lm-group');
   setGroupOpen(group, !group.classList.contains('open'));
 });
-
 document.getElementById('btn-expand-all').addEventListener('click', () => {
   allOpen = !allOpen;
   document.querySelectorAll('.lm-group').forEach(g => setGroupOpen(g, allOpen));
   syncExpandAllBtn();
 });
-
 document.getElementById('search').addEventListener('input', applyFilter);
 document.querySelectorAll('.chip[data-dim]').forEach(chip => {
   chip.addEventListener('click', () => {
@@ -1326,11 +1655,9 @@ document.querySelectorAll('.chip[data-cat]').forEach(chip => {
     applyFilter();
   });
 });
-
 document.getElementById('btn-theme').addEventListener('click', () => {
   setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 });
-
 document.addEventListener('click', async e => {
   const btn = e.target.closest('.btn-copy');
   if (!btn) return;
@@ -1342,7 +1669,6 @@ document.addEventListener('click', async e => {
   setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('done'); }, 1200);
   toast(t('toastCopied') + btn.dataset.copy);
 });
-
 document.addEventListener('click', async e => {
   const btn = e.target.closest('.btn-icon.delete');
   if (!btn) return;
@@ -1358,7 +1684,7 @@ document.addEventListener('click', async e => {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     toast(t('toastDeleted'));
     await loadData();
-  } catch (err) {
+  } catch (err){
     toast(t('toastAddFail') + err.message);
     btn.disabled = false;
   }
@@ -1403,14 +1729,12 @@ function openAddModal(){
   addMultiCoords.style.display = 'none';
   document.getElementById('add-modal-title-text').textContent = t('addTitle');
 }
-
 function openEditModal(lm){
   editingId = lm.id;
   addModal.classList.add('open');
   addModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
   addForm.reset();
-
   addNameZh.value = lm.name.zh || '';
   addNameEn.value = lm.name.en || '';
   addBuilder.value = lm.builder || '';
@@ -1419,10 +1743,8 @@ function openEditModal(lm){
   addNote.value = lm.note ? (lm.note.zh || '') : '';
   addRateZh.value = lm.rate ? (lm.rate.zh || '') : '';
   addProductsZh.value = lm.products && lm.products.zh ? lm.products.zh.join(', ') : '';
-
   selectedTags = [...(lm.tags || [])];
   updateTagChips();
-
   if (lm.children && lm.children.length){
     coordMode = 'multi';
     addLocationList.innerHTML = '';
@@ -1436,24 +1758,20 @@ function openEditModal(lm){
   updateModeSwitch();
   addSingleCoords.style.display = coordMode === 'single' ? '' : 'none';
   addMultiCoords.style.display = coordMode === 'multi' ? '' : 'none';
-
   document.getElementById('add-modal-title-text').textContent = t('addTitleEdit');
 }
-
 function closeAddModal(){
   addModal.classList.remove('open');
   addModal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
   editingId = null;
 }
-
 addTagPicker.addEventListener('click', e => {
   const chip = e.target.closest('.tag-chip');
   if (!chip) return;
   const tag = chip.dataset.tag;
   const idx = selectedTags.indexOf(tag);
-  if (idx >= 0) selectedTags.splice(idx, 1);
-  else selectedTags.push(tag);
+  if (idx >= 0) selectedTags.splice(idx, 1); else selectedTags.push(tag);
   updateTagChips();
 });
 function updateTagChips(){
@@ -1463,7 +1781,6 @@ function updateTagChips(){
   const hasTech = selectedTags.includes('生电');
   addTechFields.style.display = hasTech ? '' : 'none';
 }
-
 addModeSwitch.addEventListener('click', e => {
   const btn = e.target.closest('.mode-btn');
   if (!btn) return;
@@ -1478,7 +1795,6 @@ function updateModeSwitch(){
     btn.classList.toggle('active', btn.dataset.mode === coordMode);
   });
 }
-
 function addLocationRow(label, x, y, z){
   const row = document.createElement('div');
   row.className = 'location-row';
@@ -1487,8 +1803,7 @@ function addLocationRow(label, x, y, z){
     <input class="form-input location-x" type="number" placeholder="X" required>
     <input class="form-input location-y" type="number" placeholder="Y" required>
     <input class="form-input location-z" type="number" placeholder="Z" required>
-    <button type="button" class="btn-remove-location" title="删除">✕</button>
-  `;
+    <button type="button" class="btn-remove-location" title="删除">✕</button>`;
   if (label !== undefined) row.querySelector('.location-label').value = label || '';
   if (x !== undefined) row.querySelector('.location-x').value = x;
   if (y !== undefined) row.querySelector('.location-y').value = y;
@@ -1500,26 +1815,19 @@ document.getElementById('btn-add-location').addEventListener('click', () => addL
 
 addForm.addEventListener('submit', async e => {
   e.preventDefault();
-
   if (!addNameZh.value.trim()){ addNameZh.focus(); return; }
   if (!addBuilder.value.trim()){ toast(t('errBuilder')); addBuilder.focus(); return; }
-
   const hasTech = selectedTags.includes('生电');
   if (hasTech){
     if (!addRateZh.value.trim()){ toast(t('errTechRate')); addRateZh.focus(); return; }
     if (!addProductsZh.value.trim()){ toast(t('errTechProducts')); addProductsZh.focus(); return; }
   }
-
   const submitBtn = document.getElementById('add-submit');
   const origHtml = submitBtn.innerHTML;
   submitBtn.disabled = true;
   submitBtn.textContent = t('btnSubmitting');
-
   try {
-    const productsArr = addProductsZh.value.trim()
-      ? addProductsZh.value.split(/[,，]/).map(s => s.trim()).filter(Boolean)
-      : [];
-
+    const productsArr = addProductsZh.value.trim() ? addProductsZh.value.split(/[,，]/).map(s => s.trim()).filter(Boolean) : [];
     const body = {
       name_zh: addNameZh.value.trim(),
       name_en: addNameEn.value.trim(),
@@ -1537,7 +1845,6 @@ addForm.addEventListener('submit', async e => {
       products_zh: hasTech ? productsArr : [],
       products_en: []
     };
-
     if (coordMode === 'multi'){
       addLocationList.querySelectorAll('.location-row').forEach(row => {
         const label = row.querySelector('.location-label').value.trim();
@@ -1553,14 +1860,9 @@ addForm.addEventListener('submit', async e => {
         return;
       }
     }
-
     const url = editingId ? `${API_BASE}/api/landmarks/${editingId}` : `${API_BASE}/api/landmarks`;
     const method = editingId ? 'PUT' : 'POST';
-    const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
+    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     if (!res.ok){
       const errData = await res.json().catch(() => ({}));
       throw new Error(errData.error || `HTTP ${res.status}`);
@@ -1584,7 +1886,6 @@ document.getElementById('add-cancel').addEventListener('click', closeAddModal);
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && addModal.classList.contains('open')) closeAddModal();
 });
-
 document.addEventListener('click', e => {
   const btn = e.target.closest('.btn-icon.edit');
   if (!btn) return;
@@ -1607,6 +1908,15 @@ document.querySelectorAll('.lang-switch button').forEach(btn => {
   });
 });
 
+/* ==================== 启动 ==================== */
+function applyMobileMode(){
+  const ua = navigator.userAgent || '';
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|HarmonyOS/i.test(ua) || (('ontouchstart' in window) && window.matchMedia('(max-width: 820px)').matches);
+  document.body.classList.toggle('is-mobile', isMobile);
+}
+applyMobileMode();
+window.addEventListener('resize', () => setTimeout(applyMobileMode, 180), { passive: true });
+
 (function init(){
   let savedLang = null;
   try { savedLang = localStorage.getItem('lang'); } catch(_) {}
@@ -1615,12 +1925,10 @@ document.querySelectorAll('.lang-switch button').forEach(btn => {
   document.querySelectorAll('.lang-switch button').forEach(b => {
     b.classList.toggle('active', b.dataset.lang === curLang);
   });
-
   let savedTheme = null;
   try { savedTheme = localStorage.getItem('theme'); } catch(_) {}
   if (!savedTheme) savedTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
   setTheme(savedTheme);
-
   applyLang();
   loadData();
 })();
