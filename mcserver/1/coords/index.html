@@ -8,16 +8,16 @@
 <style>
   /* ===== Minecraft 像素字体（实验性皮肤用） ===== */
   @font-face {
-  font-family: 'Monocraft';
-  src: url('../../../fonts/Monocraft.ttf') format('truetype');
-  font-display: swap;
-  font-weight: 400;
-}
-@font-face {
-  font-family: 'Zpix';
-  src: url('../../../fonts/zpix.woff2') format('woff2');
-  font-display: swap;
-}
+    font-family: 'Monocraft';
+    src: url('Monocraft.ttf') format('truetype');
+    font-display: swap;
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Zpix';
+    src: url('zpix.woff2') format('woff2');
+    font-display: swap;
+  }
 
   :root[data-theme="dark"]{
     --bg:#0d1117; --panel:#161b22; --panel-2:#21262d;
@@ -49,8 +49,6 @@
     --modal-backdrop:rgba(31,35,40,.5);
     --hl-bg:#fff3a3; --hl-text:#1f2328;
   }
-
-  /* ===== Minecraft 皮肤的主题变量 ===== */
   :root[data-skin="minecraft"][data-theme="dark"]{
     --bg:#1a1a1a; --panel:#2d2d2d; --panel-2:#3a3a3a;
     --border:#555555; --border-hover:#888888;
@@ -436,9 +434,30 @@
     .add-modal,.import-modal,.batch-modal{align-items:flex-end;padding:0}
   }
 
-  /* ============================================================
-     ===== Minecraft 皮肤（实验性）=====
-     ============================================================ */
+  /* ===== 传送关停警告 ===== */
+  .alert-critical{
+    display:flex;gap:14px;align-items:flex-start;
+    border-radius:8px;padding:16px 20px;margin-top:16px;
+    background:linear-gradient(135deg, color-mix(in srgb,var(--danger) 18%,transparent), color-mix(in srgb,var(--danger) 8%,transparent));
+    border:2px solid var(--danger);
+    color:var(--danger);
+    animation:critical-pulse 2s ease-in-out infinite;
+  }
+  .alert-critical .ico{font-size:28px;flex-shrink:0;margin-top:2px;color:var(--danger)}
+  .alert-critical-body{flex:1;min-width:0;font-size:14px;line-height:1.7}
+  .alert-critical-title{font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:.5px}
+  .alert-critical-note{margin-top:10px;font-size:13px;font-weight:500;opacity:.9}
+  .alert-critical-note code{background:color-mix(in srgb,var(--danger) 15%,transparent);padding:1px 6px;border-radius:4px;font-family:ui-monospace,monospace}
+  @keyframes critical-pulse{
+    0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--danger) 55%,transparent)}
+    50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--danger) 0%,transparent)}
+  }
+  html[data-skin="minecraft"] .alert-critical{
+    border-width:3px;
+    box-shadow:inset 2px 2px 0 rgba(255,255,255,.15), inset -2px -2px 0 rgba(0,0,0,.35);
+  }
+
+  /* ===== Minecraft 皮肤 ===== */
   html[data-skin="minecraft"] body{
     font-family:'Monocraft','Zpix','Courier New',Consolas,monospace;
     font-size:13px;
@@ -452,17 +471,9 @@
     font-family:'Monocraft','Zpix','Courier New',Consolas,monospace;
     letter-spacing:.3px;
   }
-  /* 全局直角 */
   html[data-skin="minecraft"] *{border-radius:0 !important}
-  /* 标题像素阴影 */
-  html[data-skin="minecraft"] h1{
-    text-shadow:2px 2px 0 var(--accent);
-    letter-spacing:1px;
-  }
-  html[data-skin="minecraft"] .sec-title{
-    text-shadow:1px 1px 0 rgba(0,0,0,.35);
-  }
-  /* 按钮 3D 效果 */
+  html[data-skin="minecraft"] h1{text-shadow:2px 2px 0 var(--accent);letter-spacing:1px}
+  html[data-skin="minecraft"] .sec-title{text-shadow:1px 1px 0 rgba(0,0,0,.35)}
   html[data-skin="minecraft"] .btn{
     border:2px solid var(--border);
     background:#6B6B6B;
@@ -519,7 +530,6 @@
   html[data-skin="minecraft"] .btn-copy:hover{background:#4a4a4a;color:#55FF55}
   html[data-skin="minecraft"] .btn-copy:active{transform:translateY(1px);box-shadow:none}
   html[data-skin="minecraft"] .btn-copy.done{background:#3C8527;color:#fff;border-color:#1a4d23}
-  /* 面板和卡片 3D 边 */
   html[data-skin="minecraft"] .lm,
   html[data-skin="minecraft"] .machine,
   html[data-skin="minecraft"] .fut,
@@ -537,7 +547,6 @@
     box-shadow:inset 1px 1px 0 rgba(255,255,255,.08), inset -1px -1px 0 rgba(0,0,0,.35), var(--shadow);
   }
   html[data-skin="minecraft"] .lm:hover{background:var(--panel-2)}
-  /* 输入框内阴影 */
   html[data-skin="minecraft"] #search,
   html[data-skin="minecraft"] .form-input,
   html[data-skin="minecraft"] .form-select,
@@ -563,12 +572,8 @@
     border-color:#55FF55;
     box-shadow:inset 2px 2px 0 rgba(0,0,0,.6), 0 0 0 2px rgba(85,255,85,.35);
   }
-  /* 坐标和代码字 */
   html[data-skin="minecraft"] .coords,
-  html[data-skin="minecraft"] .import-textarea{
-    text-shadow:1px 1px 0 rgba(0,0,0,.5);
-  }
-  /* 侧边导航 */
+  html[data-skin="minecraft"] .import-textarea{text-shadow:1px 1px 0 rgba(0,0,0,.5)}
   html[data-skin="minecraft"] .side-nav-fab{
     width:52px;height:52px;
     background:#3C8527;
@@ -582,7 +587,6 @@
   }
   html[data-skin="minecraft"] .side-nav-link.active .side-nav-link-icon,
   html[data-skin="minecraft"] .side-nav-link.active .side-nav-idx{color:#fff}
-  /* 语言切换 */
   html[data-skin="minecraft"] .lang-switch{
     border:2px solid #373737;background:#6B6B6B;
     box-shadow:inset 1px 1px 0 rgba(255,255,255,.35), inset -1px -1px 0 rgba(0,0,0,.35);
@@ -590,35 +594,28 @@
   html[data-skin="minecraft"] .lang-switch button{color:#eee;text-shadow:1px 1px 0 rgba(0,0,0,.6)}
   html[data-skin="minecraft"] .lang-switch button.active{background:#3C8527;color:#fff}
   html[data-skin="minecraft"] .lang-switch button + button{border-left:2px solid #373737}
-  /* 标签 */
   html[data-skin="minecraft"] .tag,
   html[data-skin="minecraft"] .dim-badge,
   html[data-skin="minecraft"] .child-count{
     border-width:2px;
     text-shadow:1px 1px 0 rgba(0,0,0,.5);
   }
-  /* 标题图标方块化 */
   html[data-skin="minecraft"] .sec-title .st-ico,
   html[data-skin="minecraft"] .flink-ico,
   html[data-skin="minecraft"] .tag-modal-icon{
     box-shadow:inset 1px 1px 0 rgba(255,255,255,.1), inset -1px -1px 0 rgba(0,0,0,.35);
     border-width:2px;
   }
-  /* 弹窗遮罩纯黑 */
   html[data-skin="minecraft"] .add-modal-backdrop,
   html[data-skin="minecraft"] .import-modal-backdrop,
   html[data-skin="minecraft"] .batch-modal-backdrop,
   html[data-skin="minecraft"] .side-nav-backdrop{
     backdrop-filter:none;-webkit-backdrop-filter:none;
   }
-  /* 移除 UI 的模糊 */
   html[data-skin="minecraft"] .toolbar,
   html[data-skin="minecraft"] .side-nav-panel{backdrop-filter:none;-webkit-backdrop-filter:none}
-  /* 高亮反色 */
   html[data-skin="minecraft"] mark.hl{color:#1a1a1a;font-weight:700}
-  /* stat 数字金色 */
   html[data-skin="minecraft"] .stat b{color:#FFAA00;text-shadow:1px 1px 0 rgba(0,0,0,.6)}
-  /* 暗色下纯黑背景让像素更锐 */
   html[data-skin="minecraft"][data-theme="dark"] body{background:#1a1a1a}
   html[data-skin="minecraft"][data-theme="light"] body{background:#c6c6c6}
 </style>
@@ -689,6 +686,16 @@
       </div>
     </div>
     <div class="stats" id="stats"></div>
+
+    <!-- ===== 传送关停紧急公告 ===== -->
+    <div class="alert-critical" role="alert">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3z"/><path d="M12 9v5"/><path d="M12 17.5h.01"/></svg>
+      <div class="alert-critical-body">
+        <div class="alert-critical-title" data-i18n="alertTpTitle">⚠️ 传送功能已关停</div>
+        <div data-i18n="alertTpText">由于服务器的传送指令遭到恶意攻击和利用，服主已<strong>无限期关停传送插件</strong>，重新启用时间待定，望周知。</div>
+        <div class="alert-critical-note" data-i18n="alertTpNote">下方所有传送指令已改为原版 <code>/execute in ... run tp @s</code> 格式，需要 OP 权限才能执行。</div>
+      </div>
+    </div>
   </header>
 
   <div class="toolbar">
@@ -949,7 +956,11 @@ const I18N = {
     batchUpdated:'已更新 {n} 条地标',
     batchNoChange:'未选择任何更改项',
     batchApplying:'处理中 {i}/{n}…',
-    toastSelectModeOn:'已进入批量选择模式', toastSelectModeOff:'已退出批量选择模式'
+    toastSelectModeOn:'已进入批量选择模式', toastSelectModeOff:'已退出批量选择模式',
+    alertTpTitle:'⚠️ 传送功能已关停',
+    alertTpText:'由于服务器的传送指令遭到恶意攻击和利用，服主已<strong>无限期关停传送插件</strong>，重新启用时间待定，望周知。',
+    alertTpNote:'下方所有传送指令已改为原版 <code>/execute in ... run tp @s</code> 格式，需要 OP 权限才能执行。',
+    confirmTpCopy:'⚠️ 该传送指令需要 OP 权限，且传送插件已被关停，实际无法执行。\n\n仅复制指令文本吗？'
   },
   en: {
     docTitle:'66QN Server Landmarks', title:'66QN Server Landmarks', subtitle:'Minecraft Java 26.2 · All coordinates verified',
@@ -1028,7 +1039,11 @@ const I18N = {
     batchUpdated:'Updated {n}',
     batchNoChange:'No changes selected',
     batchApplying:'Processing {i}/{n}…',
-    toastSelectModeOn:'Batch select mode on', toastSelectModeOff:'Batch select mode off'
+    toastSelectModeOn:'Batch select mode on', toastSelectModeOff:'Batch select mode off',
+    alertTpTitle:'⚠️ Teleport disabled',
+    alertTpText:'Due to malicious abuse of teleport commands, the server owner has <strong>indefinitely disabled the teleport plugin</strong>. No ETA for reactivation.',
+    alertTpNote:'All teleport commands below now use the vanilla <code>/execute in ... run tp @s</code> format and require OP permission.',
+    confirmTpCopy:'⚠️ This teleport command requires OP permission, and the teleport plugin is disabled.\n\nCopy the command text anyway?'
   }
 };
 
@@ -1116,7 +1131,6 @@ function highlight(text, query){
   const q = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return esc.replace(new RegExp('(' + q + ')', 'gi'), '<mark class="hl">$1</mark>');
 }
-function builderLineHTML(b){ if (!b) return ''; return `<div class="lm-meta"><span class="meta-item${builderClass(b)}">${builderIcon(b)}${t('kvBuilder')}：${b}</span></div>`; }
 
 /* ===== 皮肤切换 ===== */
 function setSkin(skin, silent){
@@ -1128,7 +1142,6 @@ function setSkin(skin, silent){
     ico.outerHTML = svgStr;
   }
   if (lbl) lbl.textContent = skin === 'minecraft' ? t('skinMinecraft') : t('skinClassic');
-  // 更新 theme-color
   const themeColor = document.querySelector('meta[name="theme-color"]');
   if (themeColor){
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -1143,7 +1156,7 @@ function setSkin(skin, silent){
 }
 
 function applyLang(){
-  document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if (I18N[curLang][k]) el.textContent = I18N[curLang][k]; });
+  document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if (I18N[curLang][k]) el.innerHTML = I18N[curLang][k]; });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { const k = el.dataset.i18nPh; if (I18N[curLang][k]) el.placeholder = I18N[curLang][k]; });
   document.title = t('docTitle');
   document.documentElement.lang = curLang === 'zh' ? 'zh-CN' : 'en';
@@ -1195,7 +1208,7 @@ function landmarkHTML(l){
 
   if (l.children && l.children.length){
     const childrenHTML = l.children.map(c => {
-      const cmd = `/lsktp ${DIMS[l.dim].prefix} ${c.x} ${c.y} ${c.z}`;
+      const cmd = `/execute in minecraft:${DIMS[l.dim].prefix} run tp @s ${c.x} ${c.y} ${c.z}`;
       const ico = (c.label || '').indexOf('collect') >= 0 ? ICON.inbox : ICON.monitor;
       return `<div class="child-row"><span class="child-label">${ico}${roleLabel(c.label)}</span><code class="coords">${c.x} ${c.y} ${c.z}</code><button class="btn-copy" data-copy="${cmd}">${ICON.copy}${t('btnTeleport')}</button></div>`;
     }).join('');
@@ -1218,7 +1231,7 @@ function landmarkHTML(l){
     </article>`;
   }
 
-  const cmd = `/lsktp ${DIMS[l.dim].prefix} ${l.x} ${l.y} ${l.z}`;
+  const cmd = `/execute in minecraft:${DIMS[l.dim].prefix} run tp @s ${l.x} ${l.y} ${l.z}`;
   const searchText = [lnameRaw, lnoteRaw, builderRaw, l.x, l.y, l.z, dlabel, ...(l.tags||[]).map(tagLabel)].join(' ').toLowerCase();
   return `<article class="lm${deadCls}${selCls}" data-id="${l.id||''}" data-dim="${l.dim}" data-cats="${cats}" data-search="${escapeHtml(searchText)}">
     <div class="lm-left">
@@ -1848,8 +1861,12 @@ document.querySelectorAll('.chip[data-dim]').forEach(chip => { chip.addEventList
 document.querySelectorAll('.chip[data-cat]').forEach(chip => { chip.addEventListener('click', () => { document.querySelectorAll('.chip[data-cat]').forEach(c => c.classList.remove('active')); chip.classList.add('active'); curCat = chip.dataset.cat; applyFilter(); }); });
 document.getElementById('btn-theme').addEventListener('click', () => { setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); });
 document.getElementById('btn-skin').addEventListener('click', () => { const cur = root.getAttribute('data-skin') || 'github'; setSkin(cur === 'minecraft' ? 'github' : 'minecraft'); });
+
+/* 复制按钮：传送指令需 OP，复制前二次确认 */
 document.addEventListener('click', async e => {
   const btn = e.target.closest('.btn-copy'); if (!btn) return;
+  // ===== 传送指令需要 OP 权限 + 插件已关停，复制前二次确认 =====
+  if (!confirm(t('confirmTpCopy'))) return;
   const ok = await copyText(btn.dataset.copy); if (!ok){ toast(t('toastCopyFail')); return; }
   const orig = btn.innerHTML; btn.innerHTML = ICON.check + t('btnCopied'); btn.classList.add('done');
   setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('done'); }, 1100);
