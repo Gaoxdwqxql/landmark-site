@@ -44,6 +44,7 @@ function applyLang(){
   const skinLbl = document.getElementById('skin-lbl');
   if (skinLbl) skinLbl.textContent = document.documentElement.getAttribute('data-skin') === 'minecraft' ? t('skinMinecraft') : t('skinClassic');
   updateImportFormatHelp(); updateBatchBar();
+  if (typeof refreshLocationDimSelects === 'function') refreshLocationDimSelects(); // features.js 中定义
   try { localStorage.setItem('lang', curLang); } catch(_) {}
 }
 
@@ -53,6 +54,14 @@ function convertLM(row){
   try { tags = JSON.parse(row.tags || '[]'); } catch(_) {}
   try { pz = JSON.parse(row.products_zh || '[]'); } catch(_) {}
   try { pe = JSON.parse(row.products_en || '[]'); } catch(_) {}
+  // 归一化子点位：维度可缺省（继承父级），非法值直接丢弃
+  children = (Array.isArray(children) ? children : [])
+    .filter(c => c && typeof c === 'object')
+    .map(c => {
+      const point = { label: c.label || '', x: Number(c.x) || 0, y: Number(c.y) || 0, z: Number(c.z) || 0 };
+      if (c.dim && DIMS[c.dim]) point.dim = c.dim;
+      return point;
+    });
   return { id: row.id, name: { zh: row.name_zh, en: row.name_en || '' }, builder: row.builder || '', dim: row.dimension, x: row.x, y: row.y, z: row.z, category: row.category || 'usable', tags: sanitizeTags(tags), note: row.note_zh ? { zh: row.note_zh, en: row.note_en || '' } : null, children, rate: { zh: row.rate_zh || '', en: row.rate_en || '' }, products: { zh: pz, en: pe }, dead: row.category === 'unusable' };
 }
 
@@ -93,13 +102,15 @@ function landmarkHTML(l){
 
   if (l.children && l.children.length){
     const childrenHTML = l.children.map(c => {
-      const prefix = (DIMS[l.dim] && DIMS[l.dim].prefix) ? DIMS[l.dim].prefix : 'overworld';
+      const cdim = c.dim || l.dim;                 // 子点位维度：可选，缺省继承父级
+      const prefix = (DIMS[cdim] && DIMS[cdim].prefix) ? DIMS[cdim].prefix : 'overworld';
       const opCmd = `/execute in minecraft:${prefix} run tp @s ${c.x} ${c.y} ${c.z}`;
       const tpCmd = `/tp ${c.x} ${c.y} ${c.z}`;
       const ico = (c.label || '').indexOf('collect') >= 0 ? ICON.inbox : ICON.monitor;
-      return `<div class="child-row"><span class="child-label">${ico}${roleLabel(c.label)}</span><code class="coords">${c.x} ${c.y} ${c.z}</code><button class="btn-copy" data-op="${opCmd}" data-tp="${tpCmd}">${ICON.copy}${t('btnTeleport')}</button></div>`;
+      const dimTag = c.dim && c.dim !== l.dim ? `<span class="dim-badge ${cdim}">${DIM_ICON[cdim]}${dimLabel(cdim)}</span>` : '';
+      return `<div class="child-row"><span class="child-label">${ico}${roleLabel(c.label)}</span>${dimTag}<code class="coords">${c.x} ${c.y} ${c.z}</code><button class="btn-copy" data-op="${opCmd}" data-tp="${tpCmd}">${ICON.copy}${t('btnTeleport')}</button></div>`;
     }).join('');
-    const searchText = [lnameRaw, lnoteRaw, builderRaw, dlabel, ...(l.tags||[]).map(tagLabel), ...(l.children||[]).flatMap(c => [c.x, c.y, c.z, roleLabel(c.label)])].join(' ').toLowerCase();
+    const searchText = [lnameRaw, lnoteRaw, builderRaw, dlabel, ...(l.tags||[]).map(tagLabel), ...(l.children||[]).flatMap(c => [c.x, c.y, c.z, roleLabel(c.label), dimLabel(c.dim || l.dim)])].join(' ').toLowerCase();
     return `<article class="lm lm-group${deadCls}${selCls}" data-id="${l.id||''}" data-dim="${l.dim}" data-cats="${cats}" data-search="${escapeHtml(searchText)}">
       <div class="lm-main" role="button" tabindex="0" aria-expanded="false">
         ${checkbox}
@@ -161,14 +172,20 @@ function renderMachines(){
   $('#machines').innerHTML = techs.map(m => {
     let pointsHTML = '';
     if (m.children && m.children.length){
-      pointsHTML = m.children.map(p => `<code>${p.x} ${p.y} ${p.z}</code><span style="font-size:11.5px;color:var(--muted);margin-right:6px">（${roleLabel(p.label)} · ${dimLabel(m.dim)}）</span>`).join('');
+      pointsHTML = m.children.map(p => {
+        const pdim = p.dim || m.dim;               // 子点位可单独指定维度
+        return `<code>${p.x} ${p.y} ${p.z}</code><span style="font-size:11.5px;color:var(--muted);margin-right:6px">（${roleLabel(p.label)} · ${dimLabel(pdim)}）</span>`;
+      }).join('');
     } else {
       pointsHTML = `<code>${m.x} ${m.y} ${m.z}</code><span style="font-size:11.5px;color:var(--muted);margin-right:6px">（${dimLabel(m.dim)}）</span>`;
     }
     const products = m.products && (curLang === 'zh' ? m.products.zh : m.products.en);
     const rate = escapeHtml(pick(m.rate) || '—');
     const builderRow = m.builder ? `<div class="kv"><span class="k">${builderIcon(m.builder)}${t('kvBuilder')}</span><span class="v">${escapeHtml(m.builder)}</span></div>` : '';
-    return `<div class="machine"><h3>${ICON.tool}${escapeHtml(pick(m.name))}${(m.tags||[]).map(tagHTML).join('')}</h3>${builderRow}<div class="kv"><span class="k">${ICON.pin}${t('kvCoords')}</span><span class="v">${pointsHTML}</span></div><div class="kv"><span class="k">${ICON.chart}${t('kvRate')}</span><span class="v">${rate}</span></div>${m.note ? `<div class="kv"><span class="k">${ICON.info}${t('kvNote')}</span><span class="v">${escapeHtml(pick(m.note))}</span></div>` : ''}<div class="kv"><span class="k">${ICON.box}${t('kvProducts')}</span><span class="v products">${Array.isArray(products) ? products.map(p => `<span>${escapeHtml(p)}</span>`).join('') : ''}</span></div></div>`;
+    const cardActions = m.id
+      ? `<span class="machine-actions"><button class="btn-icon edit" data-edit-id="${m.id}" title="Edit">${ICON.edit}</button><button class="btn-icon delete" data-delete-id="${m.id}" data-delete-name="${escapeHtml(pick(m.name))}" title="Delete">${ICON.trash}</button></span>`
+      : '';
+    return `<div class="machine" data-id="${m.id || ''}"><h3>${ICON.tool}${escapeHtml(pick(m.name))}${(m.tags||[]).map(tagHTML).join('')}${cardActions}</h3>${builderRow}<div class="kv"><span class="k">${ICON.pin}${t('kvCoords')}</span><span class="v">${pointsHTML}</span></div><div class="kv"><span class="k">${ICON.chart}${t('kvRate')}</span><span class="v">${rate}</span></div>${m.note ? `<div class="kv"><span class="k">${ICON.info}${t('kvNote')}</span><span class="v">${escapeHtml(pick(m.note))}</span></div>` : ''}<div class="kv"><span class="k">${ICON.box}${t('kvProducts')}</span><span class="v products">${Array.isArray(products) ? products.map(p => `<span>${escapeHtml(p)}</span>`).join('') : ''}</span></div></div>`;
   }).join('');
 }
 

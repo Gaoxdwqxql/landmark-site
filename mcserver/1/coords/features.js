@@ -175,15 +175,30 @@ addModeSwitch.addEventListener('click', e => {
   if (coordMode === 'multi' && addLocationList.children.length === 0) addLocationRow();
 });
 function updateModeSwitch(){ addModeSwitch.querySelectorAll('.mode-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === coordMode)); }
-function addLocationRow(label, x, y, z){
+function locationDimOptions(selected){
+  const list = ['', 'overworld', 'nether', 'end'];
+  return list.map(d => `<option value="${d}"${d === (selected || '') ? ' selected' : ''}>${d ? dimLabel(d) : t('dimFollow')}</option>`).join('');
+}
+function addLocationRow(label, x, y, z, dim){
   const row = document.createElement('div'); row.className = 'location-row';
-  row.innerHTML = `<input class="form-input location-label" type="text" placeholder="标签" style="flex:0 0 100px"><input class="form-input location-x" type="number" placeholder="X" required><input class="form-input location-y" type="number" placeholder="Y" required><input class="form-input location-z" type="number" placeholder="Z" required><button type="button" class="btn-remove-location" title="删除">✕</button>`;
+  row.innerHTML = `<input class="form-input location-label" type="text" placeholder="${t('locationLabelPh')}" style="flex:0 0 90px"><select class="form-select location-dim" style="flex:0 0 116px" title="${t('locationDimTitle')}">${locationDimOptions(dim)}</select><input class="form-input location-x" type="number" placeholder="X" required><input class="form-input location-y" type="number" placeholder="Y" required><input class="form-input location-z" type="number" placeholder="Z" required><button type="button" class="btn-remove-location" title="${t('btnRemoveLocation')}">✕</button>`;
   if (label !== undefined) row.querySelector('.location-label').value = label || '';
+  if (dim) row.querySelector('.location-dim').value = dim;
   if (x !== undefined) row.querySelector('.location-x').value = x;
   if (y !== undefined) row.querySelector('.location-y').value = y;
   if (z !== undefined) row.querySelector('.location-z').value = z;
   row.querySelector('.btn-remove-location').addEventListener('click', () => row.remove());
   addLocationList.appendChild(row);
+}
+// 切换语言时刷新已存在的维度下拉（保留各自选中值）
+function refreshLocationDimSelects(){
+  if (!addLocationList) return;
+  addLocationList.querySelectorAll('.location-row').forEach(row => {
+    const sel = row.querySelector('.location-dim'); if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = locationDimOptions(cur);
+    sel.value = cur;
+  });
 }
 document.getElementById('btn-add-location').addEventListener('click', () => addLocationRow());
 
@@ -214,7 +229,7 @@ function openEditModal(lm){
   addProductsZh.value = lm.products && lm.products.zh ? lm.products.zh.join(', ') : '';
   selectedTags = sanitizeTags(lm.tags);
   buildAddTagPicker(); updateTagChips(); updateBuilderPresets();
-  if (lm.children && lm.children.length){ coordMode = 'multi'; lm.children.forEach(c => addLocationRow(c.label, c.x, c.y, c.z)); }
+  if (lm.children && lm.children.length){ coordMode = 'multi'; lm.children.forEach(c => addLocationRow(c.label, c.x, c.y, c.z, c.dim || '')); }
   else { coordMode = 'single'; addX.value = lm.x; addY.value = lm.y; addZ.value = lm.z; }
   updateModeSwitch();
   addSingleCoords.style.display = coordMode === 'single' ? '' : 'none';
@@ -260,8 +275,10 @@ addForm.addEventListener('submit', async e => {
     if (coordMode === 'multi'){
       addLocationList.querySelectorAll('.location-row').forEach(row => {
         const label = row.querySelector('.location-label').value.trim();
+        const dimSel = row.querySelector('.location-dim');
+        const dim = dimSel ? dimSel.value : '';
         const x = Number(row.querySelector('.location-x').value); const y = Number(row.querySelector('.location-y').value); const z = Number(row.querySelector('.location-z').value);
-        if (label || !isNaN(x)) body.children.push({ label: label || '点位', x, y, z });
+        if (label || !isNaN(x)) body.children.push(dim ? { label: label || '点位', x, y, z, dim } : { label: label || '点位', x, y, z });
       });
       if (body.children.length === 0){ toast(t('errNoLocation')); submitBtn.disabled = false; submitBtn.innerHTML = origHtml; return; }
     }

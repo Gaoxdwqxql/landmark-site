@@ -592,3 +592,15 @@ html[data-skin="minecraft"] mark.hl{color:#1a1a1a;font-weight:700}
 html[data-skin="minecraft"] .stat b{color:#FFAA00;text-shadow:1px 1px 0 rgba(0,0,0,.6)}
 html[data-skin="minecraft"][data-theme="dark"] body{background:#1a1a1a}
 html[data-skin="minecraft"][data-theme="light"] body{background:#c6c6c6}
+
+/* ===== 生电详情卡片：编辑/删除入口 ===== */
+.machine h3 .machine-actions{margin-left:auto;display:inline-flex;gap:6px;align-items:center}
+.machine h3 .machine-actions .btn-icon{width:26px;height:26px}
+.machine h3 .machine-actions .btn-icon .ico{font-size:13px}
+
+/* ===== 多地点地标：子点位维度徽标 ===== */
+.child-row .dim-badge{flex-shrink:0;font-size:11px}
+@media (max-width:660px){
+  .child-row{flex-wrap:wrap}
+  .child-row .btn-copy{margin-left:0}
+}

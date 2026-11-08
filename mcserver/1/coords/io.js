@@ -24,7 +24,7 @@ function buildTxt(){
       const prod = (curLang==='zh'?l.products.zh:l.products.en)||[];
       if (prod.length) out.push('    ' + t('dProducts') + '：' + prod.join('、'));
       out.push('    ' + t('dCoord') + '：');
-      l.children.forEach((c, i) => out.push((i === l.children.length-1 ? '      └─ ' : '      ├─ ') + roleLabel(c.label) + '：' + c.x + ' ' + c.y + ' ' + c.z));
+      l.children.forEach((c, i) => out.push((i === l.children.length-1 ? '      └─ ' : '      ├─ ') + roleLabel(c.label) + '：' + c.x + ' ' + c.y + ' ' + c.z + '  (' + dimLabel(c.dim || l.dim) + ')'));
     } else {
       out.push('    ' + t('dCoord') + '：' + l.x + ' ' + l.y + ' ' + l.z);
       if (tags) out.push('    ' + t('dTags') + '：' + tags);
@@ -41,7 +41,7 @@ function buildTxt(){
     L.push('◆ ' + pick(m.name) + '  [' + (m.tags||[]).map(tagLabel).join(' · ') + ']');
     if (m.builder) L.push('    ' + t('dBuilder') + '：' + m.builder);
     L.push('    ' + t('dCoord') + '：');
-    if (m.children && m.children.length) m.children.forEach(c => L.push('      · ' + c.x + ' ' + c.y + ' ' + c.z + '  (' + roleLabel(c.label) + ' · ' + dimLabel(m.dim) + ')'));
+    if (m.children && m.children.length) m.children.forEach(c => L.push('      · ' + c.x + ' ' + c.y + ' ' + c.z + '  (' + roleLabel(c.label) + ' · ' + dimLabel(c.dim || m.dim) + ')'));
     else L.push('      · ' + m.x + ' ' + m.y + ' ' + m.z + '  (' + dimLabel(m.dim) + ')');
     if (pick(m.rate)) L.push('    ' + t('dRate') + '：' + pick(m.rate));
     if (m.note) L.push('    ' + t('dNote') + '：' + pick(m.note));
@@ -84,7 +84,7 @@ function buildMarkdown(){
       if (prod.length) out.push('- **' + t('dProducts') + '**：' + prod.join('、'));
       if (l.note) out.push('- **' + t('dNote') + '**：' + pick(l.note));
       out.push('- **' + t('dCoord') + '**：');
-      l.children.forEach(c => out.push('  - ' + roleLabel(c.label) + '：`' + c.x + ' ' + c.y + ' ' + c.z + '`'));
+      l.children.forEach(c => out.push('  - ' + roleLabel(c.label) + '：`' + c.x + ' ' + c.y + ' ' + c.z + '` · ' + dimLabel(c.dim || l.dim)));
     } else {
       out.push('- **' + t('dCoord') + '**：`' + l.x + ' ' + l.y + ' ' + l.z + '`');
       if (l.tags && l.tags.length) out.push('- **' + t('dTags') + '**：' + l.tags.map(tagLabel).join(' / '));
@@ -101,7 +101,7 @@ function buildMarkdown(){
     L.push('### ' + pick(m.name) + '  [' + (m.tags||[]).map(tagLabel).join(' / ') + ']'); L.push('');
     if (m.builder) L.push('- **' + t('dBuilder') + '**：' + m.builder);
     const coordsStr = [];
-    if (m.children && m.children.length) m.children.forEach(c => coordsStr.push('`' + c.x + ' ' + c.y + ' ' + c.z + '`（' + roleLabel(c.label) + '）'));
+    if (m.children && m.children.length) m.children.forEach(c => coordsStr.push('`' + c.x + ' ' + c.y + ' ' + c.z + '`（' + roleLabel(c.label) + ' · ' + dimLabel(c.dim || m.dim) + '）'));
     else coordsStr.push('`' + m.x + ' ' + m.y + ' ' + m.z + '`（' + dimLabel(m.dim) + '）');
     L.push('- **' + t('dCoord') + '**：' + coordsStr.join(' / '));
     if (pick(m.rate)) L.push('- **' + t('dRate') + '**：' + pick(m.rate));
@@ -134,7 +134,7 @@ function buildCsv(){
     const rate = pick(l.rate);
     const prods = (curLang==='zh'?l.products.zh:l.products.en)||[];
     const prodsStr = prods.join(' / ');
-    if (l.children && l.children.length) l.children.forEach(c => rows.push(csvRow([pick(l.name), statusLabel('usable'), dimLabel(l.dim), c.x, c.y, c.z, roleLabel(c.label), tags, l.builder || '', rate, prodsStr, note])));
+    if (l.children && l.children.length) l.children.forEach(c => rows.push(csvRow([pick(l.name), statusLabel('usable'), dimLabel(c.dim || l.dim), c.x, c.y, c.z, roleLabel(c.label), tags, l.builder || '', rate, prodsStr, note])));
     else rows.push(csvRow([pick(l.name), statusLabel('usable'), dimLabel(l.dim), l.x, l.y, l.z, '', tags, l.builder || '', rate, prodsStr, note]));
   });
   DATA.unusable.forEach(l => {
@@ -231,7 +231,7 @@ function parseCsvData(text){
     if (!validTags.includes('交易')) { const idx = validTags.indexOf('低价'); if (idx >= 0) validTags.splice(idx, 1); }
     const prodsArr = (products || '').split(/\s*[\/、,，]\s*/).map(s => s.trim()).filter(Boolean);
     const children = [];
-    if (point && point.trim()) children.push({ label: ROLE_FROM_LABEL[point] || point, x: Number(x) || 0, y: Number(y) || 0, z: Number(z) || 0 });
+    if (point && point.trim()) children.push({ label: ROLE_FROM_LABEL[point] || point, x: Number(x) || 0, y: Number(y) || 0, z: Number(z) || 0, dim: dimKey });
     items.push({ name_zh: name.trim(), name_en: '', dimension: dimKey, x: Number(x) || 0, y: Number(y) || 0, z: Number(z) || 0, category: catKey, tags: validTags, builder: (builder || '').trim(), note_zh: (note || '').trim(), note_en: '', rate_zh: (rate || '').trim(), rate_en: '', products_zh: prodsArr, products_en: [], children });
   }
   return { items, ignoredCount };
@@ -251,32 +251,50 @@ function parseJsonData(text){
     return { items, ignoredCount };
   } catch (_){ return null; }
 }
+// 子点位维度归一化：与父级相同则省略（保持「继承」语义），不同才显式保留
+function normalizeChildDims(item){
+  if (!item.children || !item.children.length) return item;
+  item.children = item.children.map(c => {
+    const dim = c.dim || item.dimension;
+    const out = { label: c.label, x: c.x, y: c.y, z: c.z };
+    if (dim && dim !== item.dimension) out.dim = dim;
+    return out;
+  });
+  return item;
+}
 function mergeDuplicates(items){
   const groups = new Map(); const order = [];
   for (const item of items){ const key = (item.name_zh || '').trim(); if (!key) continue; if (!groups.has(key)){ groups.set(key, []); order.push(key); } groups.get(key).push(item); }
   const merged = []; let mergedGroups = 0;
   for (const key of order){
     const group = groups.get(key);
-    if (group.length === 1){ merged.push(group[0]); continue; }
+    if (group.length === 1){ merged.push(normalizeChildDims(group[0])); continue; }
     mergedGroups++;
     const first = JSON.parse(JSON.stringify(group[0]));
     const allTags = new Set(); const allProducts = new Set(); const allChildren = []; let firstNoteSet = false;
     (first.tags || []).forEach(t => allTags.add(t));
     (first.products_zh || []).forEach(p => allProducts.add(p));
-    if (first.children && first.children.length) allChildren.push(...first.children);
-    else if (first.x !== undefined) allChildren.push({ label: '点位', x: first.x, y: first.y, z: first.z });
+    if (first.children && first.children.length) allChildren.push(...first.children.map(c => ({ ...c, dim: c.dim || first.dimension })));
+    else if (first.x !== undefined) allChildren.push({ label: '点位', x: first.x, y: first.y, z: first.z, dim: first.dimension });
     for (let i = 1; i < group.length; i++){
       const item = group[i];
       (item.tags || []).forEach(t => allTags.add(t));
       (item.products_zh || []).forEach(p => allProducts.add(p));
-      if (item.children && item.children.length) allChildren.push(...item.children);
-      else if (item.x !== undefined) allChildren.push({ label: '点位', x: item.x, y: item.y, z: item.z });
+      if (item.children && item.children.length) allChildren.push(...item.children.map(c => ({ ...c, dim: c.dim || item.dimension })));
+      else if (item.x !== undefined) allChildren.push({ label: '点位', x: item.x, y: item.y, z: item.z, dim: item.dimension });
       if (item.note_zh && item.note_zh.trim()){ if (firstNoteSet || (first.note_zh && first.note_zh.trim() && first.note_zh !== item.note_zh)){ if (first.note_zh !== item.note_zh) first.note_zh = (first.note_zh || '') + (first.note_zh ? ' / ' : '') + item.note_zh; } else first.note_zh = item.note_zh; firstNoteSet = true; }
       if (item.builder && !first.builder) first.builder = item.builder;
     }
     first.tags = [...allTags]; first.products_zh = [...allProducts];
     if (!first.tags.includes('交易')) { const idx = first.tags.indexOf('低价'); if (idx >= 0) first.tags.splice(idx, 1); }
-    if (allChildren.length > 0){ first.children = allChildren; first.x = 0; first.y = 0; first.z = 0; }
+    if (allChildren.length > 0){
+      first.children = allChildren.map(c => {
+        const out = { label: c.label, x: c.x, y: c.y, z: c.z };
+        if (c.dim && c.dim !== first.dimension) out.dim = c.dim;
+        return out;
+      });
+      first.x = 0; first.y = 0; first.z = 0;
+    }
     merged.push(first);
   }
   return { merged, mergedGroups };
