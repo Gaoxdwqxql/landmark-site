@@ -59,7 +59,7 @@ const TAG_FROM_LABEL = { '生电':'生电','交易':'交易','农场':'农场','
 const ROLE_FROM_LABEL = { '挂机':'hang','挂机（顶）':'hangTop','收集':'collect','主体':'main','点位':'点位','AFK':'hang','AFK (top)':'hangTop','Collect':'collect','Main':'main','Point':'点位' };
 const TAG_DESC = { zh:{生电:'红石/自动化机器',交易:'村民交易点',农场:'农牧渔场',遗留:'旧地点',低价:'低价附魔',已毁:'已损坏'}, en:{生电:'Redstone/automation',交易:'Villager trade',农场:'Farming',遗留:'Legacy',低价:'Cheap',已毁:'Ruined'} };
 
-const DATA = { usable: [], unusable: [], machines: [], future: [] };
+const DATA = { usable: [], unusable: [], future: [] };
 const $ = s => document.querySelector(s);
 
 // 全局状态变量
@@ -68,6 +68,7 @@ let selectMode = false;
 let currentQuery = '';
 let allOpen = false;
 let editingId = null;
+let editingLM = null; // 编辑中的原始数据（用于保留 note_en / rate_en / products_en 等英文字段）
 let selectedTags = [];
 let coordMode = 'single';
 let batchAddTags = new Set();

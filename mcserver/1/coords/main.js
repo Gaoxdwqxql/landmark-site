@@ -107,7 +107,7 @@ document.addEventListener('click', async e => {
   if (!id) return;
   if (!confirm(t('confirmDelete').replace('{name}', name))) return;
   btn.disabled = true;
-  try { const res = await fetch(`${API_BASE}/api/landmarks/${id}`, { method: 'DELETE' }); if (!res.ok) throw new Error(`HTTP ${res.status}`); toast(t('toastDeleted')); await loadData(); } catch (err){ toast(t('toastAddFail') + err.message); btn.disabled = false; }
+  try { const res = await fetch(`${API_BASE}/api/landmarks/${id}`, { method: 'DELETE' }); if (!res.ok) throw new Error(`HTTP ${res.status}`); toast(t('toastDeleted')); await loadData(); } catch (err){ toast(t('toastDeleteFail') + err.message); btn.disabled = false; }
 });
 
 document.getElementById('btn-expand-all').addEventListener('click', () => { allOpen = !allOpen; document.querySelectorAll('.lm-group').forEach(g => setGroupOpen(g, allOpen)); syncExpandAllBtn(); });

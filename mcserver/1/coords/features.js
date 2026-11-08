@@ -188,7 +188,7 @@ function addLocationRow(label, x, y, z){
 document.getElementById('btn-add-location').addEventListener('click', () => addLocationRow());
 
 function openAddModal(){
-  editingId = null;
+  editingId = null; editingLM = null;
   addModal.classList.add('open'); addModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
   addForm.reset(); selectedTags = []; coordMode = 'single';
@@ -199,10 +199,13 @@ function openAddModal(){
   updateBuilderPresets();
 }
 function openEditModal(lm){
-  editingId = lm.id;
+  editingId = lm.id; editingLM = lm;
   addModal.classList.add('open'); addModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
   addForm.reset();
+  // 表单 reset 不会清空动态追加的 location 行与坐标输入，先手动清一遍，避免残留上一次编辑的内容
+  addLocationList.innerHTML = '';
+  addX.value = ''; addY.value = ''; addZ.value = '';
   addNameZh.value = lm.name.zh || ''; addNameEn.value = lm.name.en || '';
   addBuilder.value = lm.builder || ''; addDim.value = lm.dim;
   addCategory.value = lm.category || 'usable';
@@ -211,14 +214,14 @@ function openEditModal(lm){
   addProductsZh.value = lm.products && lm.products.zh ? lm.products.zh.join(', ') : '';
   selectedTags = sanitizeTags(lm.tags);
   buildAddTagPicker(); updateTagChips(); updateBuilderPresets();
-  if (lm.children && lm.children.length){ coordMode = 'multi'; addLocationList.innerHTML = ''; lm.children.forEach(c => addLocationRow(c.label, c.x, c.y, c.z)); }
+  if (lm.children && lm.children.length){ coordMode = 'multi'; lm.children.forEach(c => addLocationRow(c.label, c.x, c.y, c.z)); }
   else { coordMode = 'single'; addX.value = lm.x; addY.value = lm.y; addZ.value = lm.z; }
   updateModeSwitch();
   addSingleCoords.style.display = coordMode === 'single' ? '' : 'none';
   addMultiCoords.style.display = coordMode === 'multi' ? '' : 'none';
   document.getElementById('add-modal-title-text').textContent = t('addTitleEdit');
 }
-function closeAddModal(){ addModal.classList.remove('open'); addModal.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; editingId = null; }
+function closeAddModal(){ addModal.classList.remove('open'); addModal.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; editingId = null; editingLM = null; }
 
 addForm.addEventListener('submit', async e => {
   e.preventDefault();
@@ -234,7 +237,26 @@ addForm.addEventListener('submit', async e => {
   submitBtn.disabled = true; submitBtn.textContent = t('btnSubmitting');
   try {
     const productsArr = addProductsZh.value.trim() ? addProductsZh.value.split(/[,，]/).map(s => s.trim()).filter(Boolean) : [];
-    const body = { name_zh: addNameZh.value.trim(), name_en: addNameEn.value.trim(), builder: addBuilder.value.trim(), dimension: addDim.value, category: addCategory.value, tags: sanitizeTags(selectedTags), note_zh: addNote.value.trim(), x: coordMode === 'single' ? Number(addX.value) : 0, y: coordMode === 'single' ? Number(addY.value) : 0, z: coordMode === 'single' ? Number(addZ.value) : 0, children: [], rate_zh: hasTech ? addRateZh.value.trim() : '', rate_en: '', products_zh: hasTech ? productsArr : [], products_en: [] };
+    // 编辑时保留原记录里的英文字段（此前每次保存都会把 note_en / rate_en / products_en 清空）
+    const prev = editingLM || {};
+    const body = {
+      name_zh: addNameZh.value.trim(),
+      name_en: addNameEn.value.trim(),
+      builder: addBuilder.value.trim(),
+      dimension: addDim.value,
+      category: addCategory.value,
+      tags: sanitizeTags(selectedTags),
+      note_zh: addNote.value.trim(),
+      note_en: prev.note ? (prev.note.en || '') : '',
+      x: coordMode === 'single' ? Number(addX.value) : 0,
+      y: coordMode === 'single' ? Number(addY.value) : 0,
+      z: coordMode === 'single' ? Number(addZ.value) : 0,
+      children: [],
+      rate_zh: hasTech ? addRateZh.value.trim() : '',
+      rate_en: hasTech && prev.rate ? (prev.rate.en || '') : '',
+      products_zh: hasTech ? productsArr : [],
+      products_en: hasTech && prev.products ? (prev.products.en || []) : []
+    };
     if (coordMode === 'multi'){
       addLocationList.querySelectorAll('.location-row').forEach(row => {
         const label = row.querySelector('.location-label').value.trim();

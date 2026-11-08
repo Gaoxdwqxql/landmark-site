@@ -89,7 +89,7 @@ function landmarkHTML(l){
   const isSelected = l.id && selectedIds.has(l.id);
   const selCls = isSelected ? ' selected' : '';
   const checkbox = l.id ? `<label class="lm-check-wrap" onclick="event.stopPropagation()"><input type="checkbox" class="lm-check" data-lm-id="${l.id}" ${isSelected ? 'checked' : ''}></label>` : '';
-  const actions = l.id ? `<button class="btn-icon edit" data-edit-id="${l.id}" title="Edit">${ICON.edit}</button><button class="btn-icon delete" data-delete-id="${l.id}" data-delete-name="${lnameRaw.replace(/"/g,'&quot;')}" title="Delete">${ICON.trash}</button>` : '';
+  const actions = l.id ? `<button class="btn-icon edit" data-edit-id="${l.id}" title="Edit">${ICON.edit}</button><button class="btn-icon delete" data-delete-id="${l.id}" data-delete-name="${escapeHtml(lnameRaw)}" title="Delete">${ICON.trash}</button>` : '';
 
   if (l.children && l.children.length){
     const childrenHTML = l.children.map(c => {
@@ -99,7 +99,7 @@ function landmarkHTML(l){
       const ico = (c.label || '').indexOf('collect') >= 0 ? ICON.inbox : ICON.monitor;
       return `<div class="child-row"><span class="child-label">${ico}${roleLabel(c.label)}</span><code class="coords">${c.x} ${c.y} ${c.z}</code><button class="btn-copy" data-op="${opCmd}" data-tp="${tpCmd}">${ICON.copy}${t('btnTeleport')}</button></div>`;
     }).join('');
-    const searchText = [lnameRaw, lnoteRaw, builderRaw, dlabel, ...(l.tags||[]).map(tagLabel)].join(' ').toLowerCase();
+    const searchText = [lnameRaw, lnoteRaw, builderRaw, dlabel, ...(l.tags||[]).map(tagLabel), ...(l.children||[]).flatMap(c => [c.x, c.y, c.z, roleLabel(c.label)])].join(' ').toLowerCase();
     return `<article class="lm lm-group${deadCls}${selCls}" data-id="${l.id||''}" data-dim="${l.dim}" data-cats="${cats}" data-search="${escapeHtml(searchText)}">
       <div class="lm-main" role="button" tabindex="0" aria-expanded="false">
         ${checkbox}
@@ -166,14 +166,14 @@ function renderMachines(){
       pointsHTML = `<code>${m.x} ${m.y} ${m.z}</code><span style="font-size:11.5px;color:var(--muted);margin-right:6px">（${dimLabel(m.dim)}）</span>`;
     }
     const products = m.products && (curLang === 'zh' ? m.products.zh : m.products.en);
-    const rate = pick(m.rate) || '—';
-    const builderRow = m.builder ? `<div class="kv"><span class="k">${builderIcon(m.builder)}${t('kvBuilder')}</span><span class="v">${m.builder}</span></div>` : '';
-    return `<div class="machine"><h3>${ICON.tool}${pick(m.name)}${(m.tags||[]).map(tagHTML).join('')}</h3>${builderRow}<div class="kv"><span class="k">${ICON.pin}${t('kvCoords')}</span><span class="v">${pointsHTML}</span></div><div class="kv"><span class="k">${ICON.chart}${t('kvRate')}</span><span class="v">${rate}</span></div>${m.note ? `<div class="kv"><span class="k">${ICON.info}${t('kvNote')}</span><span class="v">${pick(m.note)}</span></div>` : ''}<div class="kv"><span class="k">${ICON.box}${t('kvProducts')}</span><span class="v products">${Array.isArray(products) ? products.map(p => `<span>${p}</span>`).join('') : ''}</span></div></div>`;
+    const rate = escapeHtml(pick(m.rate) || '—');
+    const builderRow = m.builder ? `<div class="kv"><span class="k">${builderIcon(m.builder)}${t('kvBuilder')}</span><span class="v">${escapeHtml(m.builder)}</span></div>` : '';
+    return `<div class="machine"><h3>${ICON.tool}${escapeHtml(pick(m.name))}${(m.tags||[]).map(tagHTML).join('')}</h3>${builderRow}<div class="kv"><span class="k">${ICON.pin}${t('kvCoords')}</span><span class="v">${pointsHTML}</span></div><div class="kv"><span class="k">${ICON.chart}${t('kvRate')}</span><span class="v">${rate}</span></div>${m.note ? `<div class="kv"><span class="k">${ICON.info}${t('kvNote')}</span><span class="v">${escapeHtml(pick(m.note))}</span></div>` : ''}<div class="kv"><span class="k">${ICON.box}${t('kvProducts')}</span><span class="v products">${Array.isArray(products) ? products.map(p => `<span>${escapeHtml(p)}</span>`).join('') : ''}</span></div></div>`;
   }).join('');
 }
 
 function renderFuture(){
-  $('#future').innerHTML = DATA.future.map(f => `<div class="fut">${ICON.info}<span class="fut-name">${pick(f.name)}</span>${(f.tags||[]).map(tagHTML).join('')}${f.note ? `<span class="fut-note">${pick(f.note)}</span>` : ''}</div>`).join('');
+  $('#future').innerHTML = DATA.future.map(f => `<div class="fut">${ICON.info}<span class="fut-name">${escapeHtml(pick(f.name))}</span>${(f.tags||[]).map(tagHTML).join('')}${f.note ? `<span class="fut-note">${escapeHtml(pick(f.note))}</span>` : ''}</div>`).join('');
 }
 
 function setGroupOpen(group, open){ group.classList.toggle('open', open); const text = group.querySelector('.expand-text'); if (text) text.textContent = open ? t('collapse') : t('expand'); }

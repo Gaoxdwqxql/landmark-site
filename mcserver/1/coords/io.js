@@ -186,12 +186,40 @@ importFileBtn.addEventListener('click', () => importFile.click());
 importFile.addEventListener('change', e => { const file = e.target.files && e.target.files[0]; if (!file) return; importFilename.textContent = file.name + ' (' + Math.round(file.size/1024) + ' KB)'; const reader = new FileReader(); reader.onload = ev => { importText.value = ev.target.result; if (/\.json$/i.test(file.name)) switchImportFormat('json'); else if (/\.csv$/i.test(file.name)) switchImportFormat('csv'); else tryParseImport(); }; reader.readAsText(file, 'UTF-8'); e.target.value = ''; });
 importText.addEventListener('input', () => { clearTimeout(importDebounce); importDebounce = setTimeout(tryParseImport, 250); });
 
-function parseCsvLine(line){ const result = []; let cur = ''; let inQ = false; for (let i = 0; i < line.length; i++){ const ch = line[i]; if (inQ){ if (ch === '"'){ if (line[i+1] === '"'){ cur += '"'; i++; } else inQ = false; } else cur += ch; } else { if (ch === '"') inQ = true; else if (ch === ','){ result.push(cur); cur = ''; } else cur += ch; } } result.push(cur); return result; }
+// RFC 4180 CSV 解析：支持引号包裹、"" 转义、引号内的逗号与换行、CRLF、BOM。
+// 旧版按行 split + 逐行解析，笔记里带换行（例如黑曜石农场的说明）会串行，导入直接错位。
+function parseCsvRows(text){
+  const rows = []; let row = []; let field = ''; let inQuotes = false; let i = 0;
+  if (text.charCodeAt(0) === 0xFEFF) i = 1;
+  for (; i < text.length; i++){
+    const ch = text[i];
+    if (inQuotes){
+      if (ch === '"'){
+        if (text[i+1] === '"'){ field += '"'; i++; } else inQuotes = false;
+      } else field += ch;
+      continue;
+    }
+    if (ch === '"'){ inQuotes = true; continue; }
+    if (ch === ','){ row.push(field); field = ''; continue; }
+    if (ch === '\r' || ch === '\n'){
+      if (ch === '\r' && text[i+1] === '\n') i++;
+      row.push(field); field = '';
+      if (row.length > 1 || (row[0] || '').trim() !== '') rows.push(row);
+      row = [];
+      continue;
+    }
+    field += ch;
+  }
+  row.push(field);
+  if (row.length > 1 || (row[0] || '').trim() !== '') rows.push(row);
+  return rows;
+}
 function parseCsvData(text){
-  const lines = text.split(/\r?\n/).filter(l => l.trim()); if (lines.length < 2) return { items: [], ignoredCount: 0 };
+  const rows = parseCsvRows(text).filter(r => r.some(c => (c || '').trim() !== ''));
+  if (rows.length < 2) return { items: [], ignoredCount: 0 };
   const items = []; let ignoredCount = 0;
-  for (let i = 1; i < lines.length; i++){
-    const cols = parseCsvLine(lines[i]); if (cols.length < 4) continue;
+  for (let i = 1; i < rows.length; i++){
+    const cols = rows[i]; if (cols.length < 4) continue;
     const [name, status, dim, x, y, z, point, tags, builder, rate, products, note] = cols;
     if (!name || !name.trim()) continue;
     const dimKey = DIM_FROM_LABEL[dim] || DIM_FROM_LABEL[(dim||'').toLowerCase()] || 'overworld';
@@ -276,7 +304,7 @@ function renderImportPreview(){
   const first = importParsed.slice(0, 8);
   const items = first.map(item => {
     const coord = item.children && item.children.length ? `${item.children.length} ${t('childPoints')}` : `${item.x} ${item.y} ${item.z}`;
-    return `<div class="import-preview-item"><span class="import-preview-name">${escapeHtml(item.name_zh)}</span><span class="import-preview-meta">${dimLabel(item.dimension)} · ${coord}</span></div>`;
+    return `<div class="import-preview-item"><span class="import-preview-name">${escapeHtml(item.name_zh)}</span><span class="import-preview-meta">${escapeHtml(dimLabel(item.dimension))} · ${coord}</span></div>`;
   }).join('');
   const more = importParsed.length > 8 ? `<div class="import-preview-more">…… ${importParsed.length} 条</div>` : '';
   let badges = '';
