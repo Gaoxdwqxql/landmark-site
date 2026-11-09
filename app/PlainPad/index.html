@@ -4,16 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlainPad - 轻量极简的 Android 纯文本编辑器</title>
-    <meta name="description" content="PlainPad 是一款轻量、离线、极简的 Android 纯文本编辑器。无广告、无账号、无网络权限，支持超大文件处理。">
+    <meta name="description" content="PlainPad 是一款轻量、离线、极简的 Android 纯文本编辑器。无广告、无账号、无网络权限，支持超大文件处理。官方网站提供版本信息与下载入口，版本更新以 GitHub Releases 为准。">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Cpath fill='%236750A4' d='M20,0 L88,0 A20,20 0 0 1 108,20 L108,88 A20,20 0 0 1 88,108 L20,108 A20,20 0 0 1 0,88 L0,20 A20,20 0 0 1 20,0 z'/%3E%3Cpath fill='%23fff' d='M32,26 L66,26 L82,42 L82,82 A3,3 0 0 1 79,85 L32,85 A3,3 0 0 1 29,82 L29,29 A3,3 0 0 1 32,26 z'/%3E%3Cpath fill='%23E0E0E0' d='M66,26 L66,42 L82,42 z'/%3E%3Cpath fill='%236750A4' d='M40,52 L44,52 L44,74 L40,74 z M50,52 L74,52 L74,56 L50,56 z M50,60 L74,60 L74,64 L50,64 z M50,68 L64,68 L64,72 L50,72 z'/%3E%3C/svg%3E">
     <style>
         :root {
             --bg-color: #fafafa;
             --text-main: #1a1a1a;
             --text-secondary: #555555;
+            --text-faint: #8a8a8a;
             --accent-color: #2c3e50;
             --card-bg: #ffffff;
             --border-color: #eaeaea;
             --code-bg: #f4f4f5;
+            --brand-2: #0284c7;
+            --brand-3: #06b6d4;
+            --notice-bg: rgba(2,132,199,.045);
+            --notice-border: rgba(2,132,199,.22);
+            --glow-1: rgba(103,80,164,.22);
+            --glow-2: rgba(139,92,246,.08);
         }
 
         @media (prefers-color-scheme: dark) {
@@ -21,18 +29,21 @@
                 --bg-color: #121212;
                 --text-main: #f0f0f0;
                 --text-secondary: #aaaaaa;
+                --text-faint: #777777;
                 --accent-color: #e0e0e0;
                 --card-bg: #1e1e1e;
                 --border-color: #333333;
                 --code-bg: #2a2a2a;
+                --brand-2: #38bdf8;
+                --brand-3: #22d3ee;
+                --notice-bg: rgba(56,189,248,.06);
+                --notice-border: rgba(56,189,248,.22);
+                --glow-1: rgba(179,157,219,.28);
+                --glow-2: rgba(179,157,219,.08);
             }
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -48,49 +59,151 @@
             padding: 60px 20px;
         }
 
-        /* 头部区域 */
+        /* ---------- 头部 ---------- */
         header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 48px;
+        }
+
+        /* 图标容器 + 光晕 */
+        .app-icon-wrap {
+            position: relative;
+            width: 92px;
+            height: 92px;
+            margin: 0 auto 26px;
+            animation: iconIn .55s cubic-bezier(.22,.68,.32,1.12) both;
+        }
+        .app-icon-wrap::before {
+            content: "";
+            position: absolute;
+            inset: -26px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--glow-1), var(--glow-2) 45%, transparent 70%);
+            filter: blur(6px);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .app-icon {
+            width: 100%;
+            height: 100%;
+            filter:
+                drop-shadow(0 2px 3px rgba(103,80,164,.22))
+                drop-shadow(0 12px 26px rgba(103,80,164,.42))
+                drop-shadow(0 24px 44px rgba(103,80,164,.2));
+        }
+        .app-icon svg { display: block; width: 100%; height: 100%; }
+
+        @media (prefers-color-scheme: dark) {
+            .app-icon {
+                filter:
+                    drop-shadow(0 2px 3px rgba(179,157,219,.18))
+                    drop-shadow(0 12px 26px rgba(179,157,219,.32))
+                    drop-shadow(0 24px 44px rgba(179,157,219,.16));
+            }
+        }
+
+        @keyframes iconIn {
+            from { opacity: 0; transform: translateY(-10px) scale(.92); }
+            to   { opacity: 1; transform: none; }
         }
 
         h1 {
             font-size: 3rem;
             font-weight: 800;
             letter-spacing: -0.05em;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             color: var(--text-secondary);
-            margin-bottom: 32px;
+            margin-bottom: 16px;
         }
 
-        .github-btn {
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--text-faint);
+            margin-bottom: 28px;
+        }
+        .meta-row span { display: inline-flex; align-items: center; gap: 6px; }
+        .meta-row span + span::before { content: "·"; color: var(--border-color); }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn {
             display: inline-flex;
             align-items: center;
-            background-color: var(--accent-color);
-            color: var(--bg-color);
+            justify-content: center;
+            gap: 8px;
             text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 12px 26px;
+            border-radius: 10px;
             font-weight: 600;
-            transition: opacity 0.2s;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+            transition: filter .18s, transform .18s, background .18s, border-color .18s;
+            white-space: nowrap;
         }
+        .btn:hover { transform: translateY(-1px); }
 
-        .github-btn:hover {
-            opacity: 0.8;
+        .btn-primary {
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand-2), var(--brand-3));
+            box-shadow: 0 10px 22px -12px rgba(2,132,199,.75);
         }
+        .btn-primary:hover { filter: brightness(1.06); }
 
-        .github-btn svg {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-            fill: currentColor;
+        .btn-ghost {
+            color: var(--text-main);
+            background: var(--card-bg);
+            border-color: var(--border-color);
         }
+        .btn-ghost:hover { background: var(--code-bg); border-color: var(--text-faint); }
 
-        /* 内容区块 */
+        .btn svg { width: 18px; height: 18px; fill: currentColor; flex: none; }
+
+        /* 说明条 */
+        .notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 28px 0 0;
+            padding: 12px 16px;
+            background: var(--notice-bg);
+            border: 1px solid var(--notice-border);
+            border-left: 3px solid var(--brand-2);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            text-align: left;
+        }
+        .notice svg {
+            flex: none;
+            width: 15px;
+            height: 15px;
+            margin-top: 3px;
+            color: var(--brand-2);
+        }
+        .notice strong { color: var(--text-main); font-weight: 600; }
+        .notice a {
+            color: var(--brand-2);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--notice-border);
+            padding-bottom: 1px;
+        }
+        .notice a:hover { border-bottom-style: solid; border-color: var(--brand-2); }
+
+        /* ---------- 内容 ---------- */
         .section-title {
             font-size: 1.5rem;
             font-weight: 700;
@@ -99,7 +212,6 @@
             border-bottom: 2px solid var(--border-color);
         }
 
-        /* 特性网格 */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -114,40 +226,21 @@
             padding: 24px;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
         .feature-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.04);
         }
+        .feature-icon { font-size: 1.8rem; margin-bottom: 12px; }
+        .feature-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .feature-card p { font-size: 0.95rem; color: var(--text-secondary); }
 
-        .feature-icon {
-            font-size: 1.8rem;
-            margin-bottom: 12px;
-        }
-
-        .feature-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-
-        .feature-card p {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-        }
-
-        /* 详情列表 */
-        .details-list {
-            list-style: none;
-            margin-bottom: 60px;
-        }
-
+        .details-list { list-style: none; margin-bottom: 60px; }
         .details-list li {
             padding: 12px 0;
             border-bottom: 1px dashed var(--border-color);
             display: flex;
             align-items: flex-start;
         }
-
         .details-list li::before {
             content: "•";
             color: var(--text-secondary);
@@ -155,7 +248,6 @@
             font-weight: bold;
         }
 
-        /* 代码块样式 */
         code {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             background-color: var(--code-bg);
@@ -164,7 +256,7 @@
             font-size: 0.9em;
         }
 
-        /* 底部 */
+        /* ---------- 页脚 ---------- */
         footer {
             text-align: center;
             margin-top: 80px;
@@ -173,18 +265,77 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
+        footer p + p { margin-top: 6px; }
+        footer a {
+            color: var(--text-main);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--border-color);
+            transition: border-color .15s, color .15s;
+        }
+        footer a:hover { border-bottom-style: solid; border-color: var(--text-main); }
+        footer .foot-note {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-faint);
+        }
+        footer .foot-note b { color: var(--text-secondary); font-weight: 600; }
+
+        /* ---------- 响应式 ---------- */
+        @media (max-width: 520px) {
+            .container { padding: 40px 16px; }
+            .app-icon-wrap { width: 76px; height: 76px; margin-bottom: 22px; }
+            .app-icon-wrap::before { inset: -18px; filter: blur(5px); }
+            h1 { font-size: 2.2rem; }
+            .subtitle { font-size: 1rem; }
+            .actions { flex-direction: column; align-items: stretch; }
+            .btn { width: 100%; }
+            .notice { font-size: 0.82rem; padding: 11px 13px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
+            <div class="app-icon-wrap">
+                <div class="app-icon">
+                    <svg viewBox="0 0 108 108" role="img" aria-label="PlainPad 图标">
+                        <path fill="#6750A4" d="M20,0 L88,0 A20,20 0 0 1 108,20 L108,88 A20,20 0 0 1 88,108 L20,108 A20,20 0 0 1 0,88 L0,20 A20,20 0 0 1 20,0 z"/>
+                        <path fill="#FFFFFF" d="M32,26 L66,26 L82,42 L82,82 A3,3 0 0 1 79,85 L32,85 A3,3 0 0 1 29,82 L29,29 A3,3 0 0 1 32,26 z"/>
+                        <path fill="#E0E0E0" d="M66,26 L66,42 L82,42 z"/>
+                        <path fill="#6750A4" d="M40,52 L44,52 L44,74 L40,74 z M50,52 L74,52 L74,56 L50,56 z M50,60 L74,60 L74,64 L50,64 z M50,68 L64,68 L64,72 L50,72 z"/>
+                    </svg>
+                </div>
+            </div>
+
             <h1>PlainPad</h1>
             <p class="subtitle">轻量、离线、极简的 Android 纯文本编辑器</p>
-            <a href="https://github.com/Gaoxdwqxql/PlainPad" target="_blank" rel="noopener noreferrer" class="github-btn">
-                <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-                GitHub 仓库
-            </a>
+
+            <div class="meta-row">
+                <span>最新 v1.1.4.1</span>
+                <span>Android 7.0+</span>
+                <span>无网络权限</span>
+                <span>MIT 开源</span>
+            </div>
+
+            <div class="actions">
+                <a href="/app/PlainPad/download/" class="btn btn-primary">下载 PlainPad</a>
+                <a href="https://github.com/Gaoxdwqxql/PlainPad" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
+                    <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                    GitHub 仓库
+                </a>
+            </div>
+
+            <div class="notice" role="note">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 11v5"></path>
+                    <path d="M12 8h.01"></path>
+                </svg>
+                <p>PlainPad <strong>官方网站</strong>。本页版本信息可能存在延迟，<strong>最新消息与版本请以 <a href="https://github.com/Gaoxdwqxql/PlainPad/releases" target="_blank" rel="noopener">GitHub Releases</a> 为准</strong>。</p>
+            </div>
         </header>
 
         <main>
@@ -222,8 +373,13 @@
         </main>
 
         <footer>
-            <p>PlainPad 是一款开源软件，遵循开源协议。</p>
-            <p>源代码及版本发布请访问 <a href="https://github.com/Gaoxdwqxql/PlainPad" target="_blank" rel="noopener noreferrer" style="color: var(--text-main); text-decoration: underline;">Gaoxdwqxql/PlainPad</a></p>
+            <p>PlainPad 是一款开源软件，遵循 <a href="https://github.com/Gaoxdwqxql/PlainPad/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>。</p>
+            <p>
+                <a href="https://github.com/Gaoxdwqxql/PlainPad" target="_blank" rel="noopener noreferrer">GitHub 仓库</a> ·
+                <a href="https://github.com/Gaoxdwqxql/PlainPad/releases" target="_blank" rel="noopener noreferrer">Releases</a> ·
+                <a href="https://github.com/Gaoxdwqxql/PlainPad/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">License</a>
+            </p>
+            <p class="foot-note">本站为 PlainPad 官方网站，版本信息可能存在延迟；<b>最新消息与版本以 GitHub Releases 为准</b>。</p>
         </footer>
     </div>
 
