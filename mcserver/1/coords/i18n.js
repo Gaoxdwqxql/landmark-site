@@ -12,7 +12,7 @@ const I18N = {
     btnExpandAll:'全部展开', btnCollapseAll:'全部收起', btnAddLandmark:'新增地标', btnImport:'批量导入', btnSelectMode:'批量选择',
     secUsable:'可使用', secUnusable:'不可使用', secMachines:'生电设施详情',
     secFuture:'未来 / 正在筹备 / 正在建设', emptyText:'没有匹配的地标',
-    friendLinks:'友情链接', footerAuthor:'网站作者的ID：robot003', linkServerSite:'官网',
+    friendLinks:'友情链接', footerAuthor:'网站作者的ID：robot003', linkServerSite:'官网', linkMcSite:'Minecraft 官网', linkBugTracker:'漏洞追踪器', linkWiki:'Minecraft Wiki',
     statLandmarks:'个可使用地标', statPoints:'个传送点位', statTech:'处生电', statTrade:'处交易', statFarm:'处农场',
     btnTeleport:'传送', btnCopied:'已复制',
     toastCopied:'已复制：', toastCopyFail:'复制失败',
@@ -47,7 +47,7 @@ const I18N = {
     batchEditTitle:'批量编辑', batchEditSubtitle:'将对选中的', batchEditSubtitle2:'条地标应用以下更改（未修改的字段保持不变）',
     batchStatus:'状态', batchDim:'维度', batchBuilder:'建造者', batchBuilderHint:'留空则保持不变', batchAddTags:'添加标签', batchRemoveTags:'移除标签', batchBuilderClear:'清空', batchKeep:'保持不变', batchApply:'应用更改',
     batchDeleted:'已删除 {n} 条地标', batchDeleteConfirm:'确定删除选中的 {n} 条地标？', batchUpdated:'已更新 {n} 条地标', batchNoChange:'未选择任何更改项', batchApplying:'处理中 {i}/{n}…',
-    toastSelectModeOn:'已进入批量选择模式', toastSelectModeOff:'已退出批量选择模式', loadingData:'正在加载数据… 如果长时间无法加载，请检查网络或刷新页面。', loadFailed:'数据加载失败，请刷新页面重试。',
+    toastSelectModeOn:'已进入批量选择模式', toastSelectModeOff:'已退出批量选择模式', loadingData:'正在加载数据… 如果长时间无法加载，请检查网络或刷新页面。', loadFailed:'数据加载失败，请刷新页面重试。', mtLimited:'机器翻译额度已用尽，部分内容仍显示原文。',
     copyModalTitle:'选择传送指令', copyOptOp:'OP 指令 (跨维度 / 需权限)', copyOptOpDesc:'使用 `/execute` 语法，即使不在目标维度也能直接传送。', copyOptTp:'无权限指令 (需先到维度)', copyOptTpDesc:'使用原版 `/tp` 语法，请先前往该维度，否则传送会失败。'
   },
   en: {
@@ -56,7 +56,7 @@ const I18N = {
     filterDim:'Dimension', filterCat:'Category', chipAll:'All', chipOverworld:'Overworld', chipNether:'Nether', chipEnd:'The End', chipTech:'Tech', chipTrade:'Trade', chipFarm:'Farm',
     tagLegacy:'Legacy', tagCheap:'Cheap', tagDead:'Ruined', btnExpandAll:'Expand All', btnCollapseAll:'Collapse All', btnAddLandmark:'Add', btnImport:'Import', btnSelectMode:'Select',
     secUsable:'Available', secUnusable:'Unavailable', secMachines:'Tech Facilities', secFuture:'Future / Planned / In Progress', emptyText:'No matching landmarks',
-    friendLinks:'Friend Links', footerAuthor:'Author ID: robot003', linkServerSite:'Official Site', statLandmarks:'landmarks', statPoints:'points', statTech:'tech', statTrade:'trade', statFarm:'farm',
+    friendLinks:'Friend Links', footerAuthor:'Author ID: robot003', linkServerSite:'Official Site', linkMcSite:'Minecraft Official', linkBugTracker:'Bug Tracker', linkWiki:'Minecraft Wiki', statLandmarks:'landmarks', statPoints:'points', statTech:'tech', statTrade:'trade', statFarm:'farm',
     btnTeleport:'TP', btnCopied:'Copied', toastCopied:'Copied: ', toastCopyFail:'Copy failed', toastAdded:'Added!', toastUpdated:'Updated!', toastAddFail:'Failed: ', toastDeleted:'Deleted!', toastDeleteFail:'Delete failed: ',
     toastDlMd:'Markdown downloaded', toastDlTxt:'TXT downloaded', toastDlCsv:'CSV downloaded', toastSkinMc:'Switched to Pixel skin (experimental)', toastSkinGh:'Switched back to Classic skin',
     confirmDelete:'Delete "{name}"?', childPoints:'points', expand:'Expand', collapse:'Collapse', kvCoords:'Coords', kvRate:'Rate', kvNote:'Note', kvProducts:'Products', kvBuilder:'Builder',
@@ -74,7 +74,7 @@ const I18N = {
     batchCount:'Selected', batchItems:'items', btnSelectAll:'Select All Visible', btnClearSel:'Clear', btnBatchEdit:'Batch Edit', btnBatchDelete:'Batch Delete', batchEditTitle:'Batch Edit', batchEditSubtitle:'Apply changes to', batchEditSubtitle2:'selected items',
     batchStatus:'Status', batchDim:'Dimension', batchBuilder:'Builder', batchBuilderHint:'Leave empty to keep', batchAddTags:'Add Tags', batchRemoveTags:'Remove Tags', batchBuilderClear:'Clear', batchKeep:'Keep', batchApply:'Apply',
     batchDeleted:'Deleted {n}', batchDeleteConfirm:'Delete {n} selected items?', batchUpdated:'Updated {n}', batchNoChange:'No changes selected', batchApplying:'Processing {i}/{n}…', toastSelectModeOn:'Batch select mode on', toastSelectModeOff:'Batch select mode off',
-    loadingData:'Loading data... Please check network or refresh if it takes too long.', loadFailed:'Failed to load data. Please refresh.',
+    loadingData:'Loading data... Please check network or refresh if it takes too long.', loadFailed:'Failed to load data. Please refresh.', mtLimited:'Machine translation quota reached; some text stays in the original language.',
     copyModalTitle:'Select TP Command', copyOptOp:'OP Command (Cross-dim / Requires OP)', copyOptOpDesc:'Uses `/execute` syntax. Works even if you are in another dimension.', copyOptTp:'Vanilla TP (Go to dim first)', copyOptTpDesc:'Uses `/tp` syntax. You must be in the same dimension, otherwise it fails.'
   }
 };

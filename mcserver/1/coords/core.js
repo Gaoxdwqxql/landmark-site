@@ -77,9 +77,120 @@ async function loadData(){
     document.getElementById('loading-tip').style.display = 'none';
     document.querySelectorAll('.sec-title[id^="anchor-"]').forEach(el => el.style.display = 'flex');
     renderAll();
+    ensureTranslations();   // 非中文界面时，后台补全缺失译文（带缓存，失败静默）
   } catch (err) { 
     console.error(err); 
     document.getElementById('loading-tip').innerHTML = `<div style="color:var(--danger);font-weight:bold;">${t('loadFailed')}</div>`;
+  }
+}
+
+/* ===== 机器翻译：自动把缺失的目标语言字段补全（Workers AI + 缓存） ===== */
+const MT_CACHE_KEY = 'mtcache:v1';
+const MT_LOCAL_LIMIT = 2000;   // localStorage 最多保存多少条译文
+const MT_BATCH = 40;           // 单次请求最多多少条
+let mtMemory = new Map();      // `${lang}\u0000原文` -> 译文
+let mtLocalLoaded = false;
+let mtServerSynced = false;
+let mtRunning = false;
+
+function mtKey(lang, text){ return lang + '\u0000' + text; }
+function mtHasChinese(s){ return /[\u4e00-\u9fff]/.test(s); }
+function mtList(){ return [...DATA.usable, ...DATA.unusable, ...DATA.future]; }
+
+function mtLoadLocal(){
+  if (mtLocalLoaded) return;
+  mtLocalLoaded = true;
+  try {
+    const raw = localStorage.getItem(MT_CACHE_KEY);
+    if (!raw) return;
+    const obj = JSON.parse(raw) || {};
+    Object.keys(obj).forEach(k => { if (typeof obj[k] === 'string') mtMemory.set(k, obj[k]); });
+  } catch(_) {}
+}
+function mtSaveLocal(){
+  try {
+    const obj = {}; let n = 0;
+    mtMemory.forEach((v, k) => { if (n < MT_LOCAL_LIMIT) { obj[k] = v; n++; } });
+    localStorage.setItem(MT_CACHE_KEY, JSON.stringify(obj));
+  } catch(_) {}
+}
+function mtApply(){
+  if (curLang === 'zh') return false;
+  const lang = curLang;
+  const tr = s => (typeof s === 'string' ? (mtMemory.get(mtKey(lang, s.trim())) || null) : null);
+  let changed = false;
+  mtList().forEach(l => {
+    if (!l.name.en){ const v = tr(l.name.zh); if (v){ l.name.en = v; changed = true; } }
+    if (l.note && !l.note.en){ const v = tr(l.note.zh); if (v){ l.note.en = v; changed = true; } }
+    if (l.rate && !l.rate.en){ const v = tr(l.rate.zh); if (v){ l.rate.en = v; changed = true; } }
+    if ((!l.products.en || !l.products.en.length) && l.products.zh && l.products.zh.length){
+      const arr = l.products.zh.map(p => tr(p));
+      if (arr.every(Boolean)){ l.products.en = arr; changed = true; }
+    }
+  });
+  return changed;
+}
+function mtCollect(){
+  if (curLang === 'zh') return [];
+  const lang = curLang;
+  const out = new Set();
+  const add = s => {
+    if (typeof s !== 'string') return;
+    const v = s.trim();
+    if (!v || v.length > 500 || !mtHasChinese(v)) return;
+    if (mtMemory.has(mtKey(lang, v))) return;
+    out.add(v);
+  };
+  mtList().forEach(l => {
+    if (!l.name.en) add(l.name.zh);
+    if (l.note && !l.note.en) add(l.note.zh);
+    if (l.rate && !l.rate.en) add(l.rate.zh);
+    if ((!l.products.en || !l.products.en.length) && l.products.zh) l.products.zh.forEach(add);
+  });
+  return [...out];
+}
+async function ensureTranslations(){
+  if (curLang === 'zh' || mtRunning) return;
+  mtRunning = true;
+  try {
+    mtLoadLocal();
+    if (!mtServerSynced){
+      mtServerSynced = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/translations?target=${encodeURIComponent(curLang)}`);
+        if (res.ok){
+          const data = await res.json();
+          (data.entries || []).forEach(e => { if (e && e.source && e.translated) mtMemory.set(mtKey(curLang, e.source), e.translated); });
+        }
+      } catch(_) {}
+    }
+    if (mtApply()) renderAll();
+
+    let pending = mtCollect();
+    let rounds = 0;
+    while (pending.length && rounds++ < 20){
+      const batch = pending.slice(0, MT_BATCH);
+      let data = null;
+      try {
+        const res = await fetch(`${API_BASE}/api/translate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target: curLang, texts: batch }),
+        });
+        if (!res.ok) break;
+        data = await res.json();
+      } catch(_) { break; }
+
+      let added = 0;
+      (data.results || []).forEach(r => { if (r && r.translated){ mtMemory.set(mtKey(curLang, r.source), r.translated); added++; } });
+      mtSaveLocal();
+      if (mtApply()) renderAll();
+      if (data.limited){ toast(t('mtLimited')); break; }
+      if (!added) break;
+      pending = mtCollect();
+    }
+  } finally {
+    mtRunning = false;
   }
 }
 

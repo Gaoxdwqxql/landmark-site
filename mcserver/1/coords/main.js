@@ -24,6 +24,7 @@ document.querySelectorAll('.lang-switch button').forEach(btn => {
     buildAddTagPicker(); updateTagChips();
     buildBatchTagGrids(); updateBatchTagChips();
     renderAll();
+    ensureTranslations();   // 切到非中文时补全译文
   });
 });
 
