@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f8fc">
+<title>PlainPad 下载</title>
+<meta name="description" content="PlainPad 官方下载页。优先推荐官网镜像与蓝奏云，附带 SHA-256 校验值。版本更新请以 GitHub Releases 为准。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Cpath fill='%236750A4' d='M20,0 L88,0 A20,20 0 0 1 108,20 L108,88 A20,20 0 0 1 88,108 L20,108 A20,20 0 0 1 0,88 L0,20 A20,20 0 0 1 20,0 z'/%3E%3Cpath fill='%23fff' d='M32,26 L66,26 L82,42 L82,82 A3,3 0 0 1 79,85 L32,85 A3,3 0 0 1 29,82 L29,29 A3,3 0 0 1 32,26 z'/%3E%3Cpath fill='%23E0E0E0' d='M66,26 L66,42 L82,42 z'/%3E%3Cpath fill='%236750A4' d='M40,52 L44,52 L44,74 L40,74 z M50,52 L74,52 L74,56 L50,56 z M50,60 L74,60 L74,64 L50,64 z M50,68 L64,68 L64,72 L50,72 z'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#f6f8fc;
+    --card:#fff;
+    --border:#e5eaf2;
+    --border-2:#d3dbe8;
+    --text:#16213a;
+    --muted:#6b7891;
+    --faint:#9aa7bd;
+    --mirror:#0284c7;
+    --mirror-2:#06b6d4;
+    --lanzou:#ea580c;
+    --lanzou-2:#f59e0b;
+    --green:#0e8a63;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--text);
+    line-height:1.6;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    -webkit-tap-highlight-color:transparent;
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+    background:var(--bg);
+  }
+  a{color:inherit}
+  button{font-family:inherit}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .wrap{max-width:720px;margin:0 auto;padding:0 18px 56px}
+
+  /* ---------- 顶部 ---------- */
+  .hero{text-align:center;padding:52px 0 24px}
+  .logo{width:58px;height:58px;margin:0 auto 14px;filter:drop-shadow(0 10px 18px rgba(103,80,164,.28))}
+  .logo svg{display:block;width:100%;height:100%}
+  .hero h1{font-size:27px;font-weight:700;letter-spacing:-.5px}
+  .sub{color:var(--muted);font-size:14px;margin-top:4px}
+  .meta{color:var(--faint);font-size:12px;margin-top:10px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+  .meta span{display:inline-flex;align-items:center;gap:6px}
+  .meta span+span::before{content:"·";color:var(--border-2)}
+  .meta a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--border-2);transition:color .15s,border-color .15s}
+  .meta a:hover{color:var(--muted);border-bottom-color:var(--muted)}
+
+  /* ---------- 顶部说明条 ---------- */
+  .notice{
+    display:flex;align-items:flex-start;gap:9px;
+    margin-top:6px;padding:11px 14px;
+    background:linear-gradient(90deg, rgba(2,132,199,.055), rgba(2,132,199,.01) 75%, transparent);
+    border:1px solid var(--border);
+    border-left:3px solid var(--mirror);
+    border-radius:10px;
+    font-size:12.5px;color:var(--muted);line-height:1.65;
+  }
+  .notice svg{flex:none;width:15px;height:15px;margin-top:3px;color:var(--mirror)}
+  .notice p{margin:0}
+  .notice strong{color:#3d4a63;font-weight:600}
+  .notice a{
+    color:var(--mirror);text-decoration:none;
+    border-bottom:1px dashed rgba(2,132,199,.45);
+    padding-bottom:1px;
+    transition:border-color .15s;
+  }
+  .notice a:hover{border-bottom-style:solid;border-color:var(--mirror)}
+
+  /* ---------- 最新版卡片 ---------- */
+  .dl-card{
+    margin-top:12px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 10px 30px -24px rgba(16,24,40,.3);
+  }
+  .dl-top{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  .badge{
+    display:inline-block;font-size:11px;font-weight:600;
+    color:#0369a1;background:rgba(2,132,199,.1);
+    border:1px solid rgba(2,132,199,.25);
+    padding:2px 9px;border-radius:999px;
+  }
+  .dl-info h2{font-size:26px;font-weight:700;letter-spacing:-.4px;margin-top:6px}
+  .dl-note{font-size:13px;color:var(--muted);margin-top:2px}
+
+  .dl-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:11px 22px;border-radius:11px;
+    font-size:14.5px;font-weight:600;text-decoration:none;
+    border:1px solid transparent;
+    transition:filter .18s,box-shadow .18s,transform .18s;
+    white-space:nowrap;cursor:pointer;
+    touch-action:manipulation;
+  }
+  .btn-mirror{
+    color:#fff;background:linear-gradient(135deg,var(--mirror),var(--mirror-2));
+    box-shadow:0 10px 22px -12px rgba(2,132,199,.8);
+  }
+  .btn-lanzou{
+    color:#fff;background:linear-gradient(135deg,var(--lanzou),var(--lanzou-2));
+    box-shadow:0 10px 22px -12px rgba(234,88,12,.75);
+  }
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .btn.fast{box-shadow:0 0 0 2px var(--green),0 10px 22px -12px rgba(14,138,99,.6)}
+
+  .dl-foot{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    margin-top:16px;padding-top:14px;border-top:1px dashed var(--border);
+    font-size:13px;
+  }
+  .link-muted{
+    color:var(--faint);text-decoration:none;background:none;border:0;
+    font-size:13px;cursor:pointer;padding:0;
+    border-bottom:1px dashed var(--border-2);
+    transition:color .15s,border-color .15s;
+  }
+  .link-muted:hover{color:var(--muted);border-color:var(--muted)}
+  .link-muted:disabled{opacity:.6;cursor:progress}
+  .test-result{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .test-result b{color:var(--green);font-weight:600}
+
+  .sha-wrap{margin-top:10px}
+  .sha-wrap summary{
+    list-style:none;cursor:pointer;
+    font-size:12px;color:var(--faint);
+    display:inline-flex;align-items:center;gap:5px;
+    user-select:none;
+  }
+  .sha-wrap summary::-webkit-details-marker{display:none}
+  .sha-wrap summary::before{content:"▸";font-size:10px;transition:transform .15s}
+  .sha-wrap[open] summary::before{transform:rotate(90deg)}
+  .sha-wrap summary:hover{color:var(--muted)}
+  .sha-body{
+    margin-top:8px;padding:10px 12px;
+    background:#f7f9fd;border:1px solid var(--border);border-radius:9px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  .sha-body code{
+    font-size:11px;color:#4a5872;word-break:break-all;
+    line-height:1.5;flex:1;min-width:160px;
+  }
+  .copy-btn{
+    font:inherit;font-size:11.5px;padding:3px 10px;border-radius:6px;
+    border:1px solid var(--border-2);background:#fff;color:var(--muted);
+    cursor:pointer;flex:none;transition:.15s;
+  }
+  .copy-btn:hover{color:var(--mirror);border-color:var(--mirror)}
+
+  /* ---------- 历史版本 ---------- */
+  .sec-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:12px;flex-wrap:wrap;margin:36px 0 12px;
+  }
+  .sec-head h2{font-size:16px;font-weight:650}
+  .pw{font-size:12.5px;color:var(--faint);display:inline-flex;align-items:center;gap:6px}
+  .pw b{color:var(--muted);font-family:ui-monospace,monospace;letter-spacing:.5px}
+
+  .search-box{
+    position:relative;display:flex;align-items:center;
+    margin-bottom:10px;
+    background:#fff;border:1px solid var(--border);border-radius:10px;
+    padding:0 12px;
+    transition:border-color .15s,box-shadow .15s;
+  }
+  .search-box:focus-within{border-color:var(--mirror);box-shadow:0 0 0 3px rgba(2,132,199,.1)}
+  .search-box svg{flex:none;color:var(--faint);width:16px;height:16px}
+  .search-box input{
+    flex:1;border:0;outline:0;background:transparent;
+    padding:10px 8px;font:inherit;font-size:14px;color:var(--text);
+    min-width:0;
+  }
+  .search-box input::placeholder{color:var(--faint);font-size:13px}
+  .search-box input::-webkit-search-cancel-button{display:none}
+  .search-clear{
+    flex:none;border:0;background:#eef1f7;color:var(--muted);
+    width:20px;height:20px;border-radius:50%;cursor:pointer;
+    font-size:13px;line-height:1;display:grid;place-items:center;
+    padding:0;transition:background .15s,color .15s;
+  }
+  .search-clear:hover{background:#e2e7f0;color:var(--text)}
+
+  .ver-list{list-style:none;display:grid;gap:8px}
+  .ver-item{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 14px;
+  }
+  .ver-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .ver-title{display:flex;align-items:center;gap:7px}
+  .ver-num{font-size:15px;font-weight:650;font-variant-numeric:tabular-nums}
+  .tag{font-size:10.5px;padding:1px 7px;border-radius:999px;font-weight:500;line-height:1.7}
+  .tag-latest{background:rgba(16,185,129,.1);color:#067a55}
+  .tag-pre{background:rgba(217,119,6,.09);color:#b45309}
+  .tag-none{background:#f1f4f9;color:var(--faint)}
+
+  .ver-btns{display:flex;gap:6px;flex-wrap:wrap}
+  .mini{
+    font-size:12px;padding:5px 11px;border-radius:7px;
+    text-decoration:none;border:1px solid var(--border-2);
+    background:#fff;color:var(--muted);
+    transition:.15s;white-space:nowrap;
+    display:inline-flex;align-items:center;
+  }
+  .mini-mirror{color:var(--mirror);border-color:rgba(2,132,199,.35);background:rgba(2,132,199,.05)}
+  .mini-lanzou{color:var(--lanzou);border-color:rgba(234,88,12,.32);background:rgba(234,88,12,.05)}
+  .mini:hover{filter:brightness(.97);border-color:currentColor}
+  .mini-gh:hover{color:var(--text);border-color:var(--border-2)}
+
+  .ver-sha{margin-top:6px}
+  .ver-sha summary{
+    list-style:none;cursor:pointer;font-size:11px;color:var(--faint);
+    display:inline-flex;align-items:center;gap:4px;user-select:none;
+  }
+  .ver-sha summary::-webkit-details-marker{display:none}
+  .ver-sha summary::before{content:"▸";font-size:9px;transition:transform .15s}
+  .ver-sha[open] summary::before{transform:rotate(90deg)}
+  .ver-sha summary:hover{color:var(--muted)}
+  .ver-sha .sha-body{margin-top:6px;padding:8px 10px}
+
+  .empty{
+    padding:26px 16px;text-align:center;
+    color:var(--faint);font-size:13.5px;
+    background:var(--card);border:1px dashed var(--border-2);
+    border-radius:12px;list-style:none;
+  }
+  .empty b{color:var(--muted);font-weight:600}
+
+  .more{
+    display:block;width:100%;margin-top:10px;
+    padding:10px;border-radius:10px;
+    border:1px dashed var(--border-2);background:transparent;
+    color:var(--muted);font-size:13px;cursor:pointer;
+    transition:.15s;
+  }
+  .more:hover{background:#fff;border-style:solid;color:var(--text)}
+
+  /* ---------- 页脚 ---------- */
+  footer{
+    margin-top:40px;padding-top:18px;
+    border-top:1px solid var(--border);
+    text-align:center;font-size:12.5px;color:var(--faint);
+  }
+  footer p+p{margin-top:6px}
+  footer a{color:var(--muted);text-decoration:none;border-bottom:1px dotted transparent;transition:border-color .15s,color .15s}
+  footer a:hover{text-decoration:underline;color:var(--text)}
+  footer .foot-note{
+    margin-top:10px;padding-top:10px;
+    border-top:1px dashed var(--border);
+    font-size:12px;line-height:1.6;
+  }
+  footer .foot-note b{color:var(--muted);font-weight:600}
+
+  .dock{display:none}
+
+  #toast{
+    position:fixed;left:50%;bottom:28px;transform:translate(-50%,14px);
+    background:#1f2937;color:#f9fafb;
+    padding:9px 18px;border-radius:10px;font-size:13.5px;
+    box-shadow:0 16px 32px -18px rgba(16,24,40,.5);
+    opacity:0;pointer-events:none;transition:.22s ease;z-index:99;
+    max-width:calc(100vw - 32px);text-align:center;
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+
+  @media (pointer:coarse){
+    .btn{min-height:46px}
+    .mini{min-height:34px;padding:6px 12px}
+    .copy-btn{min-height:30px}
+  }
+
+  @media (max-width:600px){
+    .wrap{padding:0 14px 92px}
+    .hero{padding:38px 0 20px}
+    .logo{width:52px;height:52px;margin-bottom:12px}
+    .hero h1{font-size:24px}
+    .sub{font-size:13px}
+    .meta{font-size:11px;margin-top:8px;gap:4px}
+
+    .notice{font-size:12px;padding:9px 11px;gap:8px;line-height:1.6}
+    .notice svg{width:14px;height:14px;margin-top:2px}
+
+    .dl-card{padding:16px;border-radius:16px}
+    .dl-top{flex-direction:column;align-items:stretch;gap:14px}
+    .dl-info h2{font-size:22px}
+    .dl-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .btn{padding:11px 12px;font-size:14px}
+    .dl-foot{gap:10px;font-size:12px}
+    .test-result{font-size:11.5px;width:100%}
+
+    .sec-head{margin:30px 0 10px}
+    .sec-head h2{font-size:15px}
+    .pw{font-size:11.5px}
+
+    .search-box{padding:0 10px}
+    .search-box input{font-size:16px;padding:10px 6px}
+    .search-box input::placeholder{font-size:13.5px}
+
+    .ver-item{padding:11px 12px}
+    .ver-num{font-size:14px}
+    .ver-head{flex-direction:column;align-items:flex-start;gap:8px}
+    .ver-btns{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr))}
+    .mini{justify-content:center}
+
+    .sha-body code{font-size:10px}
+
+    #toast{bottom:calc(82px + env(safe-area-inset-bottom))}
+
+    .dock{
+      display:flex;align-items:center;gap:12px;
+      position:fixed;left:0;right:0;bottom:0;
+      padding:9px 14px calc(9px + env(safe-area-inset-bottom));
+      background:rgba(255,255,255,.95);
+      -webkit-backdrop-filter:blur(14px);
+      backdrop-filter:blur(14px);
+      border-top:1px solid var(--border);
+      z-index:50;
+    }
+    .dock-info{flex:1;min-width:0}
+    .dock-title{display:block;font-size:13.5px;font-weight:650;line-height:1.35}
+    .dock-sub{display:block;font-size:11px;color:var(--mirror);line-height:1.35;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dock .btn{flex:none;padding:10px 20px;font-size:14px;border-radius:10px;min-height:auto}
+  }
+  @media (max-width:360px){
+    .dl-actions{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="logo">
+      <svg viewBox="0 0 108 108" role="img" aria-label="PlainPad">
+        <path fill="#6750A4" d="M20,0 L88,0 A20,20 0 0 1 108,20 L108,88 A20,20 0 0 1 88,108 L20,108 A20,20 0 0 1 0,88 L0,20 A20,20 0 0 1 20,0 z"/>
+        <path fill="#FFFFFF" d="M32,26 L66,26 L82,42 L82,82 A3,3 0 0 1 79,85 L32,85 A3,3 0 0 1 29,82 L29,29 A3,3 0 0 1 32,26 z"/>
+        <path fill="#E0E0E0" d="M66,26 L66,42 L82,42 z"/>
+        <path fill="#6750A4" d="M40,52 L44,52 L44,74 L40,74 z M50,52 L74,52 L74,56 L50,56 z M50,60 L74,60 L74,64 L50,64 z M50,68 L64,68 L64,72 L50,72 z"/>
+      </svg>
+    </div>
+    <h1>PlainPad</h1>
+    <p class="sub">轻量、离线、无广告的 Android 纯文本编辑器</p>
+    <div class="meta">
+      <span id="verMeta">最新 v1.1.4.1</span>
+      <span>Android 7.0+</span>
+      <span>无网络权限</span>
+      <span><a href="https://github.com/Gaoxdwqxql/PlainPad/blob/master/LICENSE" target="_blank" rel="noopener">MIT 开源</a></span>
+    </div>
+  </header>
+
+  <main>
+    <!-- 顶部说明条 -->
+    <div class="notice" role="note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M12 11v5"></path>
+        <path d="M12 8h.01"></path>
+      </svg>
+      <p>此页为 PlainPad <strong>官方下载页</strong>，版本同步可能存在延迟；<strong>最新消息与版本请以 <a href="https://github.com/Gaoxdwqxql/PlainPad/releases" target="_blank" rel="noopener">GitHub Releases</a> 为准</strong>。</p>
+    </div>
+
+    <section id="latest"></section>
+
+    <section>
+      <div class="sec-head">
+        <h2>历史版本</h2>
+        <span class="pw">蓝奏云密码 <b>ppad</b>
+          <button class="copy-btn" type="button" data-copy="ppad">复制</button>
+        </span>
+      </div>
+
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+        <input type="search" id="verSearch" placeholder="搜索版本号或标签，如 1.1 / pre / 镜像" autocomplete="off" enterkeyhint="search" aria-label="搜索版本">
+        <button class="search-clear" id="searchClear" type="button" aria-label="清除搜索" hidden>×</button>
+      </div>
+
+      <ul id="list" class="ver-list"></ul>
+      <button class="more" id="moreBtn" type="button"></button>
+    </section>
+  </main>
+
+  <footer>
+    <p><a href="https://github.com/Gaoxdwqxql/PlainPad" target="_blank" rel="noopener">GitHub</a> ·
+       <a href="https://sunwe.dpdns.org/app/PlainPad/" target="_blank" rel="noopener">官网</a> ·
+       <a href="https://github.com/Gaoxdwqxql/PlainPad/releases" target="_blank" rel="noopener">Releases</a> ·
+       <a href="https://github.com/Gaoxdwqxql/PlainPad/blob/master/LICENSE" target="_blank" rel="noopener">License</a></p>
+    <p><a href="https://github.com/Gaoxdwqxql/PlainPad/blob/master/LICENSE" target="_blank" rel="noopener">MIT License</a> · 下载后请核对 SHA-256</p>
+    <p class="foot-note">本页为官方下载页，更新可能有延迟；<b>最新消息与版本以 GitHub Releases 为准</b>。</p>
+  </footer>
+
+</div>
+
+<div class="dock" id="dock">
+  <div class="dock-info">
+    <span class="dock-title" id="dockTitle">PlainPad v1.1.4.1</span>
+    <span class="dock-sub" id="dockSub">推荐：官网镜像</span>
+  </div>
+  <a class="btn btn-mirror" id="dockDl" href="#" target="_blank" rel="noopener">下载</a>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ==================== 数据 ==================== */
+const REPO_DL = 'https://github.com/Gaoxdwqxql/PlainPad/releases/download';
+const MIRROR  = 'https://sunwe.dpdns.org/download/file';
+const API_LATEST = 'https://api.github.com/repos/Gaoxdwqxql/PlainPad/releases/latest';
+const RELEASES_PAGE = 'https://github.com/Gaoxdwqxql/PlainPad/releases';
+const LICENSE_URL = 'https://github.com/Gaoxdwqxql/PlainPad/blob/master/LICENSE';
+
+const versions = [
+  { v:'1.1.4.1',   mirror:true,  lanzou:'https://plainpad.lanzoue.com/ieYz64f0ysre', sha:'3a1c00a79e07c941e215de763e26ed72b48894bf396c615b634fc51fd0fc4a20', note:'修复正则替换闪退' },
+  { v:'1.1.4',     mirror:true,  lanzou:'https://plainpad.lanzoue.com/iTKs24eytyef', sha:'59c09c473b0da3d9eadb16d1e4876d82b93c476174573143e487e3980644dd51' },
+  { v:'1.1.3',     mirror:true,  lanzou:'https://plainpad.lanzoue.com/icJxh4e1h44f', sha:'c938b16859e2d132662ac9e8c9b248ff26abbcfa9833bef9f13b65c791692696' },
+  { v:'1.1.2',     mirror:true,  lanzou:'https://plainpad.lanzoue.com/iOscu4ds2tuh', sha:'9c8f439b3240c9f8d2cb4f7838c09f147baf224bddc472dbd2f7e3ff3b4dbc15' },
+  { v:'1.1.1',     mirror:false, lanzou:'https://plainpad.lanzoue.com/ia8wO4dhaeba', sha:'ba784870567f039d4515ead18c89ec002525dfb05503d3ce72e6e39323d131fc' },
+  { v:'1.1.1-pre', mirror:false, lanzou:null, pre:true,                              sha:'af25bdc6f5ae9df809507185205a4b1772a2411711c97a1561bfbe687744a500' },
+  { v:'1.1.0',     mirror:false, lanzou:'https://plainpad.lanzoue.com/iXWKx4d6vx4h', sha:'4aa7d40bf4765cc6a5806d91dd93606aa6097003d5c4e0af66e17458890d3994' },
+  { v:'1.1.0-pre', mirror:false, lanzou:null, pre:true,                              sha:'c4968d2d75164dae2838ad2243dc9ae40042f366895b4bf21d2657e2d8271966' },
+  { v:'1.0.2',     mirror:false, lanzou:'https://plainpad.lanzoue.com/iym9L4d5h5lg', sha:'795ef76bd33e7e7778bb4df4a07eaee95c142397d5021269875326c512041ca2' },
+  { v:'1.0.1',     mirror:false, lanzou:'https://plainpad.lanzoue.com/i11tm4d3vxyj', sha:'405a8a2663acf59153403354a4d988d5fd57c05585c72b3f75b858218dea4a46' },
+  { v:'1.0.0',     mirror:false, lanzou:null,                                        sha:'983b8d478355f036981618837d6c0b631935a29671f7fd0813acaf8d3f3a2d44' },
+  { v:'0.0.1',     mirror:false, lanzou:null,                                        sha:'a9e0cdcb0b789a0ffcafa78610a30626681face603af0b6296fd31c444d28b24' }
+];
+
+const latest = versions[0];
+const $ = s => document.querySelector(s);
+const ghUrl     = v => `${REPO_DL}/v${v}/PlainPad-v${v}.apk`;
+const mirrorUrl = v => `${MIRROR}/PlainPad-v${v}.apk`;
+
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+
+const shaBlock = (sha, small) => `
+  <details class="${small ? 'ver-sha' : 'sha-wrap'}">
+    <summary>SHA-256${small ? '' : ' 校验值'}</summary>
+    <div class="sha-body">
+      <code>${sha}</code>
+      <button class="copy-btn" type="button" data-copy="${sha}">复制</button>
+    </div>
+  </details>`;
+
+/* ==================== 最新版 ==================== */
+function renderLatest(){
+  $('#latest').innerHTML = `
+    <div class="dl-card">
+      <div class="dl-top">
+        <div class="dl-info">
+          <span class="badge">最新版本</span>
+          <h2>v${latest.v}</h2>
+          <p class="dl-note">${latest.note || '包含最新的功能与修复'}</p>
+        </div>
+        <div class="dl-actions">
+          ${latest.mirror ? `<a class="btn btn-mirror" data-route="mirror" href="${mirrorUrl(latest.v)}" target="_blank" rel="noopener">镜像下载</a>` : ''}
+          ${latest.lanzou ? `<a class="btn btn-lanzou" href="${latest.lanzou}" target="_blank" rel="noopener">蓝奏云</a>` : ''}
+        </div>
+      </div>
+      <div class="dl-foot">
+        <a class="link-muted" href="${ghUrl(latest.v)}" target="_blank" rel="noopener">GitHub 直链</a>
+        <button class="link-muted" id="speedBtn" type="button">测试线路延迟</button>
+        <span class="test-result" id="testResult"></span>
+      </div>
+      ${shaBlock(latest.sha, false)}
+    </div>`;
+}
+
+/* ==================== 搜索 ==================== */
+function normalizeQuery(raw){
+  return String(raw || '').trim().toLowerCase().replace(/^v/, '');
+}
+
+function matchesVersion(item, q){
+  if(!q) return true;
+  const v = item.v.toLowerCase();
+  const vPlain = v.replace(/\./g, '');
+  const qPlain = q.replace(/\./g, '');
+  const tagText = [
+    item.pre ? 'pre 预发布' : '',
+    item.mirror ? '镜像' : '无镜像'
+  ].join(' ').toLowerCase();
+  return v.includes(q)
+      || (qPlain !== '' && vPlain.includes(qPlain))
+      || tagText.includes(q);
+}
+
+/* ==================== 历史版本 ==================== */
+let showAll = false;
+let query = '';
+
+function renderList(){
+  const q = normalizeQuery(query);
+  const searching = q !== '';
+  const matched = versions.filter(it => matchesVersion(it, q));
+  const items = searching ? matched : (showAll ? matched : matched.slice(0, 6));
+
+  const moreBtn = $('#moreBtn');
+
+  if(items.length === 0){
+    $('#list').innerHTML = `<li class="empty">没有找到匹配 <b>「${escapeHtml(query.trim())}」</b> 的版本</li>`;
+    moreBtn.style.display = 'none';
+    return;
+  }
+
+  $('#list').innerHTML = items.map(item => {
+    const isLatest = item.v === latest.v;
+    const tags = [
+      isLatest ? '<span class="tag tag-latest">最新</span>' : '',
+      item.pre ? '<span class="tag tag-pre">预发布</span>' : '',
+      (!item.mirror && !isLatest) ? '<span class="tag tag-none">无镜像</span>' : ''
+    ].join('');
+
+    const btns = [
+      item.mirror ? `<a class="mini mini-mirror" href="${mirrorUrl(item.v)}" target="_blank" rel="noopener">镜像</a>` : '',
+      item.lanzou ? `<a class="mini mini-lanzou" href="${item.lanzou}" target="_blank" rel="noopener">蓝奏云</a>` : '',
+      `<a class="mini mini-gh" href="${ghUrl(item.v)}" target="_blank" rel="noopener">GitHub</a>`
+    ].join('');
+
+    return `<li class="ver-item">
+      <div class="ver-head">
+        <div class="ver-title">
+          <span class="ver-num">v${item.v}</span>${tags}
+        </div>
+        <div class="ver-btns">${btns}</div>
+      </div>
+      ${shaBlock(item.sha, true)}
+    </li>`;
+  }).join('');
+
+  if(searching){
+    moreBtn.style.display = 'none';
+  }else{
+    moreBtn.style.display = versions.length > 6 ? '' : 'none';
+    moreBtn.textContent = showAll ? '收起' : `展开全部 ${versions.length} 个版本`;
+  }
+}
+
+/* ==================== 底栏 ==================== */
+function setDock(url, label, type){
+  const a = $('#dockDl');
+  a.href = url;
+  a.classList.remove('btn-mirror','btn-lanzou');
+  a.classList.add(type === 'lanzou' ? 'btn-lanzou' : 'btn-mirror');
+  $('#dockSub').textContent = label;
+}
+
+/* ==================== 延迟测试 ==================== */
+const SPEED_KEY = 'ppad_speed_v3';
+const SPEED_TTL = 10 * 60 * 1000;
+
+function readSpeedCache(){
+  try{
+    const raw = sessionStorage.getItem(SPEED_KEY);
+    if(!raw) return null;
+    const d = JSON.parse(raw);
+    if(d.v !== latest.v || Date.now() - d.ts > SPEED_TTL) return null;
+    return d.res || null;
+  }catch(e){ return null; }
+}
+function writeSpeedCache(res){
+  try{ sessionStorage.setItem(SPEED_KEY, JSON.stringify({ v: latest.v, ts: Date.now(), res })); }catch(e){}
+}
+
+function probe(url, timeout){
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeout || 8000);
+  const t0 = performance.now();
+  return fetch(url, {
+    method:'GET', mode:'no-cors', cache:'no-store', credentials:'omit',
+    headers:{ 'Range':'bytes=0-0' }, signal: ctrl.signal
+  })
+    .then(() => ({ ok:true, ms: Math.round(performance.now() - t0) }))
+    .catch(() => ({ ok:false, ms:null }))
+    .finally(() => clearTimeout(timer));
+}
+
+function showResults(res){
+  const parts = [];
+  const m = res.find(r => r.key === 'mirror');
+  if(m) parts.push(m.ok ? `镜像 ${m.ms} ms` : '镜像不可达');
+  const g = res.find(r => r.key === 'github');
+  if(g) parts.push(g.ok ? `GitHub ${g.ms} ms` : 'GitHub 不可达');
+
+  const okList = res.filter(r => r.ok).sort((a,b) => a.ms - b.ms);
+  const best = okList[0] || null;
+
+  const el = $('#testResult');
+  if(el){
+    el.innerHTML = best
+      ? `<b>${best.key === 'mirror' ? '镜像' : 'GitHub'}最快</b> · ${parts.join(' · ')}`
+      : parts.join(' · ');
+  }
+
+  const mb = document.querySelector('[data-route="mirror"]');
+  if(mb) mb.classList.toggle('fast', best && best.key === 'mirror');
+
+  if(best && best.key === 'mirror'){
+    setDock(mirrorUrl(latest.v), `最快：镜像 ${best.ms} ms`, 'mirror');
+  }else if(best && best.key === 'github'){
+    setDock(ghUrl(latest.v), `最快：GitHub ${best.ms} ms`, 'github');
+  }
+}
+
+async function runTest(){
+  const btn = $('#speedBtn');
+  if(!btn || btn.disabled) return;
+
+  const targets = [];
+  if(latest.mirror) targets.push({ key:'mirror', url: mirrorUrl(latest.v) });
+  targets.push({ key:'github', url: ghUrl(latest.v) });
+
+  btn.disabled = true;
+  btn.textContent = '测试中…';
+  const el = $('#testResult');
+  if(el) el.textContent = '';
+
+  const res = await Promise.all(targets.map(async t => {
+    const r = await probe(t.url, 8000);
+    return { key:t.key, ok:r.ok, ms:r.ms };
+  }));
+
+  btn.disabled = false;
+  btn.textContent = '重新测试';
+
+  showResults(res);
+  writeSpeedCache(res);
+
+  const ok = res.filter(r => r.ok).sort((a,b) => a.ms - b.ms);
+  toast(ok.length ? `最低延迟：${ok[0].key === 'mirror' ? '镜像' : 'GitHub'} · ${ok[0].ms} ms` : '线路均不可达，可改用蓝奏云');
+}
+
+/* ==================== 更新检查 ==================== */
+const UPD_KEY = 'ppad_upd_v1';
+const UPD_TTL = 10 * 60 * 1000;
+
+async function checkUpdate(){
+  try{
+    const raw = sessionStorage.getItem(UPD_KEY);
+    if(raw){
+      const c = JSON.parse(raw);
+      if(Date.now() - c.ts < UPD_TTL){
+        if(c.tag && c.tag !== latest.v){
+          $('#verMeta').textContent = `最新 v${latest.v} · 有新版 v${c.tag}`;
+        }
+        return;
+      }
+    }
+  }catch(e){}
+
+  try{
+    const res = await fetch(API_LATEST, { headers:{ Accept:'application/vnd.github+json' }, cache:'no-store' });
+    if(!res.ok) return;
+    const data = await res.json();
+    const tag = String(data.tag_name || '').replace(/^v/i, '');
+    if(!tag) return;
+    try{ sessionStorage.setItem(UPD_KEY, JSON.stringify({ ts:Date.now(), tag, url:data.html_url })); }catch(e){}
+    if(tag !== latest.v){
+      $('#verMeta').textContent = `最新 v${latest.v} · 有新版 v${tag}`;
+    }
+  }catch(e){}
+}
+
+/* ==================== 复制 & Toast ==================== */
+let toastTimer;
+function toast(msg){
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+async function copyText(text){
+  if(navigator.clipboard && window.isSecureContext){
+    return navigator.clipboard.writeText(text);
+  }
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly','');
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.select(); ta.setSelectionRange(0, text.length);
+  const ok = document.execCommand('copy');
+  document.body.removeChild(ta);
+  if(!ok) throw new Error('copy failed');
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-copy]');
+  if(!btn) return;
+  copyText(btn.dataset.copy)
+    .then(() => toast('已复制 ✓'))
+    .catch(() => toast('复制失败，请手动选中'));
+});
+
+/* ==================== 初始化 ==================== */
+(function init(){
+  $('#dockTitle').textContent = `PlainPad v${latest.v}`;
+  if(latest.mirror){
+    setDock(mirrorUrl(latest.v), '推荐：官网镜像', 'mirror');
+  }else if(latest.lanzou){
+    setDock(latest.lanzou, '推荐：蓝奏云', 'lanzou');
+  }else{
+    setDock(ghUrl(latest.v), 'GitHub 直链', 'mirror');
+  }
+
+  renderLatest();
+  renderList();
+
+  $('#speedBtn').addEventListener('click', runTest);
+
+  $('#moreBtn').addEventListener('click', () => {
+    showAll = !showAll;
+    renderList();
+  });
+
+  const input = $('#verSearch');
+  const clearBtn = $('#searchClear');
+
+  input.addEventListener('input', () => {
+    query = input.value;
+    clearBtn.hidden = !query;
+    renderList();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    query = '';
+    clearBtn.hidden = true;
+    input.focus();
+    renderList();
+  });
+
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && input.value){
+      e.preventDefault();
+      clearBtn.click();
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      input.focus();
+      input.select();
+    }
+  });
+
+  const cached = readSpeedCache();
+  if(cached){
+    showResults(cached);
+    const b = $('#speedBtn');
+    if(b) b.textContent = '重新测试';
+  }
+
+  try{ checkUpdate(); }catch(e){}
+})();
+</script>
+</body>
+</html>
