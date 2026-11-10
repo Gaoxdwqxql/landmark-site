@@ -1,0 +1,7 @@
+# Cloudflare Workers 静态资源忽略清单
+.git
+.gitignore
+.assetsignore
+node_modules
+.wrangler
+*.md
