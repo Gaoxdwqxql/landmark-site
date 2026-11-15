@@ -188,8 +188,89 @@ function addLocationRow(label, x, y, z, dim){
   if (y !== undefined) row.querySelector('.location-y').value = y;
   if (z !== undefined) row.querySelector('.location-z').value = z;
   row.querySelector('.btn-remove-location').addEventListener('click', () => row.remove());
+  // 允许直接把 F3+C 文本粘到这行的任意坐标框里
+  ['location-x', 'location-y', 'location-z'].forEach(cls => {
+    const input = row.querySelector('.' + cls);
+    if (input) input.addEventListener('paste', e => {
+      const text = (e.clipboardData || window.clipboardData).getData('text');
+      if (!text || !parseF3C(text)) return;
+      e.preventDefault();
+      f3cHandle(text, row);
+    });
+  });
   addLocationList.appendChild(row);
 }
+
+/* ===== F3+C 坐标解析 ===== */
+const F3C_DIMS = { overworld: 'overworld', the_nether: 'nether', the_end: 'end' };
+
+function parseF3C(text){
+  if (!text) return null;
+  let s = String(text).trim().replace(/^[`"'“”‘’]+|[`"'“”‘’]+$/g, '').trim();
+  if (!s) return null;
+
+  let dim = null;
+  const dm = s.match(/minecraft:([a-z_]+)/i);
+  if (dm) dim = F3C_DIMS[dm[1].toLowerCase()] || null;
+
+  let nums = null;
+  const tp = s.match(/tp\s+@[a-z][a-z0-9_]*\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/i);
+  if (tp) nums = [tp[1], tp[2], tp[3]];
+  else {
+    const all = s.match(/-?\d+(?:\.\d+)?/g);
+    if (all && all.length >= 3) nums = all.slice(0, 3);
+  }
+  if (!nums) return null;
+
+  const x = Math.floor(Number(nums[0])), y = Math.floor(Number(nums[1])), z = Math.floor(Number(nums[2]));
+  if (![x, y, z].every(Number.isFinite)) return null;
+  if (Math.abs(x) > 30000000 || Math.abs(z) > 30000000) return null;
+  return { x, y, z, dim };
+}
+
+const f3cInput = document.getElementById('f3c-input');
+const f3cParseBtn = document.getElementById('f3c-parse');
+
+function f3cApplySingle(p){
+  coordMode = 'single'; updateModeSwitch();
+  addSingleCoords.style.display = ''; addMultiCoords.style.display = 'none';
+  addX.value = p.x; addY.value = p.y; addZ.value = p.z;
+  if (p.dim) addDim.value = p.dim;
+}
+function f3cApplyRow(row, p){
+  row.querySelector('.location-x').value = p.x;
+  row.querySelector('.location-y').value = p.y;
+  row.querySelector('.location-z').value = p.z;
+  const sel = row.querySelector('.location-dim');
+  if (sel && p.dim) sel.value = p.dim;
+}
+function f3cHandle(raw, row){
+  const p = parseF3C(raw);
+  if (!p){ toast(t('f3cFail')); return false; }
+  if (row) f3cApplyRow(row, p);
+  else if (coordMode === 'multi') addLocationRow(t('f3cPointLabel'), p.x, p.y, p.z, p.dim || '');
+  else f3cApplySingle(p);
+  toast(t('f3cOk') + ' ' + p.x + ' ' + p.y + ' ' + p.z + (p.dim ? ' · ' + dimLabel(p.dim) : ''));
+  return true;
+}
+if (f3cParseBtn) f3cParseBtn.addEventListener('click', () => {
+  if (!f3cInput || !f3cHandle(f3cInput.value, null)) return;
+  f3cInput.value = '';
+});
+if (f3cInput) f3cInput.addEventListener('input', () => {
+  if (parseF3C(f3cInput.value)){ f3cHandle(f3cInput.value, null); f3cInput.value = ''; }
+});
+// 单点模式下直接粘进 X/Y/Z 也能解析
+['add-x', 'add-y', 'add-z'].forEach(id => {
+  const input = document.getElementById(id);
+  if (!input) return;
+  input.addEventListener('paste', e => {
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    if (!text || !parseF3C(text)) return;
+    e.preventDefault();
+    f3cHandle(text, null);
+  });
+});
 // 切换语言时刷新已存在的维度下拉（保留各自选中值）
 function refreshLocationDimSelects(){
   if (!addLocationList) return;

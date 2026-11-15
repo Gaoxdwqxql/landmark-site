@@ -604,3 +604,10 @@ html[data-skin="minecraft"][data-theme="light"] body{background:#c6c6c6}
   .child-row{flex-wrap:wrap}
   .child-row .btn-copy{margin-left:0}
 }
+
+/* ===== F3+C 坐标粘贴 ===== */
+.f3c-row{display:flex;gap:8px;align-items:center}
+.f3c-row .form-input{flex:1;min-width:0}
+.f3c-hint{font-size:11px;color:var(--faint);margin-top:4px;line-height:1.5}
+@media (max-width:660px){.f3c-row{flex-direction:column;align-items:stretch}}
+
