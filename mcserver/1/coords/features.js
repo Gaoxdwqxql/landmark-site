@@ -321,12 +321,26 @@ function closeAddModal(){ addModal.classList.remove('open'); addModal.setAttribu
 
 addForm.addEventListener('submit', async e => {
   e.preventDefault();
-  if (!addNameZh.value.trim()){ addNameZh.focus(); return; }
+  if (!addNameZh.value.trim()){ toast(t('errName')); addNameZh.focus(); return; }
   if (!addBuilder.value.trim()){ toast(t('errBuilder')); addBuilder.focus(); return; }
   const hasTech = selectedTags.includes('生电');
   if (hasTech){
     if (!addRateZh.value.trim()){ toast(t('errTechRate')); addRateZh.focus(); return; }
     if (!addProductsZh.value.trim()){ toast(t('errTechProducts')); addProductsZh.focus(); return; }
+  }
+  // 原生 required 在隐藏容器里会导致「无法聚焦」而静默失败，所以表单加了 novalidate，这里显式校验
+  const badNumber = el => el.value.trim() === '' || !Number.isFinite(Number(el.value));
+  if (coordMode === 'single'){
+    const broken = [addX, addY, addZ].find(badNumber);
+    if (broken){ toast(t('errCoords')); broken.focus(); return; }
+  } else {
+    const rows = [...addLocationList.querySelectorAll('.location-row')];
+    if (!rows.length){ toast(t('errNoLocation')); return; }
+    for (const row of rows){
+      const fields = ['.location-x', '.location-y', '.location-z'].map(s => row.querySelector(s)).filter(Boolean);
+      const broken = fields.find(badNumber);
+      if (broken){ toast(t('errRowCoords')); broken.focus(); return; }
+    }
   }
   const submitBtn = document.getElementById('add-submit');
   const origHtml = submitBtn.innerHTML;
