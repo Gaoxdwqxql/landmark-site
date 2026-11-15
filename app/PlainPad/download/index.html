@@ -41,7 +41,6 @@
   code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
   .wrap{max-width:720px;margin:0 auto;padding:0 18px 56px}
 
-  /* ---------- 返回官网 ---------- */
   .back-link{
     display:inline-flex;align-items:center;gap:5px;
     margin-top:18px;padding:4px 0;
@@ -54,7 +53,6 @@
   .back-link:hover{color:var(--muted)}
   .back-link:hover svg{transform:translateX(-2px)}
 
-  /* ---------- 顶部 ---------- */
   .hero{text-align:center;padding:26px 0 24px}
   .logo{width:58px;height:58px;margin:0 auto 14px;filter:drop-shadow(0 10px 18px rgba(103,80,164,.28))}
   .logo svg{display:block;width:100%;height:100%}
@@ -66,7 +64,6 @@
   .meta a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--border-2);transition:color .15s,border-color .15s}
   .meta a:hover{color:var(--muted);border-bottom-color:var(--muted)}
 
-  /* ---------- 顶部说明条 ---------- */
   .notice{
     display:flex;align-items:flex-start;gap:9px;
     margin-top:6px;padding:11px 14px;
@@ -87,7 +84,6 @@
   }
   .notice a:hover{border-bottom-style:solid;border-color:var(--mirror)}
 
-  /* ---------- 最新版卡片 ---------- */
   .dl-card{
     margin-top:12px;
     background:var(--card);
@@ -186,7 +182,6 @@
   }
   .copy-btn:hover{color:var(--mirror);border-color:var(--mirror)}
 
-  /* ---------- 历史版本 ---------- */
   .sec-head{
     display:flex;align-items:baseline;justify-content:space-between;
     gap:12px;flex-wrap:wrap;margin:36px 0 12px;
@@ -275,7 +270,6 @@
   }
   .more:hover{background:#fff;border-style:solid;color:var(--text)}
 
-  /* ---------- 页脚 ---------- */
   footer{
     margin-top:40px;padding-top:18px;
     border-top:1px solid var(--border);
@@ -485,6 +479,34 @@ const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
 }[c]));
 
+/* ==================== 版本号比较 ==================== */
+/* 解析 x.y.z 或 x.y.z-pre，返回数字段和预发布标记 */
+function parseVer(v){
+  const s = String(v || '').trim().replace(/^v/i, '');
+  const m = s.match(/^(\d+(?:\.\d+)*)(?:-([a-z0-9.]+))?$/i);
+  if(!m) return { nums:[0], pre:false, raw:s };
+  return {
+    nums: m[1].split('.').map(Number),
+    pre: !!m[2],
+    raw: s
+  };
+}
+
+/* 返回 >0 表示 a 比 b 新，<0 表示更旧，0 表示相同 */
+function compareVer(a, b){
+  const A = parseVer(a), B = parseVer(b);
+  const len = Math.max(A.nums.length, B.nums.length);
+  for(let i = 0; i < len; i++){
+    const x = A.nums[i] || 0;
+    const y = B.nums[i] || 0;
+    if(x !== y) return x - y;
+  }
+  /* 数字段相同：正式版比预发布版新 */
+  if(A.pre && !B.pre) return -1;
+  if(!A.pre && B.pre) return 1;
+  return 0;
+}
+
 const shaBlock = (sha, small) => {
   if(!sha){
     return `<div class="sha-missing">此版本发布页暂未提供 SHA-256 校验值</div>`;
@@ -501,7 +523,6 @@ const shaBlock = (sha, small) => {
 
 /* ==================== 最新版 ==================== */
 function renderLatest(){
-  /* 防御性检查：若最新版哈希与某个旧版相同，给出提示 */
   const dup = versions.slice(1).find(it => it.sha && it.sha === latest.sha && it.v !== latest.v);
 
   $('#latest').innerHTML = `
@@ -692,7 +713,7 @@ async function runTest(){
 }
 
 /* ==================== 更新检查 ==================== */
-const UPD_KEY = 'ppad_upd_v2';
+const UPD_KEY = 'ppad_upd_v3';
 const UPD_TTL = 10 * 60 * 1000;
 
 async function checkUpdate(){
@@ -701,7 +722,8 @@ async function checkUpdate(){
     if(raw){
       const c = JSON.parse(raw);
       if(Date.now() - c.ts < UPD_TTL){
-        if(c.tag && c.tag !== latest.v){
+        /* 只有 API 版本比页面内置版本新时才提示 */
+        if(c.tag && compareVer(c.tag, latest.v) > 0){
           $('#verMeta').textContent = `最新 v${latest.v} · 有新版 v${c.tag}`;
         }
         return;
@@ -716,7 +738,8 @@ async function checkUpdate(){
     const tag = String(data.tag_name || '').replace(/^v/i, '');
     if(!tag) return;
     try{ sessionStorage.setItem(UPD_KEY, JSON.stringify({ ts:Date.now(), tag, url:data.html_url })); }catch(e){}
-    if(tag !== latest.v){
+    /* 关键：比较版本号大小，而不是简单判断不相等 */
+    if(compareVer(tag, latest.v) > 0){
       $('#verMeta').textContent = `最新 v${latest.v} · 有新版 v${tag}`;
     }
   }catch(e){}
