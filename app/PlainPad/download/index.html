@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f6f8fc">
 <title>PlainPad 下载</title>
-<meta name="description" content="PlainPad 官方下载页。优先推荐官网镜像与蓝奏云，附带 SHA-256 校验值。版本更新请以 GitHub Releases 为准。">
+<meta name="description" content="PlainPad 官方下载页。最新 v1.2.0-pre 预览版，优先推荐官网镜像与蓝奏云。版本更新请以 GitHub Releases 为准。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Cpath fill='%236750A4' d='M20,0 L88,0 A20,20 0 0 1 108,20 L108,88 A20,20 0 0 1 88,108 L20,108 A20,20 0 0 1 0,88 L0,20 A20,20 0 0 1 20,0 z'/%3E%3Cpath fill='%23fff' d='M32,26 L66,26 L82,42 L82,82 A3,3 0 0 1 79,85 L32,85 A3,3 0 0 1 29,82 L29,29 A3,3 0 0 1 32,26 z'/%3E%3Cpath fill='%23E0E0E0' d='M66,26 L66,42 L82,42 z'/%3E%3Cpath fill='%236750A4' d='M40,52 L44,52 L44,74 L40,74 z M50,52 L74,52 L74,56 L50,56 z M50,60 L74,60 L74,64 L50,64 z M50,68 L64,68 L64,72 L50,72 z'/%3E%3C/svg%3E">
 <style>
   :root{
@@ -21,6 +21,7 @@
     --lanzou:#ea580c;
     --lanzou-2:#f59e0b;
     --green:#0e8a63;
+    --amber:#b45309;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
@@ -49,10 +50,7 @@
     transition:color .15s;
     touch-action:manipulation;
   }
-  .back-link svg{
-    width:14px;height:14px;flex:none;
-    transition:transform .15s;
-  }
+  .back-link svg{width:14px;height:14px;flex:none;transition:transform .15s}
   .back-link:hover{color:var(--muted)}
   .back-link:hover svg{transform:translateX(-2px)}
 
@@ -104,6 +102,10 @@
     color:#0369a1;background:rgba(2,132,199,.1);
     border:1px solid rgba(2,132,199,.25);
     padding:2px 9px;border-radius:999px;
+  }
+  .badge-pre{
+    color:#b45309;background:rgba(217,119,6,.1);
+    border-color:rgba(217,119,6,.28);
   }
   .dl-info h2{font-size:26px;font-weight:700;letter-spacing:-.4px;margin-top:6px}
   .dl-note{font-size:13px;color:var(--muted);margin-top:2px}
@@ -165,6 +167,18 @@
     font-size:11px;color:#4a5872;word-break:break-all;
     line-height:1.5;flex:1;min-width:160px;
   }
+  .sha-missing{
+    margin-top:10px;
+    font-size:12px;color:var(--faint);
+    background:#fafbfe;border:1px dashed var(--border-2);
+    border-radius:8px;padding:8px 12px;
+    display:inline-block;
+  }
+  .sha-warn{
+    margin-top:10px;font-size:11.5px;color:var(--amber);
+    background:rgba(217,119,6,.06);border:1px solid rgba(217,119,6,.22);
+    border-radius:8px;padding:7px 11px;line-height:1.55;
+  }
   .copy-btn{
     font:inherit;font-size:11.5px;padding:3px 10px;border-radius:6px;
     border:1px solid var(--border-2);background:#fff;color:var(--muted);
@@ -217,7 +231,7 @@
   .ver-num{font-size:15px;font-weight:650;font-variant-numeric:tabular-nums}
   .tag{font-size:10.5px;padding:1px 7px;border-radius:999px;font-weight:500;line-height:1.7}
   .tag-latest{background:rgba(16,185,129,.1);color:#067a55}
-  .tag-pre{background:rgba(217,119,6,.09);color:#b45309}
+  .tag-pre{background:rgba(217,119,6,.09);color:var(--amber)}
   .tag-none{background:#f1f4f9;color:var(--faint)}
 
   .ver-btns{display:flex;gap:6px;flex-wrap:wrap}
@@ -357,7 +371,6 @@
 <body>
 <div class="wrap">
 
-  <!-- 返回官网 -->
   <a class="back-link" href="/app/PlainPad/" aria-label="返回 PlainPad 官网首页">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M15 18l-6-6 6-6"></path>
@@ -377,7 +390,7 @@
     <h1>PlainPad</h1>
     <p class="sub">轻量、离线、无广告的 Android 纯文本编辑器</p>
     <div class="meta">
-      <span id="verMeta">最新 v1.1.4.1</span>
+      <span id="verMeta">最新 v1.2.0-pre</span>
       <span>Android 7.0+</span>
       <span>无网络权限</span>
       <span><a href="https://github.com/Gaoxdwqxql/PlainPad/blob/master/LICENSE" target="_blank" rel="noopener">MIT 开源</a></span>
@@ -385,7 +398,6 @@
   </header>
 
   <main>
-    <!-- 顶部说明条 -->
     <div class="notice" role="note">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="9"></circle>
@@ -410,7 +422,7 @@
           <circle cx="11" cy="11" r="7"></circle>
           <path d="m20 20-3.5-3.5"></path>
         </svg>
-        <input type="search" id="verSearch" placeholder="搜索版本号或标签，如 1.1 / pre / 镜像" autocomplete="off" enterkeyhint="search" aria-label="搜索版本">
+        <input type="search" id="verSearch" placeholder="搜索版本号或标签，如 1.2 / pre / 镜像" autocomplete="off" enterkeyhint="search" aria-label="搜索版本">
         <button class="search-clear" id="searchClear" type="button" aria-label="清除搜索" hidden>×</button>
       </div>
 
@@ -432,7 +444,7 @@
 
 <div class="dock" id="dock">
   <div class="dock-info">
-    <span class="dock-title" id="dockTitle">PlainPad v1.1.4.1</span>
+    <span class="dock-title" id="dockTitle">PlainPad v1.2.0-pre</span>
     <span class="dock-sub" id="dockSub">推荐：官网镜像</span>
   </div>
   <a class="btn btn-mirror" id="dockDl" href="#" target="_blank" rel="noopener">下载</a>
@@ -449,6 +461,7 @@ const RELEASES_PAGE = 'https://github.com/Gaoxdwqxql/PlainPad/releases';
 const LICENSE_URL = 'https://github.com/Gaoxdwqxql/PlainPad/blob/master/LICENSE';
 
 const versions = [
+  { v:'1.2.0-pre', mirror:true,  lanzou:'https://plainpad.lanzoue.com/iHXkQ4g3qk8d', sha:'71d66265cef18d368e2aa359018ca4777cbfbb7393a8a220c78fc6c162db8570', pre:true, note:'大文件渲染重构、沉浸阅读与更多编码' },
   { v:'1.1.4.1',   mirror:true,  lanzou:'https://plainpad.lanzoue.com/ieYz64f0ysre', sha:'3a1c00a79e07c941e215de763e26ed72b48894bf396c615b634fc51fd0fc4a20', note:'修复正则替换闪退' },
   { v:'1.1.4',     mirror:true,  lanzou:'https://plainpad.lanzoue.com/iTKs24eytyef', sha:'59c09c473b0da3d9eadb16d1e4876d82b93c476174573143e487e3980644dd51' },
   { v:'1.1.3',     mirror:true,  lanzou:'https://plainpad.lanzoue.com/icJxh4e1h44f', sha:'c938b16859e2d132662ac9e8c9b248ff26abbcfa9833bef9f13b65c791692696' },
@@ -472,7 +485,11 @@ const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
 }[c]));
 
-const shaBlock = (sha, small) => `
+const shaBlock = (sha, small) => {
+  if(!sha){
+    return `<div class="sha-missing">此版本发布页暂未提供 SHA-256 校验值</div>`;
+  }
+  return `
   <details class="${small ? 'ver-sha' : 'sha-wrap'}">
     <summary>SHA-256${small ? '' : ' 校验值'}</summary>
     <div class="sha-body">
@@ -480,14 +497,18 @@ const shaBlock = (sha, small) => `
       <button class="copy-btn" type="button" data-copy="${sha}">复制</button>
     </div>
   </details>`;
+};
 
 /* ==================== 最新版 ==================== */
 function renderLatest(){
+  /* 防御性检查：若最新版哈希与某个旧版相同，给出提示 */
+  const dup = versions.slice(1).find(it => it.sha && it.sha === latest.sha && it.v !== latest.v);
+
   $('#latest').innerHTML = `
     <div class="dl-card">
       <div class="dl-top">
         <div class="dl-info">
-          <span class="badge">最新版本</span>
+          <span class="badge ${latest.pre ? 'badge-pre' : ''}">${latest.pre ? '预览版' : '最新版本'}</span>
           <h2>v${latest.v}</h2>
           <p class="dl-note">${latest.note || '包含最新的功能与修复'}</p>
         </div>
@@ -502,6 +523,7 @@ function renderLatest(){
         <span class="test-result" id="testResult"></span>
       </div>
       ${shaBlock(latest.sha, false)}
+      ${dup ? `<div class="sha-warn">此 SHA-256 与 v${dup.v} 相同，请核对 GitHub Release 页面后再下载。</div>` : ''}
     </div>`;
 }
 
@@ -516,7 +538,7 @@ function matchesVersion(item, q){
   const vPlain = v.replace(/\./g, '');
   const qPlain = q.replace(/\./g, '');
   const tagText = [
-    item.pre ? 'pre 预发布' : '',
+    item.pre ? 'pre 预发布 预览版' : '',
     item.mirror ? '镜像' : '无镜像'
   ].join(' ').toLowerCase();
   return v.includes(q)
@@ -585,7 +607,7 @@ function setDock(url, label, type){
 }
 
 /* ==================== 延迟测试 ==================== */
-const SPEED_KEY = 'ppad_speed_v3';
+const SPEED_KEY = 'ppad_speed_v5';
 const SPEED_TTL = 10 * 60 * 1000;
 
 function readSpeedCache(){
@@ -670,7 +692,7 @@ async function runTest(){
 }
 
 /* ==================== 更新检查 ==================== */
-const UPD_KEY = 'ppad_upd_v1';
+const UPD_KEY = 'ppad_upd_v2';
 const UPD_TTL = 10 * 60 * 1000;
 
 async function checkUpdate(){
