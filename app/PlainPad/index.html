@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlainPad - 轻量极简的 Android 纯文本编辑器</title>
-    <meta name="description" content="PlainPad 是一款轻量、离线、极简的 Android 纯文本编辑器。最新 v1.2.0-pre 预览版，重构大文件渲染，支持沉浸阅读与更多编码。无广告、无账号、无网络权限。">
+    <meta name="description" content="PlainPad 是一款轻量、离线、极简的 Android 纯文本编辑器。重构大文件渲染，支持沉浸阅读、更多编码与 AES-256 密钥加密。无广告、无账号、无网络权限。">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Cpath fill='%236750A4' d='M20,0 L88,0 A20,20 0 0 1 108,20 L108,88 A20,20 0 0 1 88,108 L20,108 A20,20 0 0 1 0,88 L0,20 A20,20 0 0 1 20,0 z'/%3E%3Cpath fill='%23fff' d='M32,26 L66,26 L82,42 L82,82 A3,3 0 0 1 79,85 L32,85 A3,3 0 0 1 29,82 L29,29 A3,3 0 0 1 32,26 z'/%3E%3Cpath fill='%23E0E0E0' d='M66,26 L66,42 L82,42 z'/%3E%3Cpath fill='%236750A4' d='M40,52 L44,52 L44,74 L40,74 z M50,52 L74,52 L74,56 L50,56 z M50,60 L74,60 L74,64 L50,64 z M50,68 L64,68 L64,72 L50,72 z'/%3E%3C/svg%3E">
     <style>
         :root {
@@ -198,7 +198,8 @@
             <h1>PlainPad</h1>
             <p class="subtitle">轻量、离线、极简的 Android 纯文本编辑器</p>
             <div class="meta-row">
-                <span>最新 v1.2.0-pre <span class="pre-tag">预览版</span></span>
+                <!-- 这里加了 id="home-version" 供 JS 动态修改 -->
+                <span id="home-version">最新版本获取中...</span>
                 <span>Android 7.0+</span>
                 <span>无网络权限</span>
                 <span>MIT 开源</span>
@@ -228,28 +229,33 @@
                     <p>无网络权限，无广告，无账号。所有文本仅保存在您的设备本地，绝不联网上传任何内容。</p>
                 </div>
                 <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>AES-256 密钥加密</h3>
+                    <p>支持为已保存的 TXT 设置密钥原地加密。采用 AES-256-GCM 认证加密，PBKDF2 派生 21 万次，保障隐私安全。</p>
+                </div>
+                <div class="feature-card">
                     <div class="feature-icon">⚡</div>
                     <h3>大文件渲染重构</h3>
-                    <p>v1.2.0-pre 重写大文件加载逻辑：100MB 级文本按需读取，内存占用与文件大小基本无关，超长单行也不再卡顿。</p>
+                    <p>100MB 级文本按需读取，内存占用与文件大小基本无关，超长单行也不再卡顿。</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📖</div>
                     <h3>沉浸阅读模式</h3>
-                    <p>左右滑动或点按翻页，音量键、PageUp/PageDown 也能翻页。底部细进度条显示阅读进度，控制条自动隐藏，保持屏幕常亮。</p>
+                    <p>左右滑动或点按翻页，音量键也能翻页。底部细进度条显示阅读进度，控制条自动隐藏，保持屏幕常亮。</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🌐</div>
                     <h3>更多编码支持</h3>
-                    <p>保存与重新打开支持 UTF-8、UTF-16LE/BE、GB18030、GBK、GB2312、Big5、Shift_JIS、EUC-KR、Windows-1252、ISO-8859-1。</p>
+                    <p>保存与重新打开支持 UTF-8、UTF-16LE/BE、GB18030、GBK、Big5、Shift_JIS、EUC-KR、Windows-1252 等。</p>
                 </div>
             </div>
             <h2 class="section-title">技术细节</h2>
             <ul class="details-list">
-                <li><strong>大文件渲染引擎：</strong>v1.2.0-pre 继续优化按需读取，只保留稀疏行索引；内存模式每 1000 字符切一个显示行，按需读取模式约每 1KB 切一个显示行，绘制量只与可视区域有关。</li>
-                <li><strong>按需读取阈值：</strong>从 20MB 调整为 12MB。12MB 是安全下限，超过它的文件本来就已经超过 300 万字符、处于只读大文件模式。</li>
+                <li><strong>大文件渲染引擎：</strong>继续优化按需读取，只保留稀疏行索引；内存模式每 1000 字符切一个显示行，按需读取模式约每 1KB 切一个显示行，绘制量只与可视区域有关。</li>
+                <li><strong>密钥加密：</strong>采用 AES-256-GCM 认证加密，PBKDF2-HMAC-SHA1 210000 次迭代、16 字节随机 salt、12 字节随机 IV。原编码与 BOM 一起加密，密码只存在内存，不写入磁盘。</li>
                 <li><strong>超长行处理：</strong>按 UTF-8 字符边界或空格切分，不会切坏中文；修复带 BOM 文件第 0 行偏移错误，以及 SAF 文件句柄未随数据源释放的问题。</li>
                 <li><strong>沉浸阅读：</strong>阅读期间禁用编辑、选区和光标，隐藏行号与快速滚动条；旋转屏幕、切换主题重建后仍保持沉浸状态；退出后恢复当前行高亮、行号与滚动条。</li>
-                <li><strong>编码探测：</strong>大文件打开前会读取样本自动探测编码；探测不准时可用「以指定编码重新打开」切换。GBK、GB18030、Big5、Shift_JIS、EUC-KR 等 ASCII 兼容编码的大文件也能按需读取。</li>
+                <li><strong>编码探测：</strong>大文件打开前会读取样本自动探测编码；探测不准时可用「以指定编码重新打开」切换。GBK、GB18030、Big5 等 ASCII 兼容编码的大文件也能按需读取。</li>
                 <li><strong>系统要求：</strong>支持 Android 7.0（API 24）及以上，推荐 Android 12+。</li>
             </ul>
         </main>
@@ -263,5 +269,30 @@
             <p class="foot-note">本站为 PlainPad 官方网站，版本信息可能存在延迟；<b>最新消息与版本以 GitHub Releases 为准</b>。</p>
         </footer>
     </div>
+
+    <script>
+        // 从 API 拉取最新版本号
+        async function fetchLatestVersion() {
+            try {
+                const res = await fetch('https://api2.sunwe.dpdns.org/api/releases');
+                const versions = await res.json();
+                
+                if (versions && versions.length > 0) {
+                    const latest = versions[0];
+                    const el = document.getElementById('home-version');
+                    // 动态填充版本号和“预览版”标签
+                    el.innerHTML = `最新 v${latest.version} ${latest.is_pre ? '<span class="pre-tag">预览版</span>' : ''}`;
+                } else {
+                    document.getElementById('home-version').textContent = '暂无版本';
+                }
+            } catch (e) {
+                console.error('获取最新版本失败:', e);
+                document.getElementById('home-version').textContent = '最新版获取失败';
+            }
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', fetchLatestVersion);
+    </script>
 </body>
 </html>
