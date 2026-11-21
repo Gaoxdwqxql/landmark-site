@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f6f8fc">
 <title>PlainPad 下载</title>
-<meta name="description" content="PlainPad 官方下载页。最新 v1.2.0-pre 预览版，优先推荐官网镜像与蓝奏云。版本更新请以 GitHub Releases 为准。">
+<meta name="description" content="PlainPad 官方下载页。版本更新请以 GitHub Releases 为准。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Cpath fill='%236750A4' d='M20,0 L88,0 A20,20 0 0 1 108,20 L108,88 A20,20 0 0 1 88,108 L20,108 A20,20 0 0 1 0,88 L0,20 A20,20 0 0 1 20,0 z'/%3E%3Cpath fill='%23fff' d='M32,26 L66,26 L82,42 L82,82 A3,3 0 0 1 79,85 L32,85 A3,3 0 0 1 29,82 L29,29 A3,3 0 0 1 32,26 z'/%3E%3Cpath fill='%23E0E0E0' d='M66,26 L66,42 L82,42 z'/%3E%3Cpath fill='%236750A4' d='M40,52 L44,52 L44,74 L40,74 z M50,52 L74,52 L74,56 L50,56 z M50,60 L74,60 L74,64 L50,64 z M50,68 L64,68 L64,72 L50,72 z'/%3E%3C/svg%3E">
 <style>
   :root{
@@ -279,7 +279,7 @@
     <h1>PlainPad</h1>
     <p class="sub">轻量、离线、无广告的 Android 纯文本编辑器</p>
     <div class="meta">
-      <span id="verMeta">最新 v1.2.0-pre</span>
+      <span id="verMeta">正在加载...</span>
       <span>Android 7.0+</span>
       <span>无网络权限</span>
       <span><a href="https://github.com/Gaoxdwqxql/PlainPad/blob/master/LICENSE" target="_blank" rel="noopener">MIT 开源</a></span>
@@ -325,36 +325,33 @@
 </div>
 <div class="dock" id="dock">
   <div class="dock-info">
-    <span class="dock-title" id="dockTitle">PlainPad v1.2.0-pre</span>
+    <span class="dock-title" id="dockTitle">PlainPad</span>
     <span class="dock-sub" id="dockSub">推荐：官网镜像</span>
   </div>
   <a class="btn btn-mirror" id="dockDl" href="#" target="_blank" rel="noopener">下载</a>
 </div>
 <div id="toast"></div>
 <script>
+// ==================== 配置 ====================
+// 这里填入你的 Cloudflare Worker 绑定的自定义域名
+const API_BASE = 'https://api2.sunwe.dpdns.org';
+
 const REPO_DL = 'https://github.com/Gaoxdwqxql/PlainPad/releases/download';
 const MIRROR  = 'https://sunwe.dpdns.org/download/file';
 const API_LATEST = 'https://api.github.com/repos/Gaoxdwqxql/PlainPad/releases/latest';
-const versions = [
-  { v:'1.2.0-pre', mirror:true,  lanzou:'https://plainpad.lanzoue.com/iHXkQ4g3qk8d', sha:'71d66265cef18d368e2aa359018ca4777cbfbb7393a8a220c78fc6c162db8570', pre:true, note:'大文件渲染重构、沉浸阅读与更多编码' },
-  { v:'1.1.4.1',   mirror:true,  lanzou:'https://plainpad.lanzoue.com/ieYz64f0ysre', sha:'3a1c00a79e07c941e215de763e26ed72b48894bf396c615b634fc51fd0fc4a20', note:'修复正则替换闪退' },
-  { v:'1.1.4',     mirror:true,  lanzou:'https://plainpad.lanzoue.com/iTKs24eytyef', sha:'59c09c473b0da3d9eadb16d1e4876d82b93c476174573143e487e3980644dd51' },
-  { v:'1.1.3',     mirror:true,  lanzou:'https://plainpad.lanzoue.com/icJxh4e1h44f', sha:'c938b16859e2d132662ac9e8c9b248ff26abbcfa9833bef9f13b65c791692696' },
-  { v:'1.1.2',     mirror:true,  lanzou:'https://plainpad.lanzoue.com/iOscu4ds2tuh', sha:'9c8f439b3240c9f8d2cb4f7838c09f147baf224bddc472dbd2f7e3ff3b4dbc15' },
-  { v:'1.1.1',     mirror:false, lanzou:'https://plainpad.lanzoue.com/ia8wO4dhaeba', sha:'ba784870567f039d4515ead18c89ec002525dfb05503d3ce72e6e39323d131fc' },
-  { v:'1.1.1-pre', mirror:false, lanzou:null, pre:true,                              sha:'af25bdc6f5ae9df809507185205a4b1772a2411711c97a1561bfbe687744a500' },
-  { v:'1.1.0',     mirror:false, lanzou:'https://plainpad.lanzoue.com/iXWKx4d6vx4h', sha:'4aa7d40bf4765cc6a5806d91dd93606aa6097003d5c4e0af66e17458890d3994' },
-  { v:'1.1.0-pre', mirror:false, lanzou:null, pre:true,                              sha:'c4968d2d75164dae2838ad2243dc9ae40042f366895b4bf21d2657e2d8271966' },
-  { v:'1.0.2',     mirror:false, lanzou:'https://plainpad.lanzoue.com/iym9L4d5h5lg', sha:'795ef76bd33e7e7778bb4df4a07eaee95c142397d5021269875326c512041ca2' },
-  { v:'1.0.1',     mirror:false, lanzou:'https://plainpad.lanzoue.com/i11tm4d3vxyj', sha:'405a8a2663acf59153403354a4d988d5fd57c05585c72b3f75b858218dea4a46' },
-  { v:'1.0.0',     mirror:false, lanzou:null,                                        sha:'983b8d478355f036981618837d6c0b631935a29671f7fd0813acaf8d3f3a2d44' },
-  { v:'0.0.1',     mirror:false, lanzou:null,                                        sha:'a9e0cdcb0b789a0ffcafa78610a30626681face603af0b6296fd31c444d28b24' }
-];
-const latest = versions[0];
+
+// 全局状态
+let versions = [];
+let latest = null;
+let showAll = false;
+let query = '';
+
 const $ = s => document.querySelector(s);
 const ghUrl     = v => `${REPO_DL}/v${v}/PlainPad-v${v}.apk`;
 const mirrorUrl = v => `${MIRROR}/PlainPad-v${v}.apk`;
 const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ==================== 版本号比较 ====================
 function parseVer(v){
   const s = String(v || '').trim().replace(/^v/i, '');
   const m = s.match(/^(\d+(?:\.\d+)*)(?:-([a-z0-9.]+))?$/i);
@@ -372,6 +369,8 @@ function compareVer(a, b){
   if(!A.pre && B.pre) return 1;
   return 0;
 }
+
+// ==================== UI 渲染函数 ====================
 const shaBlock = (sha, small) => {
   if(!sha) return `<div class="sha-missing">此版本发布页暂未提供 SHA-256 校验值</div>`;
   return `
@@ -383,77 +382,88 @@ const shaBlock = (sha, small) => {
     </div>
   </details>`;
 };
+
 function renderLatest(){
-  const dup = versions.slice(1).find(it => it.sha && it.sha === latest.sha && it.v !== latest.v);
+  const dup = versions.slice(1).find(it => it.sha256 && it.sha256 === latest.sha256 && it.version !== latest.version);
+  $('#verMeta').textContent = `最新 v${latest.version}`;
   $('#latest').innerHTML = `
     <div class="dl-card">
       <div class="dl-top">
         <div class="dl-info">
-          <span class="badge ${latest.pre ? 'badge-pre' : ''}">${latest.pre ? '预览版' : '最新版本'}</span>
-          <h2>v${latest.v}</h2>
+          <span class="badge ${latest.is_pre ? 'badge-pre' : ''}">${latest.is_pre ? '预览版' : '最新版本'}</span>
+          <h2>v${latest.version}</h2>
           <p class="dl-note">${latest.note || '包含最新的功能与修复'}</p>
         </div>
         <div class="dl-actions">
-          ${latest.mirror ? `<a class="btn btn-mirror" data-route="mirror" href="${mirrorUrl(latest.v)}" target="_blank" rel="noopener">镜像下载</a>` : ''}
-          ${latest.lanzou ? `<a class="btn btn-lanzou" href="${latest.lanzou}" target="_blank" rel="noopener">蓝奏云</a>` : ''}
+          ${latest.has_mirror ? `<a class="btn btn-mirror" data-route="mirror" href="${mirrorUrl(latest.version)}" target="_blank" rel="noopener">镜像下载</a>` : ''}
+          ${latest.lanzou_url ? `<a class="btn btn-lanzou" href="${latest.lanzou_url}" target="_blank" rel="noopener">蓝奏云</a>` : ''}
         </div>
       </div>
       <div class="dl-foot">
-        <a class="link-muted" href="${ghUrl(latest.v)}" target="_blank" rel="noopener">GitHub 直链</a>
+        <a class="link-muted" href="${ghUrl(latest.version)}" target="_blank" rel="noopener">GitHub 直链</a>
         <button class="link-muted" id="speedBtn" type="button">测试线路延迟</button>
         <span class="test-result" id="testResult"></span>
       </div>
-      ${shaBlock(latest.sha, false)}
-      ${dup ? `<div class="sha-warn">此 SHA-256 与 v${dup.v} 相同，请核对 GitHub Release 页面后再下载。</div>` : ''}
+      ${shaBlock(latest.sha256, false)}
+      ${dup ? `<div class="sha-warn">此 SHA-256 与 v${dup.version} 相同，请核对 GitHub Release 页面后再下载。</div>` : ''}
     </div>`;
 }
+
 function normalizeQuery(raw){ return String(raw || '').trim().toLowerCase().replace(/^v/, ''); }
+
 function matchesVersion(item, q){
   if(!q) return true;
-  const v = item.v.toLowerCase();
+  const v = item.version.toLowerCase();
   const vPlain = v.replace(/\./g, '');
   const qPlain = q.replace(/\./g, '');
-  const tagText = [item.pre ? 'pre 预发布 预览版' : '', item.mirror ? '镜像' : '无镜像'].join(' ').toLowerCase();
+  const tagText = [item.is_pre ? 'pre 预发布 预览版' : '', item.has_mirror ? '镜像' : '无镜像'].join(' ').toLowerCase();
   return v.includes(q) || (qPlain !== '' && vPlain.includes(qPlain)) || tagText.includes(q);
 }
-let showAll = false, query = '';
+
 function renderList(){
   const q = normalizeQuery(query);
   const searching = q !== '';
   const matched = versions.filter(it => matchesVersion(it, q));
   const items = searching ? matched : (showAll ? matched : matched.slice(0, 6));
   const moreBtn = $('#moreBtn');
+
   if(items.length === 0){
     $('#list').innerHTML = `<li class="empty">没有找到匹配 <b>「${escapeHtml(query.trim())}」</b> 的版本</li>`;
     moreBtn.style.display = 'none';
     return;
   }
+
   $('#list').innerHTML = items.map(item => {
-    const isLatest = item.v === latest.v;
+    const isLatest = item.version === latest.version;
     const tags = [
       isLatest ? '<span class="tag tag-latest">最新</span>' : '',
-      item.pre ? '<span class="tag tag-pre">预发布</span>' : '',
-      (!item.mirror && !isLatest) ? '<span class="tag tag-none">无镜像</span>' : ''
+      item.is_pre ? '<span class="tag tag-pre">预发布</span>' : '',
+      (!item.has_mirror && !isLatest) ? '<span class="tag tag-none">无镜像</span>' : ''
     ].join('');
+
     const btns = [
-      item.mirror ? `<a class="mini mini-mirror" href="${mirrorUrl(item.v)}" target="_blank" rel="noopener">镜像</a>` : '',
-      item.lanzou ? `<a class="mini mini-lanzou" href="${item.lanzou}" target="_blank" rel="noopener">蓝奏云</a>` : '',
-      `<a class="mini mini-gh" href="${ghUrl(item.v)}" target="_blank" rel="noopener">GitHub</a>`
+      item.has_mirror ? `<a class="mini mini-mirror" href="${mirrorUrl(item.version)}" target="_blank" rel="noopener">镜像</a>` : '',
+      item.lanzou_url ? `<a class="mini mini-lanzou" href="${item.lanzou_url}" target="_blank" rel="noopener">蓝奏云</a>` : '',
+      `<a class="mini mini-gh" href="${ghUrl(item.version)}" target="_blank" rel="noopener">GitHub</a>`
     ].join('');
+
     return `<li class="ver-item">
       <div class="ver-head">
-        <div class="ver-title"><span class="ver-num">v${item.v}</span>${tags}</div>
+        <div class="ver-title"><span class="ver-num">v${item.version}</span>${tags}</div>
         <div class="ver-btns">${btns}</div>
       </div>
-      ${shaBlock(item.sha, true)}
+      ${shaBlock(item.sha256, true)}
     </li>`;
   }).join('');
+
   if(searching){ moreBtn.style.display = 'none'; }
   else {
     moreBtn.style.display = versions.length > 6 ? '' : 'none';
     moreBtn.textContent = showAll ? '收起' : `展开全部 ${versions.length} 个版本`;
   }
 }
+
+// ==================== 底部固定条 ====================
 function setDock(url, label, type){
   const a = $('#dockDl');
   a.href = url;
@@ -461,19 +471,32 @@ function setDock(url, label, type){
   a.classList.add(type === 'lanzou' ? 'btn-lanzou' : 'btn-mirror');
   $('#dockSub').textContent = label;
 }
-const SPEED_KEY = 'ppad_speed_v5';
+
+function updateDock(){
+  $('#dockTitle').textContent = `PlainPad v${latest.version}`;
+  if(latest.has_mirror){
+    setDock(mirrorUrl(latest.version), '推荐：官网镜像', 'mirror');
+  }else if(latest.lanzou_url){
+    setDock(latest.lanzou_url, '推荐：蓝奏云', 'lanzou');
+  }else{
+    setDock(ghUrl(latest.version), 'GitHub 直链', 'mirror');
+  }
+}
+
+// ==================== 测速逻辑 ====================
+const SPEED_KEY = 'ppad_speed_v7';
 const SPEED_TTL = 10 * 60 * 1000;
 function readSpeedCache(){
   try{
     const raw = sessionStorage.getItem(SPEED_KEY);
     if(!raw) return null;
     const d = JSON.parse(raw);
-    if(d.v !== latest.v || Date.now() - d.ts > SPEED_TTL) return null;
+    if(d.v !== latest.version || Date.now() - d.ts > SPEED_TTL) return null;
     return d.res || null;
   }catch(e){ return null; }
 }
 function writeSpeedCache(res){
-  try{ sessionStorage.setItem(SPEED_KEY, JSON.stringify({ v: latest.v, ts: Date.now(), res })); }catch(e){}
+  try{ sessionStorage.setItem(SPEED_KEY, JSON.stringify({ v: latest.version, ts: Date.now(), res })); }catch(e){}
 }
 function probe(url, timeout){
   const ctrl = new AbortController();
@@ -501,17 +524,17 @@ function showResults(res){
   const mb = document.querySelector('[data-route="mirror"]');
   if(mb) mb.classList.toggle('fast', best && best.key === 'mirror');
   if(best && best.key === 'mirror'){
-    setDock(mirrorUrl(latest.v), `最快：镜像 ${best.ms} ms`, 'mirror');
+    setDock(mirrorUrl(latest.version), `最快：镜像 ${best.ms} ms`, 'mirror');
   }else if(best && best.key === 'github'){
-    setDock(ghUrl(latest.v), `最快：GitHub ${best.ms} ms`, 'github');
+    setDock(ghUrl(latest.version), `最快：GitHub ${best.ms} ms`, 'github');
   }
 }
 async function runTest(){
   const btn = $('#speedBtn');
   if(!btn || btn.disabled) return;
   const targets = [];
-  if(latest.mirror) targets.push({ key:'mirror', url: mirrorUrl(latest.v) });
-  targets.push({ key:'github', url: ghUrl(latest.v) });
+  if(latest.has_mirror) targets.push({ key:'mirror', url: mirrorUrl(latest.version) });
+  targets.push({ key:'github', url: ghUrl(latest.version) });
   btn.disabled = true;
   btn.textContent = '测试中…';
   const el = $('#testResult');
@@ -527,7 +550,9 @@ async function runTest(){
   const ok = res.filter(r => r.ok).sort((a,b) => a.ms - b.ms);
   toast(ok.length ? `最低延迟：${ok[0].key === 'mirror' ? '镜像' : 'GitHub'} · ${ok[0].ms} ms` : '线路均不可达，可改用蓝奏云');
 }
-const UPD_KEY = 'ppad_upd_v3';
+
+// ==================== 检查 GitHub 更新 ====================
+const UPD_KEY = 'ppad_upd_v5';
 const UPD_TTL = 10 * 60 * 1000;
 async function checkUpdate(){
   try{
@@ -535,8 +560,8 @@ async function checkUpdate(){
     if(raw){
       const c = JSON.parse(raw);
       if(Date.now() - c.ts < UPD_TTL){
-        if(c.tag && compareVer(c.tag, latest.v) > 0){
-          $('#verMeta').textContent = `最新 v${latest.v} · 有新版 v${c.tag}`;
+        if(c.tag && compareVer(c.tag, latest.version) > 0){
+          $('#verMeta').textContent = `最新 v${latest.version} · 有新版 v${c.tag}`;
         }
         return;
       }
@@ -549,11 +574,13 @@ async function checkUpdate(){
     const tag = String(data.tag_name || '').replace(/^v/i, '');
     if(!tag) return;
     try{ sessionStorage.setItem(UPD_KEY, JSON.stringify({ ts:Date.now(), tag, url:data.html_url })); }catch(e){}
-    if(compareVer(tag, latest.v) > 0){
-      $('#verMeta').textContent = `最新 v${latest.v} · 有新版 v${tag}`;
+    if(compareVer(tag, latest.version) > 0){
+      $('#verMeta').textContent = `最新 v${latest.version} · 有新版 v${tag}`;
     }
   }catch(e){}
 }
+
+// ==================== 复制 & Toast ====================
 let toastTimer;
 function toast(msg){
   const el = $('#toast');
@@ -578,33 +605,63 @@ document.addEventListener('click', e => {
   if(!btn) return;
   copyText(btn.dataset.copy).then(() => toast('已复制 ✓')).catch(() => toast('复制失败，请手动选中'));
 });
-(function init(){
-  $('#dockTitle').textContent = `PlainPad v${latest.v}`;
-  if(latest.mirror){ setDock(mirrorUrl(latest.v), '推荐：官网镜像', 'mirror'); }
-  else if(latest.lanzou){ setDock(latest.lanzou, '推荐：蓝奏云', 'lanzou'); }
-  else { setDock(ghUrl(latest.v), 'GitHub 直链', 'mirror'); }
-  renderLatest();
-  renderList();
-  $('#speedBtn').addEventListener('click', runTest);
-  $('#moreBtn').addEventListener('click', () => { showAll = !showAll; renderList(); });
-  const input = $('#verSearch');
-  const clearBtn = $('#searchClear');
-  input.addEventListener('input', () => { query = input.value; clearBtn.hidden = !query; renderList(); });
-  clearBtn.addEventListener('click', () => {
-    input.value = ''; query = ''; clearBtn.hidden = true; input.focus(); renderList();
-  });
-  input.addEventListener('keydown', e => {
-    if(e.key === 'Escape' && input.value){ e.preventDefault(); clearBtn.click(); }
-  });
-  document.addEventListener('keydown', e => {
-    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
-      e.preventDefault(); input.focus(); input.select();
+
+// ==================== 页面初始化 ====================
+async function initApp(){
+  const listEl = $('#list');
+  listEl.innerHTML = `<li class="empty">正在加载版本列表...</li>`;
+
+  try{
+    // 从 Cloudflare D1 拉取数据
+    const res = await fetch(`${API_BASE}/api/releases`);
+    if(!res.ok) throw new Error('网络请求失败');
+    versions = await res.json();
+
+    if(versions.length === 0){
+      listEl.innerHTML = `<li class="empty">暂无版本记录</li>`;
+      return;
     }
-  });
-  const cached = readSpeedCache();
-  if(cached){ showResults(cached); const b = $('#speedBtn'); if(b) b.textContent = '重新测试'; }
-  try{ checkUpdate(); }catch(e){}
-})();
+
+    // 取第一条记录作为最新版
+    latest = versions[0];
+
+    renderLatest();
+    renderList();
+    updateDock();
+
+    $('#speedBtn').addEventListener('click', runTest);
+    $('#moreBtn').addEventListener('click', () => { showAll = !showAll; renderList(); });
+
+    const input = $('#verSearch');
+    const clearBtn = $('#searchClear');
+    input.addEventListener('input', () => { query = input.value; clearBtn.hidden = !query; renderList(); });
+    clearBtn.addEventListener('click', () => {
+      input.value = ''; query = ''; clearBtn.hidden = true; input.focus(); renderList();
+    });
+
+    input.addEventListener('keydown', e => {
+      if(e.key === 'Escape' && input.value){ e.preventDefault(); clearBtn.click(); }
+    });
+    document.addEventListener('keydown', e => {
+      if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+        e.preventDefault(); input.focus(); input.select();
+      }
+    });
+
+    const cached = readSpeedCache();
+    if(cached){
+      showResults(cached);
+      const b = $('#speedBtn');
+      if(b) b.textContent = '重新测试';
+    }
+
+    checkUpdate();
+  }catch(err){
+    listEl.innerHTML = `<li class="empty">加载失败：${err.message}</li>`;
+  }
+}
+
+window.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
 </html>
