@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f6f8fc">
 <title>PlainPad 下载</title>
-<meta name="description" content="PlainPad 官方下载页。版本更新请以 GitHub Releases 为准。">
+<meta name="description" content="PlainPad 官方下载页。重构大文件渲染，支持沉浸阅读、更多编码与密钥加密。版本更新请以 GitHub Releases 为准。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Cpath fill='%236750A4' d='M20,0 L88,0 A20,20 0 0 1 108,20 L108,88 A20,20 0 0 1 88,108 L20,108 A20,20 0 0 1 0,88 L0,20 A20,20 0 0 1 20,0 z'/%3E%3Cpath fill='%23fff' d='M32,26 L66,26 L82,42 L82,82 A3,3 0 0 1 79,85 L32,85 A3,3 0 0 1 29,82 L29,29 A3,3 0 0 1 32,26 z'/%3E%3Cpath fill='%23E0E0E0' d='M66,26 L66,42 L82,42 z'/%3E%3Cpath fill='%236750A4' d='M40,52 L44,52 L44,74 L40,74 z M50,52 L74,52 L74,56 L50,56 z M50,60 L74,60 L74,64 L50,64 z M50,68 L64,68 L64,72 L50,72 z'/%3E%3C/svg%3E">
 <style>
   :root{
@@ -13,6 +13,7 @@
     --text:#16213a; --muted:#6b7891; --faint:#9aa7bd;
     --mirror:#0284c7; --mirror-2:#06b6d4;
     --lanzou:#ea580c; --lanzou-2:#f59e0b;
+    --pages:#3b6cf0; --pages-2:#7c4dff;
     --green:#0e8a63; --amber:#b45309;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -58,6 +59,7 @@
   .notice strong{color:#3d4a63;font-weight:600}
   .notice a{color:var(--mirror);text-decoration:none;border-bottom:1px dashed rgba(2,132,199,.45);padding-bottom:1px;transition:border-color .15s}
   .notice a:hover{border-bottom-style:solid;border-color:var(--mirror)}
+  
   .dl-card{
     margin-top:12px;background:var(--card);border:1px solid var(--border);
     border-radius:18px;padding:22px;box-shadow:0 10px 30px -24px rgba(16,24,40,.3);
@@ -72,18 +74,21 @@
   .badge-pre{color:#b45309;background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.28)}
   .dl-info h2{font-size:26px;font-weight:700;letter-spacing:-.4px;margin-top:6px}
   .dl-note{font-size:13px;color:var(--muted);margin-top:2px}
-  .dl-actions{display:flex;gap:10px;flex-wrap:wrap}
+  
+  .dl-actions{display:flex;gap:8px;flex-wrap:wrap}
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:6px;
-    padding:11px 22px;border-radius:11px;font-size:14.5px;font-weight:600;
+    padding:11px 20px;border-radius:11px;font-size:14px;font-weight:600;
     text-decoration:none;border:1px solid transparent;
     transition:filter .18s,box-shadow .18s,transform .18s;
     white-space:nowrap;cursor:pointer;touch-action:manipulation;
   }
+  .btn-pages{color:#fff;background:linear-gradient(135deg,var(--pages),var(--pages-2));box-shadow:0 10px 22px -12px rgba(59,108,240,.8)}
   .btn-mirror{color:#fff;background:linear-gradient(135deg,var(--mirror),var(--mirror-2));box-shadow:0 10px 22px -12px rgba(2,132,199,.8)}
   .btn-lanzou{color:#fff;background:linear-gradient(135deg,var(--lanzou),var(--lanzou-2));box-shadow:0 10px 22px -12px rgba(234,88,12,.75)}
   .btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
   .btn.fast{box-shadow:0 0 0 2px var(--green),0 10px 22px -12px rgba(14,138,99,.6)}
+  
   .dl-foot{
     display:flex;align-items:center;gap:14px;flex-wrap:wrap;
     margin-top:16px;padding-top:14px;border-top:1px dashed var(--border);font-size:13px;
@@ -97,6 +102,7 @@
   .link-muted:disabled{opacity:.6;cursor:progress}
   .test-result{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
   .test-result b{color:var(--green);font-weight:600}
+  
   .sha-wrap{margin-top:10px}
   .sha-wrap summary{list-style:none;cursor:pointer;font-size:12px;color:var(--faint);display:inline-flex;align-items:center;gap:5px;user-select:none}
   .sha-wrap summary::-webkit-details-marker{display:none}
@@ -125,10 +131,12 @@
     cursor:pointer;flex:none;transition:.15s;
   }
   .copy-btn:hover{color:var(--mirror);border-color:var(--mirror)}
+  
   .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:36px 0 12px}
   .sec-head h2{font-size:16px;font-weight:650}
   .pw{font-size:12.5px;color:var(--faint);display:inline-flex;align-items:center;gap:6px}
   .pw b{color:var(--muted);font-family:ui-monospace,monospace;letter-spacing:.5px}
+  
   .search-box{
     position:relative;display:flex;align-items:center;margin-bottom:10px;
     background:#fff;border:1px solid var(--border);border-radius:10px;
@@ -149,6 +157,7 @@
     padding:0;transition:background .15s,color .15s;
   }
   .search-clear:hover{background:#e2e7f0;color:var(--text)}
+  
   .ver-list{list-style:none;display:grid;gap:8px}
   .ver-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
   .ver-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -158,6 +167,7 @@
   .tag-latest{background:rgba(16,185,129,.1);color:#067a55}
   .tag-pre{background:rgba(217,119,6,.09);color:var(--amber)}
   .tag-none{background:#f1f4f9;color:var(--faint)}
+  
   .ver-btns{display:flex;gap:6px;flex-wrap:wrap}
   .mini{
     font-size:12px;padding:5px 11px;border-radius:7px;
@@ -165,10 +175,12 @@
     background:#fff;color:var(--muted);transition:.15s;
     white-space:nowrap;display:inline-flex;align-items:center;
   }
+  .mini-pages{color:var(--pages);border-color:rgba(59,108,240,.35);background:rgba(59,108,240,.05)}
   .mini-mirror{color:var(--mirror);border-color:rgba(2,132,199,.35);background:rgba(2,132,199,.05)}
   .mini-lanzou{color:var(--lanzou);border-color:rgba(234,88,12,.32);background:rgba(234,88,12,.05)}
   .mini:hover{filter:brightness(.97);border-color:currentColor}
   .mini-gh:hover{color:var(--text);border-color:var(--border-2)}
+  
   .ver-sha{margin-top:6px}
   .ver-sha summary{list-style:none;cursor:pointer;font-size:11px;color:var(--faint);display:inline-flex;align-items:center;gap:4px;user-select:none}
   .ver-sha summary::-webkit-details-marker{display:none}
@@ -176,17 +188,20 @@
   .ver-sha[open] summary::before{transform:rotate(90deg)}
   .ver-sha summary:hover{color:var(--muted)}
   .ver-sha .sha-body{margin-top:6px;padding:8px 10px}
+  
   .empty{
     padding:26px 16px;text-align:center;color:var(--faint);font-size:13.5px;
     background:var(--card);border:1px dashed var(--border-2);border-radius:12px;list-style:none;
   }
   .empty b{color:var(--muted);font-weight:600}
+  
   .more{
     display:block;width:100%;margin-top:10px;padding:10px;border-radius:10px;
     border:1px dashed var(--border-2);background:transparent;
     color:var(--muted);font-size:13px;cursor:pointer;transition:.15s;
   }
   .more:hover{background:#fff;border-style:solid;color:var(--text)}
+  
   footer{
     margin-top:40px;padding-top:18px;border-top:1px solid var(--border);
     text-align:center;font-size:12.5px;color:var(--faint);
@@ -196,6 +211,7 @@
   footer a:hover{text-decoration:underline;color:var(--text)}
   footer .foot-note{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);font-size:12px;line-height:1.6}
   footer .foot-note b{color:var(--muted);font-weight:600}
+  
   .dock{display:none}
   #toast{
     position:fixed;left:50%;bottom:28px;transform:translate(-50%,14px);
@@ -205,9 +221,10 @@
     max-width:calc(100vw - 32px);text-align:center;
   }
   #toast.show{opacity:1;transform:translate(-50%,0)}
+  
   @media (pointer:coarse){
-    .btn{min-height:46px}
-    .mini{min-height:34px;padding:6px 12px}
+    .btn{min-height:44px}
+    .mini{min-height:32px;padding:5px 10px}
     .copy-btn{min-height:30px}
     .back-link{min-height:36px;margin-top:10px}
   }
@@ -221,26 +238,33 @@
     .meta{font-size:11px;margin-top:8px;gap:4px}
     .notice{font-size:12px;padding:9px 11px;gap:8px;line-height:1.6}
     .notice svg{width:14px;height:14px;margin-top:2px}
+    
     .dl-card{padding:16px;border-radius:16px}
     .dl-top{flex-direction:column;align-items:stretch;gap:14px}
     .dl-info h2{font-size:22px}
     .dl-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .btn{padding:11px 12px;font-size:14px}
+    .btn{padding:10px 12px;font-size:14px}
+    .btn:last-child:nth-child(odd) { grid-column: span 2; }
     .dl-foot{gap:10px;font-size:12px}
     .test-result{font-size:11.5px;width:100%}
+    
     .sec-head{margin:30px 0 10px}
     .sec-head h2{font-size:15px}
     .pw{font-size:11.5px}
+    
     .search-box{padding:0 10px}
     .search-box input{font-size:16px;padding:10px 6px}
     .search-box input::placeholder{font-size:13.5px}
+    
     .ver-item{padding:11px 12px}
     .ver-num{font-size:14px}
     .ver-head{flex-direction:column;align-items:flex-start;gap:8px}
-    .ver-btns{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr))}
+    .ver-btns{width:100%;display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
     .mini{justify-content:center}
+    
     .sha-body code{font-size:10px}
     #toast{bottom:calc(82px + env(safe-area-inset-bottom))}
+    
     .dock{
       display:flex;align-items:center;gap:12px;
       position:fixed;left:0;right:0;bottom:0;
@@ -251,11 +275,12 @@
     }
     .dock-info{flex:1;min-width:0}
     .dock-title{display:block;font-size:13.5px;font-weight:650;line-height:1.35}
-    .dock-sub{display:block;font-size:11px;color:var(--mirror);line-height:1.35;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dock-sub{display:block;font-size:11px;color:var(--pages);line-height:1.35;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .dock .btn{flex:none;padding:10px 20px;font-size:14px;border-radius:10px;min-height:auto}
   }
   @media (max-width:360px){
     .dl-actions{grid-template-columns:1fr}
+    .btn:last-child:nth-child(odd) { grid-column: auto; }
   }
 </style>
 </head>
@@ -326,21 +351,19 @@
 <div class="dock" id="dock">
   <div class="dock-info">
     <span class="dock-title" id="dockTitle">PlainPad</span>
-    <span class="dock-sub" id="dockSub">推荐：官网镜像</span>
+    <span class="dock-sub" id="dockSub">推荐：Pages 镜像</span>
   </div>
-  <a class="btn btn-mirror" id="dockDl" href="#" target="_blank" rel="noopener">下载</a>
+  <a class="btn btn-pages" id="dockDl" href="#" target="_blank" rel="noopener">下载</a>
 </div>
 <div id="toast"></div>
 <script>
 // ==================== 配置 ====================
-// 这里填入你的 Cloudflare Worker 绑定的自定义域名
 const API_BASE = 'https://api2.sunwe.dpdns.org';
-
 const REPO_DL = 'https://github.com/Gaoxdwqxql/PlainPad/releases/download';
 const MIRROR  = 'https://sunwe.dpdns.org/download/file';
+const PAGES   = 'https://plainpad-files.pages.dev';
 const API_LATEST = 'https://api.github.com/repos/Gaoxdwqxql/PlainPad/releases/latest';
 
-// 全局状态
 let versions = [];
 let latest = null;
 let showAll = false;
@@ -349,9 +372,10 @@ let query = '';
 const $ = s => document.querySelector(s);
 const ghUrl     = v => `${REPO_DL}/v${v}/PlainPad-v${v}.apk`;
 const mirrorUrl = v => `${MIRROR}/PlainPad-v${v}.apk`;
+const pagesUrl  = v => `${PAGES}/PlainPad-v${v}.apk`;
+
 const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-// ==================== 版本号比较 ====================
 function parseVer(v){
   const s = String(v || '').trim().replace(/^v/i, '');
   const m = s.match(/^(\d+(?:\.\d+)*)(?:-([a-z0-9.]+))?$/i);
@@ -370,7 +394,6 @@ function compareVer(a, b){
   return 0;
 }
 
-// ==================== UI 渲染函数 ====================
 const shaBlock = (sha, small) => {
   if(!sha) return `<div class="sha-missing">此版本发布页暂未提供 SHA-256 校验值</div>`;
   return `
@@ -386,6 +409,7 @@ const shaBlock = (sha, small) => {
 function renderLatest(){
   const dup = versions.slice(1).find(it => it.sha256 && it.sha256 === latest.sha256 && it.version !== latest.version);
   $('#verMeta').textContent = `最新 v${latest.version}`;
+  
   $('#latest').innerHTML = `
     <div class="dl-card">
       <div class="dl-top">
@@ -395,7 +419,8 @@ function renderLatest(){
           <p class="dl-note">${latest.note || '包含最新的功能与修复'}</p>
         </div>
         <div class="dl-actions">
-          ${latest.has_mirror ? `<a class="btn btn-mirror" data-route="mirror" href="${mirrorUrl(latest.version)}" target="_blank" rel="noopener">镜像下载</a>` : ''}
+          ${latest.has_pages ? `<a class="btn btn-pages" data-route="pages" href="${pagesUrl(latest.version)}" target="_blank" rel="noopener">Pages 镜像</a>` : ''}
+          ${latest.has_mirror ? `<a class="btn btn-mirror" data-route="mirror" href="${mirrorUrl(latest.version)}" target="_blank" rel="noopener">官方镜像</a>` : ''}
           ${latest.lanzou_url ? `<a class="btn btn-lanzou" href="${latest.lanzou_url}" target="_blank" rel="noopener">蓝奏云</a>` : ''}
         </div>
       </div>
@@ -442,6 +467,7 @@ function renderList(){
     ].join('');
 
     const btns = [
+      item.has_pages ? `<a class="mini mini-pages" href="${pagesUrl(item.version)}" target="_blank" rel="noopener">Pages</a>` : '',
       item.has_mirror ? `<a class="mini mini-mirror" href="${mirrorUrl(item.version)}" target="_blank" rel="noopener">镜像</a>` : '',
       item.lanzou_url ? `<a class="mini mini-lanzou" href="${item.lanzou_url}" target="_blank" rel="noopener">蓝奏云</a>` : '',
       `<a class="mini mini-gh" href="${ghUrl(item.version)}" target="_blank" rel="noopener">GitHub</a>`
@@ -463,28 +489,28 @@ function renderList(){
   }
 }
 
-// ==================== 底部固定条 ====================
 function setDock(url, label, type){
   const a = $('#dockDl');
   a.href = url;
-  a.classList.remove('btn-mirror','btn-lanzou');
-  a.classList.add(type === 'lanzou' ? 'btn-lanzou' : 'btn-mirror');
+  a.classList.remove('btn-pages','btn-mirror','btn-lanzou');
+  a.classList.add(type === 'lanzou' ? 'btn-lanzou' : type === 'mirror' ? 'btn-mirror' : 'btn-pages');
   $('#dockSub').textContent = label;
 }
 
 function updateDock(){
   $('#dockTitle').textContent = `PlainPad v${latest.version}`;
-  if(latest.has_mirror){
-    setDock(mirrorUrl(latest.version), '推荐：官网镜像', 'mirror');
-  }else if(latest.lanzou_url){
+  if (latest.has_pages) {
+    setDock(pagesUrl(latest.version), '推荐：Pages 镜像', 'pages');
+  } else if (latest.has_mirror) {
+    setDock(mirrorUrl(latest.version), '推荐：官方镜像', 'mirror');
+  } else if (latest.lanzou_url) {
     setDock(latest.lanzou_url, '推荐：蓝奏云', 'lanzou');
-  }else{
-    setDock(ghUrl(latest.version), 'GitHub 直链', 'mirror');
+  } else {
+    setDock(ghUrl(latest.version), 'GitHub 直链', 'pages');
   }
 }
 
-// ==================== 测速逻辑 ====================
-const SPEED_KEY = 'ppad_speed_v7';
+const SPEED_KEY = 'ppad_speed_v8';
 const SPEED_TTL = 10 * 60 * 1000;
 function readSpeedCache(){
   try{
@@ -509,49 +535,64 @@ function probe(url, timeout){
 }
 function showResults(res){
   const parts = [];
+  const p = res.find(r => r.key === 'pages');
+  if(p) parts.push(p.ok ? `P ${p.ms}ms` : 'P 失败');
   const m = res.find(r => r.key === 'mirror');
-  if(m) parts.push(m.ok ? `镜像 ${m.ms} ms` : '镜像不可达');
+  if(m) parts.push(m.ok ? `M ${m.ms}ms` : 'M 失败');
   const g = res.find(r => r.key === 'github');
-  if(g) parts.push(g.ok ? `GitHub ${g.ms} ms` : 'GitHub 不可达');
+  if(g) parts.push(g.ok ? `G ${g.ms}ms` : 'G 失败');
+  
   const okList = res.filter(r => r.ok).sort((a,b) => a.ms - b.ms);
   const best = okList[0] || null;
+  
   const el = $('#testResult');
   if(el){
     el.innerHTML = best
-      ? `<b>${best.key === 'mirror' ? '镜像' : 'GitHub'}最快</b> · ${parts.join(' · ')}`
+      ? `<b>${best.name}最快</b> · ${parts.join(' · ')}`
       : parts.join(' · ');
   }
-  const mb = document.querySelector('[data-route="mirror"]');
-  if(mb) mb.classList.toggle('fast', best && best.key === 'mirror');
-  if(best && best.key === 'mirror'){
-    setDock(mirrorUrl(latest.version), `最快：镜像 ${best.ms} ms`, 'mirror');
+  
+  ['pages', 'mirror'].forEach(k => {
+    const btn = document.querySelector(`[data-route="${k}"]`);
+    if(btn) btn.classList.toggle('fast', best && best.key === k);
+  });
+  
+  if(best && best.key === 'pages'){
+    setDock(pagesUrl(latest.version), `最快：Pages ${best.ms} ms`, 'pages');
+  }else if(best && best.key === 'mirror'){
+    setDock(mirrorUrl(latest.version), `最快：官方镜像 ${best.ms} ms`, 'mirror');
   }else if(best && best.key === 'github'){
-    setDock(ghUrl(latest.version), `最快：GitHub ${best.ms} ms`, 'github');
+    setDock(ghUrl(latest.version), `最快：GitHub ${best.ms} ms`, 'pages');
   }
 }
 async function runTest(){
   const btn = $('#speedBtn');
   if(!btn || btn.disabled) return;
+  
   const targets = [];
-  if(latest.has_mirror) targets.push({ key:'mirror', url: mirrorUrl(latest.version) });
-  targets.push({ key:'github', url: ghUrl(latest.version) });
+  if(latest.has_pages) targets.push({ key:'pages', name:'Pages', url: pagesUrl(latest.version) });
+  if(latest.has_mirror) targets.push({ key:'mirror', name:'官方镜像', url: mirrorUrl(latest.version) });
+  targets.push({ key:'github', name:'GitHub', url: ghUrl(latest.version) });
+  
   btn.disabled = true;
   btn.textContent = '测试中…';
   const el = $('#testResult');
   if(el) el.textContent = '';
+  
   const res = await Promise.all(targets.map(async t => {
     const r = await probe(t.url, 8000);
-    return { key:t.key, ok:r.ok, ms:r.ms };
+    return { key:t.key, name:t.name, ok:r.ok, ms:r.ms };
   }));
+  
   btn.disabled = false;
   btn.textContent = '重新测试';
   showResults(res);
   writeSpeedCache(res);
+  
   const ok = res.filter(r => r.ok).sort((a,b) => a.ms - b.ms);
-  toast(ok.length ? `最低延迟：${ok[0].key === 'mirror' ? '镜像' : 'GitHub'} · ${ok[0].ms} ms` : '线路均不可达，可改用蓝奏云');
+  toast(ok.length ? `最低延迟：${ok[0].name} · ${ok[0].ms} ms` : '线路均不可达，请稍后重试');
 }
 
-// ==================== 检查 GitHub 更新 ====================
 const UPD_KEY = 'ppad_upd_v5';
 const UPD_TTL = 10 * 60 * 1000;
 async function checkUpdate(){
@@ -580,7 +621,6 @@ async function checkUpdate(){
   }catch(e){}
 }
 
-// ==================== 复制 & Toast ====================
 let toastTimer;
 function toast(msg){
   const el = $('#toast');
@@ -606,13 +646,11 @@ document.addEventListener('click', e => {
   copyText(btn.dataset.copy).then(() => toast('已复制 ✓')).catch(() => toast('复制失败，请手动选中'));
 });
 
-// ==================== 页面初始化 ====================
 async function initApp(){
   const listEl = $('#list');
   listEl.innerHTML = `<li class="empty">正在加载版本列表...</li>`;
 
   try{
-    // 从 Cloudflare D1 拉取数据
     const res = await fetch(`${API_BASE}/api/releases`);
     if(!res.ok) throw new Error('网络请求失败');
     versions = await res.json();
@@ -622,7 +660,6 @@ async function initApp(){
       return;
     }
 
-    // 取第一条记录作为最新版
     latest = versions[0];
 
     renderLatest();
