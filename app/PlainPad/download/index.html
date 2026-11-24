@@ -351,7 +351,7 @@
 <div class="dock" id="dock">
   <div class="dock-info">
     <span class="dock-title" id="dockTitle">PlainPad</span>
-    <span class="dock-sub" id="dockSub">推荐：Pages 镜像</span>
+    <span class="dock-sub" id="dockSub">推荐：官方镜像 1</span>
   </div>
   <a class="btn btn-pages" id="dockDl" href="#" target="_blank" rel="noopener">下载</a>
 </div>
@@ -410,6 +410,7 @@ function renderLatest(){
   const dup = versions.slice(1).find(it => it.sha256 && it.sha256 === latest.sha256 && it.version !== latest.version);
   $('#verMeta').textContent = `最新 v${latest.version}`;
   
+  // 将 Pages 和 Sunwe 统一命名为“官方镜像 1/2”
   $('#latest').innerHTML = `
     <div class="dl-card">
       <div class="dl-top">
@@ -419,8 +420,8 @@ function renderLatest(){
           <p class="dl-note">${latest.note || '包含最新的功能与修复'}</p>
         </div>
         <div class="dl-actions">
-          ${latest.has_pages ? `<a class="btn btn-pages" data-route="pages" href="${pagesUrl(latest.version)}" target="_blank" rel="noopener">Pages 镜像</a>` : ''}
-          ${latest.has_mirror ? `<a class="btn btn-mirror" data-route="mirror" href="${mirrorUrl(latest.version)}" target="_blank" rel="noopener">官方镜像</a>` : ''}
+          ${latest.has_pages ? `<a class="btn btn-pages" data-route="pages" href="${pagesUrl(latest.version)}" target="_blank" rel="noopener">官方镜像 1</a>` : ''}
+          ${latest.has_mirror ? `<a class="btn btn-mirror" data-route="mirror" href="${mirrorUrl(latest.version)}" target="_blank" rel="noopener">官方镜像 2</a>` : ''}
           ${latest.lanzou_url ? `<a class="btn btn-lanzou" href="${latest.lanzou_url}" target="_blank" rel="noopener">蓝奏云</a>` : ''}
         </div>
       </div>
@@ -458,6 +459,7 @@ function renderList(){
     return;
   }
 
+  // 历史版本按钮文案缩短为 镜像1 / 镜像2，防止挤占空间
   $('#list').innerHTML = items.map(item => {
     const isLatest = item.version === latest.version;
     const tags = [
@@ -467,8 +469,8 @@ function renderList(){
     ].join('');
 
     const btns = [
-      item.has_pages ? `<a class="mini mini-pages" href="${pagesUrl(item.version)}" target="_blank" rel="noopener">Pages</a>` : '',
-      item.has_mirror ? `<a class="mini mini-mirror" href="${mirrorUrl(item.version)}" target="_blank" rel="noopener">镜像</a>` : '',
+      item.has_pages ? `<a class="mini mini-pages" href="${pagesUrl(item.version)}" target="_blank" rel="noopener">镜像 1</a>` : '',
+      item.has_mirror ? `<a class="mini mini-mirror" href="${mirrorUrl(item.version)}" target="_blank" rel="noopener">镜像 2</a>` : '',
       item.lanzou_url ? `<a class="mini mini-lanzou" href="${item.lanzou_url}" target="_blank" rel="noopener">蓝奏云</a>` : '',
       `<a class="mini mini-gh" href="${ghUrl(item.version)}" target="_blank" rel="noopener">GitHub</a>`
     ].join('');
@@ -500,9 +502,9 @@ function setDock(url, label, type){
 function updateDock(){
   $('#dockTitle').textContent = `PlainPad v${latest.version}`;
   if (latest.has_pages) {
-    setDock(pagesUrl(latest.version), '推荐：Pages 镜像', 'pages');
+    setDock(pagesUrl(latest.version), '推荐：官方镜像 1', 'pages');
   } else if (latest.has_mirror) {
-    setDock(mirrorUrl(latest.version), '推荐：官方镜像', 'mirror');
+    setDock(mirrorUrl(latest.version), '推荐：官方镜像 2', 'mirror');
   } else if (latest.lanzou_url) {
     setDock(latest.lanzou_url, '推荐：蓝奏云', 'lanzou');
   } else {
@@ -510,7 +512,7 @@ function updateDock(){
   }
 }
 
-const SPEED_KEY = 'ppad_speed_v8';
+const SPEED_KEY = 'ppad_speed_v9';
 const SPEED_TTL = 10 * 60 * 1000;
 function readSpeedCache(){
   try{
@@ -533,12 +535,14 @@ function probe(url, timeout){
     .catch(() => ({ ok:false, ms:null }))
     .finally(() => clearTimeout(timer));
 }
+
+// 测速结果简写同步改为 M1 / M2
 function showResults(res){
   const parts = [];
   const p = res.find(r => r.key === 'pages');
-  if(p) parts.push(p.ok ? `P ${p.ms}ms` : 'P 失败');
+  if(p) parts.push(p.ok ? `M1 ${p.ms}ms` : 'M1 失败');
   const m = res.find(r => r.key === 'mirror');
-  if(m) parts.push(m.ok ? `M ${m.ms}ms` : 'M 失败');
+  if(m) parts.push(m.ok ? `M2 ${m.ms}ms` : 'M2 失败');
   const g = res.find(r => r.key === 'github');
   if(g) parts.push(g.ok ? `G ${g.ms}ms` : 'G 失败');
   
@@ -558,11 +562,11 @@ function showResults(res){
   });
   
   if(best && best.key === 'pages'){
-    setDock(pagesUrl(latest.version), `最快：Pages ${best.ms} ms`, 'pages');
+    setDock(pagesUrl(latest.version), `最快：官方镜像 1 (${best.ms} ms)`, 'pages');
   }else if(best && best.key === 'mirror'){
-    setDock(mirrorUrl(latest.version), `最快：官方镜像 ${best.ms} ms`, 'mirror');
+    setDock(mirrorUrl(latest.version), `最快：官方镜像 2 (${best.ms} ms)`, 'mirror');
   }else if(best && best.key === 'github'){
-    setDock(ghUrl(latest.version), `最快：GitHub ${best.ms} ms`, 'pages');
+    setDock(ghUrl(latest.version), `最快：GitHub (${best.ms} ms)`, 'pages');
   }
 }
 async function runTest(){
@@ -570,8 +574,8 @@ async function runTest(){
   if(!btn || btn.disabled) return;
   
   const targets = [];
-  if(latest.has_pages) targets.push({ key:'pages', name:'Pages', url: pagesUrl(latest.version) });
-  if(latest.has_mirror) targets.push({ key:'mirror', name:'官方镜像', url: mirrorUrl(latest.version) });
+  if(latest.has_pages) targets.push({ key:'pages', name:'官方镜像 1', url: pagesUrl(latest.version) });
+  if(latest.has_mirror) targets.push({ key:'mirror', name:'官方镜像 2', url: mirrorUrl(latest.version) });
   targets.push({ key:'github', name:'GitHub', url: ghUrl(latest.version) });
   
   btn.disabled = true;
