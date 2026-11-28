@@ -171,7 +171,8 @@ const UI = {
         ${dup ? `<div class="sha-warn">此 SHA-256 与 v${dup.version} 相同，请核对 GitHub Release 页面后再下载。</div>` : ''}
       </div>`;
       
-    Utils.$('#speedBtn').addEventListener('click', SpeedTest.run);
+    // 修复 this 丢失问题，用箭头函数包裹
+    Utils.$('#speedBtn').addEventListener('click', () => SpeedTest.run());
   },
 
   renderList() {
@@ -233,14 +234,34 @@ const UI = {
 
 // ==================== 6. 测速模块 ====================
 const SpeedTest = {
-  async probe(url, timeout = 8000) {
+  // 双重保险的超时探测
+  async probe(url, timeout = 4000) {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), timeout);
     const t0 = performance.now();
-    return fetch(url, { method:'GET', mode:'no-cors', cache:'no-store', credentials:'omit', headers:{ 'Range':'bytes=0-0' }, signal: ctrl.signal })
-      .then(() => ({ ok:true, ms: Math.round(performance.now() - t0) }))
-      .catch(() => ({ ok:false, ms:null }))
+
+    // 1. 真正的 fetch 请求
+    const fetchPromise = fetch(url, { 
+      method: 'GET', 
+      mode: 'no-cors', 
+      cache: 'no-store', 
+      credentials: 'omit', 
+      headers: { 'Range': 'bytes=0-0' }, 
+      signal: ctrl.signal 
+    }).then(() => ({ ok: true, ms: Math.round(performance.now() - t0) }))
+      .catch(() => ({ ok: false, ms: null }))
       .finally(() => clearTimeout(timer));
+
+    // 2. 兜底的超时 Promise（防止部分浏览器 abort 失效导致卡死）
+    const timeoutPromise = new Promise((resolve) => {
+      setTimeout(() => {
+        ctrl.abort(); // 尝试中断底层请求
+        resolve({ ok: false, ms: null });
+      }, timeout + 500);
+    });
+
+    // 3. 竞速
+    return Promise.race([fetchPromise, timeoutPromise]);
   },
 
   showResults(res) {
@@ -262,7 +283,7 @@ const SpeedTest = {
     if (best) {
       speedText.innerHTML = `${Icons.speed} <span><b>${best.name}</b> 最快 (${best.ms}ms)</span> <span class="speed-action">${Icons.refresh} 重测</span>`;
     } else {
-      speedText.innerHTML = `${Icons.speed} <span>线路均不可达，点击重试</span> <span class="speed-action">${Icons.refresh} 重测</span>`;
+      speedText.innerHTML = `${Icons.speed} <span>线路均超时，点击重试</span> <span class="speed-action">${Icons.refresh} 重测</span>`;
     }
     
     if(best) {
@@ -311,18 +332,20 @@ const SpeedTest = {
     const ghLink = Utils.$('#ghLink');
     if(ghLink) { ghLink.classList.remove('fast'); ghLink.textContent = 'GitHub 直链'; }
     
+    // 注意这里把 this.probe 替换成了 SpeedTest.probe，避免 this 指向问题
     const res = await Promise.all(targets.map(async t => {
-      const r = await this.probe(t.url);
+      const r = await SpeedTest.probe(t.url, 4000); 
       updateProgress();
       return { key:t.key, name:t.name, ok:r.ok, ms:r.ms };
     }));
     
-    this.showResults(res);
+    // 同样把 this.showResults 替换为 SpeedTest.showResults
+    SpeedTest.showResults(res);
     
     try { sessionStorage.setItem(State.speedCacheKey, JSON.stringify({ v: l.version, ts: Date.now(), res })); } catch(e){}
     
     const ok = res.filter(r => r.ok).sort((a,b) => a.ms - b.ms);
-    Utils.toast(ok.length ? `测速完成：${ok[0].name} 最快` : '线路均不可达，请稍后重试', ok.length ? 'success' : 'error');
+    Utils.toast(ok.length ? `测速完成：${ok[0].name} 最快` : '线路均超时，请稍后重试', ok.length ? 'success' : 'error');
   }
 };
 
