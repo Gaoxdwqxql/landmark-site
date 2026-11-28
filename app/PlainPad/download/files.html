@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlainPad 文件列表</title>
+    <style>
+        body {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            padding: 40px 20px;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #333;
+        }
+        h2 { font-size: 18px; font-weight: normal; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        a { color: #0369a1; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .tag { font-size: 12px; color: #666; }
+        .pre { color: #d97706; }
+        .loading { color: #888; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h2>PlainPad 全部文件列表（点击直接下载）</h2>
+    <ul id="file-list">
+        <li class="loading">正在获取文件列表...</li>
+    </ul>
+
+    <script>
+        // 使用 Pages 镜像作为直接下载地址
+        const PAGES_BASE = 'https://plainpad-files.pages.dev';
+
+        fetch('https://api2.sunwe.dpdns.org/api/releases')
+            .then(res => res.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    document.getElementById('file-list').innerHTML = '<li>暂无文件</li>';
+                    return;
+                }
+
+                // 按发布时间排序（API 默认已排好）
+                const html = data.map(item => {
+                    const fileName = `PlainPad-v${item.version}.apk`;
+                    const url = `${PAGES_BASE}/${fileName}`;
+                    const isPre = item.is_pre === 1;
+                    
+                    return `
+                        <li>
+                            <a href="${url}" download>${fileName}</a>
+                            ${isPre ? '<span class="tag pre">[预览版]</span>' : ''}
+                        </li>
+                    `;
+                }).join('');
+
+                document.getElementById('file-list').innerHTML = html;
+            })
+            .catch(err => {
+                document.getElementById('file-list').innerHTML = `<li style="color:red;">加载失败：${err.message}</li>`;
+            });
+    </script>
+</body>
+</html>
